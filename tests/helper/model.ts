@@ -32,12 +32,8 @@ export class Model<E> {
 		this.implication(b, a);
 	}
 
-	private _addElements(pred: Predicate<E>, expected: boolean, elements: Iterable<E>): void {
+	private _addElements(pred: Predicate<E>, elements: Iterable<E>): void {
 		this._addPredicate(pred);
-
-		if (!expected) {
-			pred = pred.not();
-		}
 
 		let set = this._elements.get(pred);
 		if (set === undefined) {
@@ -49,13 +45,13 @@ export class Model<E> {
 			set.add(e);
 		}
 	}
-	add(predicates: Predicate<E> | Iterable<Predicate<E>>, expected: boolean, elements: Iterable<E>): void {
+	add(predicates: Predicate<E> | Iterable<Predicate<E>>, elements: Iterable<E>): void {
 		if (predicates instanceof Predicate) {
-			this._addElements(predicates, expected, elements);
+			this._addElements(predicates, elements);
 		} else {
 			elements = [...elements];
 			for (const p of predicates) {
-				this._addElements(p, expected, elements);
+				this._addElements(p, elements);
 			}
 		}
 	}
