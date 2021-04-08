@@ -463,7 +463,7 @@ export type MatchingDirection = "ltr" | "rtl";
 /**
  * Returns the direction which which the given node will be matched relative to the closest parent alternative.
  *
- * If the given node is a lookaround, then the result will of `getMatchingDirection(lookaround)` will be the same as
+ * If the given node is a lookaround, then the result of `getMatchingDirection(lookaround)` will be the same as
  * `getMatchingDirection(lookaround.parent)`.
  */
 export function getMatchingDirection(node: Node): MatchingDirection {
@@ -488,7 +488,7 @@ export function getMatchingDirection(node: Node): MatchingDirection {
 /**
  * Returns the opposite matching direction of the given matching direction.
  *
- * If `ltr` is given `rtl` is returned and vise versa.
+ * If `ltr` is given, `rtl` will be returned and vise versa.
  */
 export function invertMatchingDirection(direction: MatchingDirection): MatchingDirection {
 	return direction === "ltr" ? "rtl" : "ltr";
