@@ -18,10 +18,13 @@ export type ToCharSetElement = Character | CharacterClassRange | CharacterSet | 
  */
 export function toCharSet(elements: ToCharSetElement | readonly ToCharSetElement[], flags: ReadonlyFlags): CharSet {
 	const positiveElements: (Character | CharacterClassRange | CharacterSet)[] = [];
-	const negatedElements: (Character | CharacterClassRange | CharacterSet)[] = [];
+	let negatedElements: (Character | CharacterClassRange | CharacterSet)[] | undefined = undefined;
 	const addElement = (e: Character | CharacterClassRange | CharacterSet | CharacterClass): void => {
 		if (e.type === "CharacterClass") {
 			if (e.negate) {
+				if (!negatedElements) {
+					negatedElements = [];
+				}
 				negatedElements.push(...e.elements);
 			} else {
 				positiveElements.push(...e.elements);
@@ -37,14 +40,16 @@ export function toCharSet(elements: ToCharSetElement | readonly ToCharSetElement
 		addElement(elements as ToCharSetElement);
 	}
 
-	if (positiveElements.length === 0) {
-		return JS.createCharSet(makeRefaCompatible(negatedElements), flags).negate();
-	} else if (negatedElements.length === 0) {
-		return JS.createCharSet(makeRefaCompatible(positiveElements), flags);
+	if (negatedElements) {
+		if (positiveElements.length === 0) {
+			return JS.createCharSet(makeRefaCompatible(negatedElements), flags).negate();
+		} else {
+			return JS.createCharSet(makeRefaCompatible(positiveElements), flags).union(
+				JS.createCharSet(makeRefaCompatible(negatedElements), flags).negate()
+			);
+		}
 	} else {
-		return JS.createCharSet(makeRefaCompatible(positiveElements), flags).union(
-			JS.createCharSet(makeRefaCompatible(negatedElements), flags).negate()
-		);
+		return JS.createCharSet(makeRefaCompatible(positiveElements), flags);
 	}
 }
 type IterableItem<T extends Iterable<unknown>> = T extends Iterable<infer I> ? I : never;
