@@ -8,11 +8,11 @@ import {
 	isEmptyBackreference,
 	MatchingDirection,
 } from "./basic";
-import { toCharSet } from "./char";
+import { toCharSet } from "./to-char-set";
 import { followPaths } from "./follow";
 import { ReadonlyFlags } from "./flags";
 import { assertNever } from "./util";
-import { Predefined } from "./predefined";
+import { Chars } from "./chars";
 
 /**
  * The first character after some point.
@@ -177,7 +177,7 @@ export function getFirstConsumedChar(
 							const range = getLengthRange(element.alternatives);
 							if (firstChar.empty || !range) {
 								// trivially rejecting
-								return { char: Predefined.empty(flags), empty: false, exact: true };
+								return { char: Chars.empty(flags), empty: false, exact: true };
 							}
 
 							if (!firstChar.exact || range.max !== 1) {
@@ -267,7 +267,7 @@ export function getFirstConsumedChar(
 	 */
 	function misdirectedAssertion(): FirstPartiallyConsumedChar {
 		return emptyWord({
-			char: Predefined.all(flags),
+			char: Chars.all(flags),
 			edge: true,
 			// This is the important part.
 			// Since the allowed chars depend on the previous chars, we don't know which will be allowed.
@@ -279,7 +279,7 @@ export function getFirstConsumedChar(
 	}
 	function lineAssertion(): FirstPartiallyConsumedChar {
 		return emptyWord({
-			char: Predefined.lineTerminator(flags),
+			char: Chars.lineTerminator(flags),
 			edge: true,
 			exact: true,
 		});
@@ -292,13 +292,13 @@ export function getFirstConsumedChar(
  * Returns first-look-char that is equivalent to a trivially-accepting lookaround.
  */
 function firstLookCharTriviallyAccepting(flags: ReadonlyFlags): FirstLookChar {
-	return { char: Predefined.all(flags), edge: true, exact: true };
+	return { char: Chars.all(flags), edge: true, exact: true };
 }
 /**
  * Returns first-look-char that is equivalent to `/$/`.
  */
 function firstLookCharEdgeAccepting(flags: ReadonlyFlags): FirstLookChar {
-	return { char: Predefined.empty(flags), edge: true, exact: true };
+	return { char: Chars.empty(flags), edge: true, exact: true };
 }
 /**
  * Returns first-consumed-char that is equivalent to consuming nothing (the empty word) followed by a trivially
@@ -306,7 +306,7 @@ function firstLookCharEdgeAccepting(flags: ReadonlyFlags): FirstLookChar {
  */
 function firstConsumedCharEmptyWord(flags: ReadonlyFlags, look?: FirstLookChar): FirstPartiallyConsumedChar {
 	return {
-		char: Predefined.empty(flags),
+		char: Chars.empty(flags),
 		empty: true,
 		exact: true,
 		look: look ?? firstLookCharTriviallyAccepting(flags),
@@ -330,7 +330,7 @@ class CharUnion {
 		this.char = this.char.union(char);
 	}
 	static emptyFromFlags(flags: ReadonlyFlags): CharUnion {
-		return new CharUnion(Predefined.empty(flags));
+		return new CharUnion(Chars.empty(flags));
 	}
 	static emptyFromMaximum(maximum: number): CharUnion {
 		return new CharUnion(CharSet.empty(maximum));

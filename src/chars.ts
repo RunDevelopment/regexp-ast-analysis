@@ -5,7 +5,7 @@ import { ReadonlyFlags } from "./flags";
 /**
  * A set of functions to get predefined character sets.
  */
-export namespace Predefined {
+export namespace Chars {
 	const EMPTY_UTF16_CHARSET = CharSet.empty(0xffff);
 	const EMPTY_UNICODE_CHARSET = CharSet.empty(0x10ffff);
 	/**
