@@ -27,7 +27,8 @@ function isInvokeEvery(
 	fn: (e: Element | Alternative) => boolean
 ): boolean {
 	if (Array.isArray(element)) {
-		return (element as readonly Alternative[]).every(fn);
+		const alternatives = element as readonly Alternative[];
+		return alternatives.length > 0 && alternatives.every(fn);
 	} else {
 		return fn(element as Element | Alternative);
 	}
@@ -43,7 +44,23 @@ function isInvokeSome(
 	}
 }
 /**
- * Returns whether all paths of the given element don't move the position of the automaton.
+ * Returns whether all (but at least one of the) paths of the given element do not consume characters.
+ *
+ * If this function returns `true`, then {@link isPotentiallyZeroLength} is guaranteed to return `true`.
+ *
+ * ## Backreferences
+ *
+ * This function uses the same condition for backreferences as {@link isEmpty}.
+ *
+ * ## Relations
+ *
+ * - `isZeroLength(e) -> isPotentiallyZeroLength(e)`
+ * - `isZeroLength(e) -> (getLengthRange(e) !== undefined && getLengthRange(e).max == 0)`
+ *
+ * @see {@link isPotentiallyZeroLength}
+ * @see {@link isEmpty}
+ * @see {@link isPotentiallyEmpty}
+ * @see {@link getLengthRange}
  */
 export function isZeroLength(element: Element | Alternative | readonly Alternative[]): boolean {
 	return isInvokeEvery(element, isZeroLengthImpl);
@@ -69,18 +86,27 @@ function isZeroLengthImpl(element: Element | Alternative): boolean {
 
 		case "CapturingGroup":
 		case "Group":
-			return element.alternatives.every(isZeroLengthImpl);
+			return element.alternatives.length > 0 && element.alternatives.every(isZeroLengthImpl);
 
 		default:
 			throw assertNever(element);
 	}
 }
 /**
- * Returns whether at least one path of the given element does not move the position of the automation.
+ * Returns whether at least one path of the given element does not consume characters.
  *
  * ## Backreferences
  *
  * This function uses the same condition for backreferences as {@link isPotentiallyEmpty}.
+ *
+ * ## Relations
+ *
+ * - `isPotentiallyZeroLength(e) -> (getLengthRange(e) !== undefined && getLengthRange(e).min == 0)`
+ *
+ * @see {@link isZeroLength}
+ * @see {@link isEmpty}
+ * @see {@link isPotentiallyEmpty}
+ * @see {@link getLengthRange}
  */
 export function isPotentiallyZeroLength(element: Element | Alternative | readonly Alternative[]): boolean {
 	return isInvokeSome(element, e => isPotentiallyZeroLengthImpl(e, e));
@@ -122,8 +148,26 @@ function isPotentiallyZeroLengthImpl(e: Element | Alternative, root: Element | A
 }
 
 /**
- * Returns whether all paths of the given element does not move the position of the automation and accept
- * regardless of prefix and suffix.
+ * Returns whether all (but at least one of the) paths of the given element do not consume characters and accept do not
+ * assert characters.
+ *
+ * If this function returns `true`, then {@link isZeroLength} and {@link isPotentiallyEmpty} are guaranteed to return
+ * `true`.
+ *
+ * ## Backreferences
+ *
+ * A backreferences will only be considered potentially empty, iff it is empty by the definition of
+ * {@link isEmptyBackreference}.
+ *
+ * ## Relations
+ *
+ * - `isEmpty(e) -> isZeroLength(e)`
+ * - `isEmpty(e) -> isPotentiallyEmpty(e)`
+ *
+ * @see {@link isZeroLength}
+ * @see {@link isPotentiallyZeroLength}
+ * @see {@link isPotentiallyEmpty}
+ * @see {@link getLengthRange}
  */
 export function isEmpty(element: Element | Alternative | readonly Alternative[]): boolean {
 	return isInvokeEvery(element, isEmptyImpl);
@@ -153,7 +197,7 @@ function isEmptyImpl(element: Element | Alternative): boolean {
 
 		case "CapturingGroup":
 		case "Group":
-			return element.alternatives.every(isEmptyImpl);
+			return element.alternatives.length > 0 && element.alternatives.every(isEmptyImpl);
 
 		case "Quantifier":
 			return element.max === 0 || isEmptyImpl(element.element);
@@ -163,11 +207,8 @@ function isEmptyImpl(element: Element | Alternative): boolean {
 	}
 }
 /**
- * Returns whether at least one path of the given element does not move the position of the automation and accepts
- * regardless of prefix and suffix.
- *
- * This basically means that it can match the empty string and that it does that at any position in any string.
- * Lookarounds do not affect this as (as mentioned above) all prefixes and suffixes are accepted.
+ * Returns whether at least one path of the given element does not consume characters and accept does not assert
+ * characters.
  *
  * ## Backreferences
  *
@@ -179,6 +220,15 @@ function isEmptyImpl(element: Element | Alternative): boolean {
  *   * The referenced capturing group is potentially zero-length.
  *   * The backreferences is not always after its referenced capturing group.
  *     (see {@link backreferenceAlwaysAfterGroup})
+ *
+ * ## Relations
+ *
+ * - `isPotentiallyEmpty(e) -> isPotentiallyZeroLength(e)`
+ *
+ * @see {@link isZeroLength}
+ * @see {@link isPotentiallyZeroLength}
+ * @see {@link isEmpty}
+ * @see {@link getLengthRange}
  */
 export function isPotentiallyEmpty(element: Element | Alternative | readonly Alternative[]): boolean {
 	return isInvokeSome(element, isPotentiallyEmptyImpl);
@@ -626,6 +676,8 @@ export function backreferenceAlwaysAfterGroup(backreference: Backreference): boo
 
 /**
  * The length range of string accepted. All string that are accepted by have a length of `min <= length <= max`.
+ *
+ * @see {@link getLengthRange}
  */
 export interface LengthRange {
 	readonly min: number;
@@ -636,7 +688,26 @@ const ONE_LENGTH_RANGE: LengthRange = { min: 1, max: 1 };
 /**
  * Returns how many characters the given element can consume at most and has to consume at least.
  *
- * If `undefined`, then the given element can't consume any characters.
+ * If `undefined` is returned, then the given element can't consume any characters.
+ *
+ * **Note:** `undefined` is only returned for empty alternative arrays. All characters classes/sets are assumed to
+ * consume at least one characters and all assertions are assumed to have some accepting path.
+ *
+ * ## Backreferences
+ *
+ * While {@link isPotentiallyEmpty} generally assumes the worst-case for backreferences that references capturing group
+ * outside the given element, this function does not/cannot. The length range of a backreference only depends on the
+ * referenced capturing group and the relative positions of the backreference and the capturing group within the
+ * pattern. It does not depend on the given element.
+ *
+ * This is an important distinction because it means that `isPotentiallyEmpty(e) -> getLengthRange(e).min == 0` is
+ * guaranteed but `getLengthRange(e).min == 0 -> isPotentiallyEmpty(e)` is only guaranteed if `e` does not contain
+ * backreferences.
+ *
+ * @see {@link isZeroLength}
+ * @see {@link isPotentiallyZeroLength}
+ * @see {@link isEmpty}
+ * @see {@link isPotentiallyEmpty}
  */
 export function getLengthRange(element: Element | Alternative | readonly Alternative[]): LengthRange | undefined {
 	if (Array.isArray(element)) {
@@ -710,14 +781,19 @@ function getLengthRangeElementImpl(element: Element | Alternative): LengthRange 
 		case "Backreference": {
 			if (isEmptyBackreference(element)) {
 				return ZERO_LENGTH_RANGE;
-			}
-			const resolvedRange = getLengthRangeElementImpl(element.resolved);
-			if (!resolvedRange) {
-				return backreferenceAlwaysAfterGroup(element) ? undefined : ZERO_LENGTH_RANGE;
-			} else if (resolvedRange.min > 0 && !backreferenceAlwaysAfterGroup(element)) {
-				return { min: 0, max: resolvedRange.max };
 			} else {
-				return resolvedRange;
+				const resolvedRange = getLengthRangeElementImpl(element.resolved);
+				if (!resolvedRange) {
+					if (backreferenceAlwaysAfterGroup(element)) {
+						return ZERO_LENGTH_RANGE;
+					} else {
+						return undefined;
+					}
+				} else if (resolvedRange.min > 0 && !backreferenceAlwaysAfterGroup(element)) {
+					return { min: 0, max: resolvedRange.max };
+				} else {
+					return resolvedRange;
+				}
 			}
 		}
 

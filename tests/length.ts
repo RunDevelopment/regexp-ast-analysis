@@ -27,10 +27,9 @@ const model = new Model<PredicateTestCaseInfo>();
 model.implication(isEmpty, isPotentiallyEmpty);
 model.implication(isEmpty, isZeroLength);
 model.implication(isZeroLength, isPotentiallyZeroLength);
+model.implication(isZeroLength, isLengthMaxZero);
 model.implication(isPotentiallyEmpty, isPotentiallyZeroLength);
-
-model.equivalence(isZeroLength, isLengthMaxZero);
-model.equivalence(isPotentiallyZeroLength, isLengthMinZero);
+model.implication(isPotentiallyZeroLength, isLengthMinZero);
 
 // test cases
 
