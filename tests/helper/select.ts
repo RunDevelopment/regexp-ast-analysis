@@ -1,3 +1,4 @@
+import {} from "regexpp";
 import { Character, CharacterClass, CharacterSet, Pattern } from "regexpp/ast";
 
 export function selectSingleChar(pattern: Pattern): Character | CharacterClass | CharacterSet {
