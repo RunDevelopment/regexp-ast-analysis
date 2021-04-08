@@ -1,0 +1,324 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>FirstLookChar | regexp-ast-analysis - v0.0.0</title>
+	<meta name="description" content="Documentation for regexp-ast-analysis - v0.0.0">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="../assets/css/main.css">
+	<script async src="../assets/js/search.js" id="search-script"></script>
+</head>
+<body>
+<header>
+	<div class="tsd-page-toolbar">
+		<div class="container">
+			<div class="table-wrap">
+				<div class="table-cell" id="tsd-search" data-index="../assets/js/search.json" data-base="..">
+					<div class="field">
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+						<input id="tsd-search-field" type="text" />
+					</div>
+					<ul class="results">
+						<li class="state loading">Preparing search index...</li>
+						<li class="state failure">The search index is not available</li>
+					</ul>
+					<a href="../index.html" class="title">regexp-ast-analysis - v0.0.0</a>
+				</div>
+				<div class="table-cell" id="tsd-widgets">
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tsd-page-title">
+		<div class="container">
+			<ul class="tsd-breadcrumb">
+				<li>
+					<a href="../modules.html">regexp-ast-analysis - v0.0.0</a>
+				</li>
+				<li>
+					<a href="firstlookchar.html">FirstLookChar</a>
+				</li>
+			</ul>
+			<h1>Interface FirstLookChar</h1>
+		</div>
+	</div>
+</header>
+<div class="container container-main">
+	<div class="row">
+		<div class="col-8 col-content">
+			<section class="tsd-panel tsd-comment">
+				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<p>The first character after some point.</p>
+					</div>
+					<p>This is not constrained to some specific element. This is conceptually how a lookaround sees the input string.</p>
+					<a href="#example" id="example" style="color: inherit; text-decoration: none;">
+						<h2>Example</h2>
+					</a>
+					<p>In the regex <code>/ab?/</code> the first look character after <code>a</code> is <code>{ char: all, edge: true, exact: true }</code>. It accepts all
+						characters because the <code>b</code> is optional, so there may be any character after <code>a</code>. <code>exact</code> is <code>true</code> because we know
+						that <em>exactly</em> all characters are allowed after <code>a</code>. <code>edge</code> is <code>true</code> because the input string is also allowed to
+					just end after <code>a</code> (i.e. the string <code>&quot;a&quot;</code> is accepted).</p>
+					<a href="#equivalent-regexes" id="equivalent-regexes" style="color: inherit; text-decoration: none;">
+						<h2>Equivalent regexes</h2>
+					</a>
+					<p>The regex an instance of this type is equivalent to depends only on the <code>char</code> and <code>edge</code> properties. The equivalent
+					regex is:</p>
+					<ul>
+						<li><code>edge: true</code>: <code>(?=[char]|$)</code> or <code>(?&lt;=[char]|^)</code></li>
+						<li><code>edge: false</code>: <code>(?=[char])</code> or <code>(?&lt;=[char])</code></li>
+					</ul>
+					<p>(<code>$</code> and <code>^</code> denote the end and start of the input string respectively.)</p>
+					<p>Note that <code>FirstLookChar</code> doesn&#39;t distinguish between lookaheads and lookbehinds. It can express either.</p>
+					<a href="#import-values" id="import-values" style="color: inherit; text-decoration: none;">
+						<h3>Import values</h3>
+					</a>
+					<p>There are a few important values:</p>
+					<ul>
+						<li>Accept all: The instance <code>{ char: all, edge: true }</code> (<code>edge</code> doesn&#39;t matter) is guaranteed to be equivalent to an
+						assertion that accepts all input strings (<code>(?=[\s\S]|$)</code>).</li>
+						<li>Reject all: The instance <code>{ char: empty, edge: false }</code> (<code>edge</code> doesn&#39;t matter) is guaranteed to be equivalent to
+						an assertion that rejects all input strings (<code>(?=[])</code>).</li>
+						<li>Edge assertion: The instance <code>{ char: empty, edge: true }</code> (<code>edge</code> doesn&#39;t matter) is guaranteed to be equivalent
+						to an edge assertion (either <code>^</code> or <code>$</code>).</li>
+					</ul>
+				</div>
+			</section>
+			<section class="tsd-panel tsd-hierarchy">
+				<h3>Hierarchy</h3>
+				<ul class="tsd-hierarchy">
+					<li>
+						<span class="target">FirstLookChar</span>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel-group tsd-index-group">
+				<h2>Index</h2>
+				<section class="tsd-panel tsd-index-panel">
+					<div class="tsd-index-content">
+						<section class="tsd-index-section ">
+							<h3>Properties</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="firstlookchar.html#char" class="tsd-kind-icon">char</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="firstlookchar.html#edge" class="tsd-kind-icon">edge</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="firstlookchar.html#exact" class="tsd-kind-icon">exact</a></li>
+							</ul>
+						</section>
+					</div>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Properties</h2>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="char" class="tsd-anchor"></a>
+					<h3>char</h3>
+					<div class="tsd-signature tsd-kind-icon">char<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">CharSet</span></div>
+					<aside class="tsd-sources">
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>A super set of the first character.</p>
+						</div>
+						<p>We can usually only guarantee a super set because lookaround in the pattern may narrow down the actual character
+						set.</p>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="edge" class="tsd-anchor"></a>
+					<h3>edge</h3>
+					<div class="tsd-signature tsd-kind-icon">edge<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
+					<aside class="tsd-sources">
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>If <code>true</code>, then the first character can be the start/end of the string.</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="exact" class="tsd-anchor"></a>
+					<h3>exact</h3>
+					<div class="tsd-signature tsd-kind-icon">exact<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
+					<aside class="tsd-sources">
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>If <code>true</code>, then <code>char</code> is guaranteed to be exactly the first character and not just a super set of it.</p>
+						</div>
+					</div>
+				</section>
+			</section>
+		</div>
+		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+			<nav class="tsd-navigation primary">
+				<ul>
+					<li class=" ">
+						<a href="../modules.html">Exports</a>
+					</li>
+				</ul>
+			</nav>
+			<nav class="tsd-navigation secondary menu-sticky">
+				<ul class="before-current">
+					<li class=" tsd-kind-interface">
+						<a href="firstcharafter.html" class="tsd-kind-icon">First<wbr>Char<wbr>After</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="firstconsumedcharafter.html" class="tsd-kind-icon">First<wbr>Consumed<wbr>Char<wbr>After</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="firstfullyconsumedchar.html" class="tsd-kind-icon">First<wbr>Fully<wbr>Consumed<wbr>Char</a>
+					</li>
+				</ul>
+				<ul class="current">
+					<li class="current tsd-kind-interface">
+						<a href="firstlookchar.html" class="tsd-kind-icon">First<wbr>Look<wbr>Char</a>
+						<ul>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="firstlookchar.html#char" class="tsd-kind-icon">char</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="firstlookchar.html#edge" class="tsd-kind-icon">edge</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="firstlookchar.html#exact" class="tsd-kind-icon">exact</a>
+							</li>
+						</ul>
+					</li>
+				</ul>
+				<ul class="after-current">
+					<li class=" tsd-kind-interface">
+						<a href="firstpartiallyconsumedchar.html" class="tsd-kind-icon">First<wbr>Partially<wbr>Consumed<wbr>Char</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-has-type-parameter">
+						<a href="followoperations.html" class="tsd-kind-icon">Follow<wbr>Operations</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="lengthrange.html" class="tsd-kind-icon">Length<wbr>Range</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="readonlyflags.html" class="tsd-kind-icon">Readonly<wbr>Flags</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-has-type-parameter">
+						<a href="../modules.html#ancestor" class="tsd-kind-icon">Ancestor</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-has-type-parameter">
+						<a href="../modules.html#descendant" class="tsd-kind-icon">Descendant</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="../modules.html#firstconsumedchar" class="tsd-kind-icon">First<wbr>Consumed<wbr>Char</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="../modules.html#matchingdirection" class="tsd-kind-icon">Matching<wbr>Direction</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="../modules.html#tocharsetelement" class="tsd-kind-icon">To<wbr>Char<wbr>Set<wbr>Element</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="../modules.html#assertionkindtomatchingdirection" class="tsd-kind-icon">assertion<wbr>Kind<wbr>ToMatching<wbr>Direction</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="../modules.html#backreferencealwaysaftergroup" class="tsd-kind-icon">backreference<wbr>Always<wbr>After<wbr>Group</a>
+					</li>
+					<li class=" tsd-kind-function tsd-has-type-parameter">
+						<a href="../modules.html#followpaths" class="tsd-kind-icon">follow<wbr>Paths</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="../modules.html#getcapturinggroupnumber" class="tsd-kind-icon">get<wbr>Capturing<wbr>Group<wbr>Number</a>
+					</li>
+					<li class=" tsd-kind-function tsd-has-type-parameter">
+						<a href="../modules.html#getclosestancestor" class="tsd-kind-icon">get<wbr>Closest<wbr>Ancestor</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="../modules.html#geteffectivemaximumrepetition" class="tsd-kind-icon">get<wbr>Effective<wbr>Maximum<wbr>Repetition</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="../modules.html#getfirstcharafter" class="tsd-kind-icon">get<wbr>First<wbr>Char<wbr>After</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="../modules.html#getfirstconsumedchar" class="tsd-kind-icon">get<wbr>First<wbr>Consumed<wbr>Char</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="../modules.html#getfirstconsumedcharafter" class="tsd-kind-icon">get<wbr>First<wbr>Consumed<wbr>Char<wbr>After</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="../modules.html#getlengthrange" class="tsd-kind-icon">get<wbr>Length<wbr>Range</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="../modules.html#getmatchingdirection" class="tsd-kind-icon">get<wbr>Matching<wbr>Direction</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="../modules.html#getpattern" class="tsd-kind-icon">get<wbr>Pattern</a>
+					</li>
+					<li class=" tsd-kind-function tsd-has-type-parameter">
+						<a href="../modules.html#hassomeancestor" class="tsd-kind-icon">has<wbr>Some<wbr>Ancestor</a>
+					</li>
+					<li class=" tsd-kind-function tsd-has-type-parameter">
+						<a href="../modules.html#hassomedescendant" class="tsd-kind-icon">has<wbr>Some<wbr>Descendant</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="../modules.html#invertmatchingdirection" class="tsd-kind-icon">invert<wbr>Matching<wbr>Direction</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="../modules.html#isempty" class="tsd-kind-icon">is<wbr>Empty</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="../modules.html#isemptybackreference" class="tsd-kind-icon">is<wbr>Empty<wbr>Backreference</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="../modules.html#ispotentiallyempty" class="tsd-kind-icon">is<wbr>Potentially<wbr>Empty</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="../modules.html#ispotentiallyzerolength" class="tsd-kind-icon">is<wbr>Potentially<wbr>Zero<wbr>Length</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="../modules.html#iszerolength" class="tsd-kind-icon">is<wbr>Zero<wbr>Length</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="../modules.html#matchesallcharacters" class="tsd-kind-icon">matches<wbr>All<wbr>Characters</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="../modules.html#matchesnocharacters" class="tsd-kind-icon">matches<wbr>NoCharacters</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="../modules.html#structurallyequal" class="tsd-kind-icon">structurally<wbr>Equal</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="../modules.html#tocharset" class="tsd-kind-icon">to<wbr>Char<wbr>Set</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</div>
+</div>
+<footer>
+	<div class="container">
+		<h2>Legend</h2>
+		<div class="tsd-legend-group">
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-interface"><span class="tsd-kind-icon">Method</span></li>
+			</ul>
+		</div>
+	</div>
+</footer>
+<div class="overlay"></div>
+<script src="../assets/js/main.js"></script>
+</body>
+</html>
