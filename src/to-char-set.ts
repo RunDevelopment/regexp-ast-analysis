@@ -69,8 +69,12 @@ function makeRefaCompatible(
  *
  * This is guaranteed to be equivalent to `toCharSet(char).isAll` but is implemented more efficiently.
  */
-export function matchesAllCharacters(char: CharacterClass | CharacterSet, flags: ReadonlyFlags): boolean {
-	if (char.type === "CharacterSet") {
+export function matchesAllCharacters(char: ToCharSetElement, flags: ReadonlyFlags): boolean {
+	if (char.type === "Character") {
+		return false;
+	} else if (char.type === "CharacterClassRange") {
+		return char.min.value === 0 && char.max.value === (flags.unicode ? 0x10ffff : 0xffff);
+	} else if (char.type === "CharacterSet") {
 		if (char.kind === "property") {
 			return JS.createCharSet([char], flags).isAll;
 		} else if (char.kind === "any") {
@@ -95,8 +99,11 @@ export function matchesAllCharacters(char: CharacterClass | CharacterSet, flags:
  *
  * This is guaranteed to be equivalent to `toCharSet(char).isEmpty` but is implemented more efficiently.
  */
-export function matchesNoCharacters(char: CharacterClass | CharacterSet, flags: ReadonlyFlags): boolean {
-	if (char.type === "CharacterSet") {
+export function matchesNoCharacters(char: ToCharSetElement, flags: ReadonlyFlags): boolean {
+	if (char.type === "Character" || char.type === "CharacterClassRange") {
+		// both are guaranteed to match at least one character
+		return false;
+	} else if (char.type === "CharacterSet") {
 		if (char.kind === "property") {
 			return JS.createCharSet([char], flags).isEmpty;
 		} else {
