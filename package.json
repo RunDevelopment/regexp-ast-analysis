@@ -1,7 +1,7 @@
 {
   "name": "regexp-ast-analysis",
   "version": "0.0.0",
-  "description": "TODO",
+  "description": "A library for analysing JS RegExp",
   "main": "index",
   "scripts": {
     "check": "npm run lint && npx tsc --noEmit && cd tests && npx tsc --noEmit",
