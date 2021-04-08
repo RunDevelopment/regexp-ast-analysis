@@ -705,7 +705,7 @@ function Next(element, state):
 								<div class="lead">
 									<p>Returns the direction which which the given node will be matched relative to the closest parent alternative.</p>
 								</div>
-								<p>If the given node is a lookaround, then the result will of <code>getMatchingDirection(lookaround)</code> will be the same as
+								<p>If the given node is a lookaround, then the result of <code>getMatchingDirection(lookaround)</code> will be the same as
 								<code>getMatchingDirection(lookaround.parent)</code>.</p>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -894,7 +894,7 @@ function Next(element, state):
 								<div class="lead">
 									<p>Returns the opposite matching direction of the given matching direction.</p>
 								</div>
-								<p>If <code>ltr</code> is given <code>rtl</code> is returned and vise versa.</p>
+								<p>If <code>ltr</code> is given, <code>rtl</code> will be returned and vise versa.</p>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
@@ -1167,7 +1167,7 @@ function Next(element, state):
 					<a name="matchesallcharacters" class="tsd-anchor"></a>
 					<h3>matches<wbr>All<wbr>Characters</h3>
 					<ul class="tsd-signatures tsd-kind-function">
-						<li class="tsd-signature tsd-kind-icon">matches<wbr>All<wbr>Characters<span class="tsd-signature-symbol">(</span>char<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">CharacterClass</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">CharacterSet</span>, flags<span class="tsd-signature-symbol">: </span><a href="interfaces/readonlyflags.html" class="tsd-signature-type" data-tsd-kind="Interface">ReadonlyFlags</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+						<li class="tsd-signature tsd-kind-icon">matches<wbr>All<wbr>Characters<span class="tsd-signature-symbol">(</span>char<span class="tsd-signature-symbol">: </span><a href="modules.html#tocharsetelement" class="tsd-signature-type" data-tsd-kind="Type alias">ToCharSetElement</a>, flags<span class="tsd-signature-symbol">: </span><a href="interfaces/readonlyflags.html" class="tsd-signature-type" data-tsd-kind="Interface">ReadonlyFlags</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
@@ -1182,7 +1182,7 @@ function Next(element, state):
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>char: <span class="tsd-signature-type">CharacterClass</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">CharacterSet</span></h5>
+									<h5>char: <a href="modules.html#tocharsetelement" class="tsd-signature-type" data-tsd-kind="Type alias">ToCharSetElement</a></h5>
 								</li>
 								<li>
 									<h5>flags: <a href="interfaces/readonlyflags.html" class="tsd-signature-type" data-tsd-kind="Interface">ReadonlyFlags</a></h5>
@@ -1196,7 +1196,7 @@ function Next(element, state):
 					<a name="matchesnocharacters" class="tsd-anchor"></a>
 					<h3>matches<wbr>NoCharacters</h3>
 					<ul class="tsd-signatures tsd-kind-function">
-						<li class="tsd-signature tsd-kind-icon">matches<wbr>NoCharacters<span class="tsd-signature-symbol">(</span>char<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">CharacterClass</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">CharacterSet</span>, flags<span class="tsd-signature-symbol">: </span><a href="interfaces/readonlyflags.html" class="tsd-signature-type" data-tsd-kind="Interface">ReadonlyFlags</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+						<li class="tsd-signature tsd-kind-icon">matches<wbr>NoCharacters<span class="tsd-signature-symbol">(</span>char<span class="tsd-signature-symbol">: </span><a href="modules.html#tocharsetelement" class="tsd-signature-type" data-tsd-kind="Type alias">ToCharSetElement</a>, flags<span class="tsd-signature-symbol">: </span><a href="interfaces/readonlyflags.html" class="tsd-signature-type" data-tsd-kind="Interface">ReadonlyFlags</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
@@ -1211,7 +1211,7 @@ function Next(element, state):
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>char: <span class="tsd-signature-type">CharacterClass</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">CharacterSet</span></h5>
+									<h5>char: <a href="modules.html#tocharsetelement" class="tsd-signature-type" data-tsd-kind="Type alias">ToCharSetElement</a></h5>
 								</li>
 								<li>
 									<h5>flags: <a href="interfaces/readonlyflags.html" class="tsd-signature-type" data-tsd-kind="Interface">ReadonlyFlags</a></h5>
@@ -1235,8 +1235,8 @@ function Next(element, state):
 								<div class="lead">
 									<p>Returns whether two nodes are structurally equivalent.</p>
 								</div>
-								<p>This means that the structure of the two nodes has to be exactly the same. Two semantically equivalent elements may
-								not be structurally equivalent (e.g. <code>[ab]</code> is not structurally equal to <code>[ba]</code>).</p>
+								<p>If two elements are structurally equivalent, they must also semantically equivalent. However, two semantically
+								equivalent elements might not be structurally equivalent (e.g. <code>/[ab]/</code> !=<sub>struct</sub> <code>/[ba]/</code>).</p>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
