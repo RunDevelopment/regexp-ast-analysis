@@ -62,7 +62,7 @@
 						<section class="tsd-index-section ">
 							<h3>Namespaces</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-namespace"><a href="modules/predefined.html" class="tsd-kind-icon">Predefined</a></li>
+								<li class="tsd-kind-namespace"><a href="modules/chars.html" class="tsd-kind-icon">Chars</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
@@ -653,7 +653,33 @@ function Next(element, state):
 								<div class="lead">
 									<p>Returns how many characters the given element can consume at most and has to consume at least.</p>
 								</div>
-								<p>If <code>undefined</code>, then the given element can&#39;t consume any characters.</p>
+								<p>If <code>undefined</code> is returned, then the given element can&#39;t consume any characters.</p>
+								<p><strong>Note:</strong> <code>undefined</code> is only returned for empty alternative arrays. All characters classes/sets are assumed to
+								consume at least one characters and all assertions are assumed to have some accepting path.</p>
+								<a href="#backreferences" id="backreferences" style="color: inherit; text-decoration: none;">
+									<h2>Backreferences</h2>
+								</a>
+								<p>While <a href="modules.html#ispotentiallyempty">isPotentiallyEmpty</a> generally assumes the worst-case for backreferences that references capturing group
+									outside the given element, this function does not/cannot. The length range of a backreference only depends on the
+									referenced capturing group and the relative positions of the backreference and the capturing group within the
+								pattern. It does not depend on the given element.</p>
+								<p>This is an important distinction because it means that <code>isPotentiallyEmpty(e) -&gt; getLengthRange(e).min == 0</code> is
+									guaranteed but <code>getLengthRange(e).min == 0 -&gt; isPotentiallyEmpty(e)</code> is only guaranteed if <code>e</code> does not contain
+								backreferences.</p>
+								<dl class="tsd-comment-tags">
+									<dt>see</dt>
+									<dd><p><a href="modules.html#iszerolength">isZeroLength</a></p>
+									</dd>
+									<dt>see</dt>
+									<dd><p><a href="modules.html#ispotentiallyzerolength">isPotentiallyZeroLength</a></p>
+									</dd>
+									<dt>see</dt>
+									<dd><p><a href="modules.html#isempty">isEmpty</a></p>
+									</dd>
+									<dt>see</dt>
+									<dd><p><a href="modules.html#ispotentiallyempty">isPotentiallyEmpty</a></p>
+									</dd>
+								</dl>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
@@ -892,9 +918,37 @@ function Next(element, state):
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Returns whether all paths of the given element does not move the position of the automation and accept
-									regardless of prefix and suffix.</p>
+									<p>Returns whether all (but at least one of the) paths of the given element do not consume characters and accept do not
+									assert characters.</p>
 								</div>
+								<p>If this function returns <code>true</code>, then <a href="modules.html#iszerolength">isZeroLength</a> and <a href="modules.html#ispotentiallyempty">isPotentiallyEmpty</a> are guaranteed to return
+								<code>true</code>.</p>
+								<a href="#backreferences" id="backreferences" style="color: inherit; text-decoration: none;">
+									<h2>Backreferences</h2>
+								</a>
+								<p>A backreferences will only be considered potentially empty, iff it is empty by the definition of
+								<a href="modules.html#isemptybackreference">isEmptyBackreference</a>.</p>
+								<a href="#relations" id="relations" style="color: inherit; text-decoration: none;">
+									<h2>Relations</h2>
+								</a>
+								<ul>
+									<li><code>isEmpty(e) -&gt; isZeroLength(e)</code></li>
+									<li><code>isEmpty(e) -&gt; isPotentiallyEmpty(e)</code></li>
+								</ul>
+								<dl class="tsd-comment-tags">
+									<dt>see</dt>
+									<dd><p><a href="modules.html#iszerolength">isZeroLength</a></p>
+									</dd>
+									<dt>see</dt>
+									<dd><p><a href="modules.html#ispotentiallyzerolength">isPotentiallyZeroLength</a></p>
+									</dd>
+									<dt>see</dt>
+									<dd><p><a href="modules.html#ispotentiallyempty">isPotentiallyEmpty</a></p>
+									</dd>
+									<dt>see</dt>
+									<dd><p><a href="modules.html#getlengthrange">getLengthRange</a></p>
+									</dd>
+								</dl>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
@@ -961,11 +1015,9 @@ function Next(element, state):
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Returns whether at least one path of the given element does not move the position of the automation and accepts
-									regardless of prefix and suffix.</p>
+									<p>Returns whether at least one path of the given element does not consume characters and accept does not assert
+									characters.</p>
 								</div>
-								<p>This basically means that it can match the empty string and that it does that at any position in any string.
-								Lookarounds do not affect this as (as mentioned above) all prefixes and suffixes are accepted.</p>
 								<a href="#backreferences" id="backreferences" style="color: inherit; text-decoration: none;">
 									<h2>Backreferences</h2>
 								</a>
@@ -980,6 +1032,26 @@ function Next(element, state):
 										</ul>
 									</li>
 								</ul>
+								<a href="#relations" id="relations" style="color: inherit; text-decoration: none;">
+									<h2>Relations</h2>
+								</a>
+								<ul>
+									<li><code>isPotentiallyEmpty(e) -&gt; isPotentiallyZeroLength(e)</code></li>
+								</ul>
+								<dl class="tsd-comment-tags">
+									<dt>see</dt>
+									<dd><p><a href="modules.html#iszerolength">isZeroLength</a></p>
+									</dd>
+									<dt>see</dt>
+									<dd><p><a href="modules.html#ispotentiallyzerolength">isPotentiallyZeroLength</a></p>
+									</dd>
+									<dt>see</dt>
+									<dd><p><a href="modules.html#isempty">isEmpty</a></p>
+									</dd>
+									<dt>see</dt>
+									<dd><p><a href="modules.html#getlengthrange">getLengthRange</a></p>
+									</dd>
+								</dl>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
@@ -1003,12 +1075,32 @@ function Next(element, state):
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Returns whether at least one path of the given element does not move the position of the automation.</p>
+									<p>Returns whether at least one path of the given element does not consume characters.</p>
 								</div>
 								<a href="#backreferences" id="backreferences" style="color: inherit; text-decoration: none;">
 									<h2>Backreferences</h2>
 								</a>
 								<p>This function uses the same condition for backreferences as <a href="modules.html#ispotentiallyempty">isPotentiallyEmpty</a>.</p>
+								<a href="#relations" id="relations" style="color: inherit; text-decoration: none;">
+									<h2>Relations</h2>
+								</a>
+								<ul>
+									<li><code>isPotentiallyZeroLength(e) -&gt; (getLengthRange(e) !== undefined &amp;&amp; getLengthRange(e).min == 0)</code></li>
+								</ul>
+								<dl class="tsd-comment-tags">
+									<dt>see</dt>
+									<dd><p><a href="modules.html#iszerolength">isZeroLength</a></p>
+									</dd>
+									<dt>see</dt>
+									<dd><p><a href="modules.html#isempty">isEmpty</a></p>
+									</dd>
+									<dt>see</dt>
+									<dd><p><a href="modules.html#ispotentiallyempty">isPotentiallyEmpty</a></p>
+									</dd>
+									<dt>see</dt>
+									<dd><p><a href="modules.html#getlengthrange">getLengthRange</a></p>
+									</dd>
+								</dl>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
@@ -1032,8 +1124,34 @@ function Next(element, state):
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Returns whether all paths of the given element don&#39;t move the position of the automaton.</p>
+									<p>Returns whether all (but at least one of the) paths of the given element do not consume characters.</p>
 								</div>
+								<p>If this function returns <code>true</code>, then <a href="modules.html#ispotentiallyzerolength">isPotentiallyZeroLength</a> is guaranteed to return <code>true</code>.</p>
+								<a href="#backreferences" id="backreferences" style="color: inherit; text-decoration: none;">
+									<h2>Backreferences</h2>
+								</a>
+								<p>This function uses the same condition for backreferences as <a href="modules.html#isempty">isEmpty</a>.</p>
+								<a href="#relations" id="relations" style="color: inherit; text-decoration: none;">
+									<h2>Relations</h2>
+								</a>
+								<ul>
+									<li><code>isZeroLength(e) -&gt; isPotentiallyZeroLength(e)</code></li>
+									<li><code>isZeroLength(e) -&gt; (getLengthRange(e) !== undefined &amp;&amp; getLengthRange(e).max == 0)</code></li>
+								</ul>
+								<dl class="tsd-comment-tags">
+									<dt>see</dt>
+									<dd><p><a href="modules.html#ispotentiallyzerolength">isPotentiallyZeroLength</a></p>
+									</dd>
+									<dt>see</dt>
+									<dd><p><a href="modules.html#isempty">isEmpty</a></p>
+									</dd>
+									<dt>see</dt>
+									<dd><p><a href="modules.html#ispotentiallyempty">isPotentiallyEmpty</a></p>
+									</dd>
+									<dt>see</dt>
+									<dd><p><a href="modules.html#getlengthrange">getLengthRange</a></p>
+									</dd>
+								</dl>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
@@ -1171,7 +1289,7 @@ function Next(element, state):
 						<a href="modules.html">Exports</a>
 					</li>
 					<li class=" tsd-kind-namespace">
-						<a href="modules/predefined.html">Predefined</a>
+						<a href="modules/chars.html">Chars</a>
 					</li>
 				</ul>
 			</nav>
