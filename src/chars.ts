@@ -1,13 +1,14 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 import { CharSet, JS } from "refa";
 import { ReadonlyFlags } from "./flags";
+import { MaxChar } from "./max-char";
 
 /**
  * A set of functions to get predefined character sets.
  */
 export namespace Chars {
-	const EMPTY_UTF16_CHARSET = CharSet.empty(0xffff);
-	const EMPTY_UNICODE_CHARSET = CharSet.empty(0x10ffff);
+	const EMPTY_UTF16_CHARSET = CharSet.empty(MaxChar.UTF16);
+	const EMPTY_UNICODE_CHARSET = CharSet.empty(MaxChar.UNICODE);
 	/**
 	 * Returns the empty character set for the given flags.
 	 */
@@ -19,8 +20,8 @@ export namespace Chars {
 		}
 	}
 
-	const ALL_UTF16_CHARSET = CharSet.all(0xffff);
-	const ALL_UNICODE_CHARSET = CharSet.all(0x10ffff);
+	const ALL_UTF16_CHARSET = CharSet.all(MaxChar.UTF16);
+	const ALL_UNICODE_CHARSET = CharSet.all(MaxChar.UNICODE);
 	/**
 	 * Returns the full character set for the given flags.
 	 */

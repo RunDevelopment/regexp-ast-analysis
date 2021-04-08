@@ -1,6 +1,7 @@
 import { CharSet, JS } from "refa";
 import { Character, CharacterClass, CharacterClassRange, CharacterSet } from "regexpp/ast";
 import { ReadonlyFlags } from "./flags";
+import { MaxChar } from "./max-char";
 import { assertNever } from "./util";
 
 /**
@@ -73,7 +74,7 @@ export function matchesAllCharacters(char: ToCharSetElement, flags: ReadonlyFlag
 	if (char.type === "Character") {
 		return false;
 	} else if (char.type === "CharacterClassRange") {
-		return char.min.value === 0 && char.max.value === (flags.unicode ? 0x10ffff : 0xffff);
+		return char.min.value === 0 && char.max.value === (flags.unicode ? MaxChar.UNICODE : MaxChar.UTF16);
 	} else if (char.type === "CharacterSet") {
 		if (char.kind === "property") {
 			return JS.createCharSet([char], flags).isAll;
