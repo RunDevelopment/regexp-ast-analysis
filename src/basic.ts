@@ -753,7 +753,7 @@ function getLengthRangeElementImpl(element: Element | Alternative): LengthRange 
 			} else if (elementRange.max === 0) {
 				return ZERO_LENGTH_RANGE;
 			} else {
-				return { min: elementRange.min * element.min, max: elementRange.min * element.max };
+				return { min: elementRange.min * element.min, max: elementRange.max * element.max };
 			}
 		}
 

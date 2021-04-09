@@ -1,5 +1,5 @@
 import {} from "regexpp";
-import { Character, CharacterClass, CharacterSet, Pattern } from "regexpp/ast";
+import { CapturingGroup, Character, CharacterClass, CharacterSet, Pattern } from "regexpp/ast";
 import { Descendant, hasSomeDescendant } from "../../src";
 
 export function select<T extends Descendant<Pattern>>(
@@ -16,6 +16,13 @@ export function select<T extends Descendant<Pattern>>(
 	});
 
 	return result;
+}
+
+export function selectNamedGroups(pattern: Pattern, name: RegExp = /^/): CapturingGroup[] {
+	return select(
+		pattern,
+		(e): e is CapturingGroup => e.type === "CapturingGroup" && e.name !== null && name.test(e.name)
+	);
 }
 
 export function selectSingleChar(pattern: Pattern): Character | CharacterClass | CharacterSet {

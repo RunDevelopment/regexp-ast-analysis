@@ -1,7 +1,9 @@
+import { assert } from "chai";
 import { RegExpParser, visitRegExpAST } from "regexpp";
 import { Alternative, Element, Flags, Pattern, RegExpLiteral } from "regexpp/ast";
 import * as RAA from "../src";
 import { Predicate, Model, testModel } from "./helper/model";
+import { selectNamedGroups } from "./helper/select";
 
 describe("length", function () {
 	const isEmpty = new Predicate<PredicateTestCaseInfo>("isEmpty(e)", ({ selected }) => RAA.isEmpty(selected));
@@ -138,74 +140,146 @@ describe("length", function () {
 		const s = Array.isArray(selected) ? selected.map(e => e.raw).join("|") : selected.raw;
 		return `${regexp}: \`${s}\``;
 	});
-});
 
-export interface PredicateTestCase {
-	regexp: RegExp;
-	raw?: string;
-	whole?: boolean;
-}
-export interface PredicateTestCaseInfo {
-	regexp: RegExp;
-	selected: Element | Alternative | Alternative[];
-	pattern: Pattern;
-	flags: Flags;
-	literal: RegExpLiteral;
-}
-function caseToInfo(testCase: PredicateTestCase): PredicateTestCaseInfo[] {
-	const literal = new RegExpParser().parseLiteral(testCase.regexp.toString());
-
-	const selectedNodes = new Set<Element | Alternative | Alternative[]>();
-	const addSelected = (node: Element | Alternative | Pattern): void => {
-		if (node.type === "Pattern") {
-			selectedNodes.add(node.alternatives);
-		} else {
-			selectedNodes.add(node);
-		}
-	};
-
-	if (testCase.whole) {
-		addSelected(literal.pattern);
+	interface PredicateTestCase {
+		regexp: RegExp;
+		raw?: string;
+		whole?: boolean;
 	}
+	interface PredicateTestCaseInfo {
+		regexp: RegExp;
+		selected: Element | Alternative | Alternative[];
+		pattern: Pattern;
+		flags: Flags;
+		literal: RegExpLiteral;
+	}
+	function caseToInfo(testCase: PredicateTestCase): PredicateTestCaseInfo[] {
+		const literal = new RegExpParser().parseLiteral(testCase.regexp.toString());
 
-	if (testCase.raw !== undefined) {
-		const onNode = (node: Element | Alternative | Pattern): void => {
-			if (node.raw === testCase.raw) {
-				addSelected(node);
+		const selectedNodes = new Set<Element | Alternative | Alternative[]>();
+		const addSelected = (node: Element | Alternative | Pattern): void => {
+			if (node.type === "Pattern") {
+				selectedNodes.add(node.alternatives);
+			} else {
+				selectedNodes.add(node);
 			}
 		};
-		visitRegExpAST(literal, {
-			onAlternativeEnter: onNode,
-			onAssertionEnter: onNode,
-			onBackreferenceEnter: onNode,
-			onCapturingGroupEnter: onNode,
-			onCharacterClassEnter: onNode,
-			onCharacterEnter: onNode,
-			onCharacterSetEnter: onNode,
-			onGroupEnter: onNode,
-			onPatternEnter: onNode,
-			onQuantifierEnter: onNode,
+
+		if (testCase.whole) {
+			addSelected(literal.pattern);
+		}
+
+		if (testCase.raw !== undefined) {
+			const onNode = (node: Element | Alternative | Pattern): void => {
+				if (node.raw === testCase.raw) {
+					addSelected(node);
+				}
+			};
+			visitRegExpAST(literal, {
+				onAlternativeEnter: onNode,
+				onAssertionEnter: onNode,
+				onBackreferenceEnter: onNode,
+				onCapturingGroupEnter: onNode,
+				onCharacterClassEnter: onNode,
+				onCharacterEnter: onNode,
+				onCharacterSetEnter: onNode,
+				onGroupEnter: onNode,
+				onPatternEnter: onNode,
+				onQuantifierEnter: onNode,
+			});
+		}
+
+		if (selectedNodes.size === 0) {
+			throw new Error("Couldn't find any elements.");
+		}
+
+		return [...selectedNodes].map(s => {
+			return {
+				literal,
+				pattern: literal.pattern,
+				flags: literal.flags,
+				regexp: testCase.regexp,
+				selected: s,
+			};
 		});
 	}
+	function casesToInfos(cases: Iterable<PredicateTestCase>): PredicateTestCaseInfo[] {
+		const result: PredicateTestCaseInfo[] = [];
+		for (const testCase of cases) {
+			result.push(...caseToInfo(testCase));
+		}
+		return result;
+	}
+});
 
-	if (selectedNodes.size === 0) {
-		throw new Error("Couldn't find any elements.");
+describe(RAA.getLengthRange.name, function () {
+	interface TestCase {
+		regexp: RegExp;
+		expected: RAA.LengthRange | undefined;
+		selectNamed?: boolean | RegExp;
 	}
 
-	return [...selectedNodes].map(s => {
-		return {
-			literal,
-			pattern: literal.pattern,
-			flags: literal.flags,
-			regexp: testCase.regexp,
-			selected: s,
-		};
-	});
-}
-function casesToInfos(cases: Iterable<PredicateTestCase>): PredicateTestCaseInfo[] {
-	const result: PredicateTestCaseInfo[] = [];
-	for (const testCase of cases) {
-		result.push(...caseToInfo(testCase));
+	test([
+		{ regexp: /abc/, expected: { min: 3, max: 3 } },
+		{ regexp: /a|b|c/, expected: { min: 1, max: 1 } },
+		{ regexp: /ab|c/, expected: { min: 1, max: 2 } },
+
+		{ regexp: /b?/, expected: { min: 0, max: 1 } },
+		{ regexp: /b??/, expected: { min: 0, max: 1 } },
+		{ regexp: /b*/, expected: { min: 0, max: Infinity } },
+		{ regexp: /b*?/, expected: { min: 0, max: Infinity } },
+		{ regexp: /b+/, expected: { min: 1, max: Infinity } },
+		{ regexp: /b+?/, expected: { min: 1, max: Infinity } },
+
+		{ regexp: /ab?c?/, expected: { min: 1, max: 3 } },
+		{ regexp: /a{2,4}b{5,8}/, expected: { min: 7, max: 12 } },
+		{ regexp: /(?:b{2,4}){5,8}/, expected: { min: 10, max: 32 } },
+		{ regexp: /(?:b{2,3}c?){5,8}/, expected: { min: 10, max: 32 } },
+		{ regexp: /(?:b+){5,8}/, expected: { min: 5, max: Infinity } },
+
+		// Limitations:
+		// "All characters classes/sets are assumed to consume at least one characters and all assertions are assumed
+		// to have some accepting path."
+		{ regexp: /a[]/, expected: { min: 2, max: 2 } },
+		{ regexp: /a\bb/, expected: { min: 2, max: 2 } },
+		{ regexp: /\b\B/, expected: { min: 0, max: 0 } },
+		{ regexp: /a(?!b)b/, expected: { min: 2, max: 2 } },
+
+		// Backreferences
+		{ regexp: /(a)\1/, expected: { min: 2, max: 2 } },
+		{ regexp: /(a{1,3})\1/, expected: { min: 2, max: 6 } },
+		{ regexp: /(a){2}\1/, expected: { min: 3, max: 3 } },
+		{ regexp: /(a{2})\1/, expected: { min: 4, max: 4 } },
+		{ regexp: /(a)\1{3}/, expected: { min: 4, max: 4 } },
+		{ regexp: /(a)?\1/, expected: { min: 0, max: 2 } },
+		{ regexp: /(\b)\1/, expected: { min: 0, max: 0 } },
+		{ regexp: /(a)|\1/, expected: { min: 0, max: 1 } },
+		{ regexp: /(?:(a)|)\1/, expected: { min: 0, max: 2 } },
+		{ regexp: /(?:(a)|)(?<backref>\1)/, expected: { min: 0, max: 1 }, selectNamed: true },
+		{ regexp: /(?:(a)|b)\1/, expected: { min: 1, max: 2 } },
+		{ regexp: /(a*)(?<backref>\1)/, expected: { min: 0, max: Infinity }, selectNamed: true },
+	]);
+
+	function test(cases: TestCase[]): void {
+		for (const { regexp, selectNamed, expected } of cases) {
+			const { pattern } = new RegExpParser().parseLiteral(regexp.toString());
+			let elements;
+			if (selectNamed) {
+				elements = selectNamedGroups(pattern, selectNamed === true ? undefined : selectNamed);
+			} else {
+				elements = [pattern.alternatives];
+			}
+
+			for (const e of elements) {
+				it(
+					e === pattern.alternatives
+						? `${regexp}`
+						: `${regexp}: \`${Array.isArray(e) ? e.join("|") : e.raw}\``,
+					function () {
+						assert.deepEqual(RAA.getLengthRange(e), expected);
+					}
+				);
+			}
+		}
 	}
-	return result;
-}
+});
