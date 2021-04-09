@@ -68,14 +68,13 @@
 						<section class="tsd-index-section ">
 							<h3>Interfaces</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-interface"><a href="interfaces/firstcharafter.html" class="tsd-kind-icon">First<wbr>Char<wbr>After</a></li>
-								<li class="tsd-kind-interface"><a href="interfaces/firstconsumedcharafter.html" class="tsd-kind-icon">First<wbr>Consumed<wbr>Char<wbr>After</a></li>
 								<li class="tsd-kind-interface"><a href="interfaces/firstfullyconsumedchar.html" class="tsd-kind-icon">First<wbr>Fully<wbr>Consumed<wbr>Char</a></li>
 								<li class="tsd-kind-interface"><a href="interfaces/firstlookchar.html" class="tsd-kind-icon">First<wbr>Look<wbr>Char</a></li>
 								<li class="tsd-kind-interface"><a href="interfaces/firstpartiallyconsumedchar.html" class="tsd-kind-icon">First<wbr>Partially<wbr>Consumed<wbr>Char</a></li>
 								<li class="tsd-kind-interface tsd-has-type-parameter"><a href="interfaces/followoperations.html" class="tsd-kind-icon">Follow<wbr>Operations</a></li>
 								<li class="tsd-kind-interface"><a href="interfaces/lengthrange.html" class="tsd-kind-icon">Length<wbr>Range</a></li>
 								<li class="tsd-kind-interface"><a href="interfaces/readonlyflags.html" class="tsd-kind-icon">Readonly<wbr>Flags</a></li>
+								<li class="tsd-kind-interface tsd-has-type-parameter"><a href="interfaces/withcontributors.html" class="tsd-kind-icon">With<wbr>Contributors</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
@@ -98,8 +97,10 @@
 								<li class="tsd-kind-function tsd-has-type-parameter"><a href="modules.html#getclosestancestor" class="tsd-kind-icon">get<wbr>Closest<wbr>Ancestor</a></li>
 								<li class="tsd-kind-function"><a href="modules.html#geteffectivemaximumrepetition" class="tsd-kind-icon">get<wbr>Effective<wbr>Maximum<wbr>Repetition</a></li>
 								<li class="tsd-kind-function"><a href="modules.html#getfirstcharafter" class="tsd-kind-icon">get<wbr>First<wbr>Char<wbr>After</a></li>
+								<li class="tsd-kind-function"><a href="modules.html#getfirstcharafterwithcontributors" class="tsd-kind-icon">get<wbr>First<wbr>Char<wbr>After<wbr>With<wbr>Contributors</a></li>
 								<li class="tsd-kind-function"><a href="modules.html#getfirstconsumedchar" class="tsd-kind-icon">get<wbr>First<wbr>Consumed<wbr>Char</a></li>
 								<li class="tsd-kind-function"><a href="modules.html#getfirstconsumedcharafter" class="tsd-kind-icon">get<wbr>First<wbr>Consumed<wbr>Char<wbr>After</a></li>
+								<li class="tsd-kind-function"><a href="modules.html#getfirstconsumedcharafterwithcontributors" class="tsd-kind-icon">get<wbr>First<wbr>Consumed<wbr>Char<wbr>After<wbr>With<wbr>Contributors</a></li>
 								<li class="tsd-kind-function"><a href="modules.html#getlengthrange" class="tsd-kind-icon">get<wbr>Length<wbr>Range</a></li>
 								<li class="tsd-kind-function"><a href="modules.html#getmatchingdirection" class="tsd-kind-icon">get<wbr>Matching<wbr>Direction</a></li>
 								<li class="tsd-kind-function"><a href="modules.html#getpattern" class="tsd-kind-icon">get<wbr>Pattern</a></li>
@@ -548,7 +549,7 @@ function Next(element, state):
 					<a name="getfirstcharafter" class="tsd-anchor"></a>
 					<h3>get<wbr>First<wbr>Char<wbr>After</h3>
 					<ul class="tsd-signatures tsd-kind-function">
-						<li class="tsd-signature tsd-kind-icon">get<wbr>First<wbr>Char<wbr>After<span class="tsd-signature-symbol">(</span>afterThis<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Element</span>, direction<span class="tsd-signature-symbol">: </span><a href="modules.html#matchingdirection" class="tsd-signature-type" data-tsd-kind="Type alias">MatchingDirection</a>, flags<span class="tsd-signature-symbol">: </span><a href="interfaces/readonlyflags.html" class="tsd-signature-type" data-tsd-kind="Interface">ReadonlyFlags</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="interfaces/firstcharafter.html" class="tsd-signature-type" data-tsd-kind="Interface">FirstCharAfter</a></li>
+						<li class="tsd-signature tsd-kind-icon">get<wbr>First<wbr>Char<wbr>After<span class="tsd-signature-symbol">(</span>afterThis<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Element</span>, direction<span class="tsd-signature-symbol">: </span><a href="modules.html#matchingdirection" class="tsd-signature-type" data-tsd-kind="Type alias">MatchingDirection</a>, flags<span class="tsd-signature-symbol">: </span><a href="interfaces/readonlyflags.html" class="tsd-signature-type" data-tsd-kind="Interface">ReadonlyFlags</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="interfaces/firstlookchar.html" class="tsd-signature-type" data-tsd-kind="Interface">FirstLookChar</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
@@ -573,7 +574,39 @@ function Next(element, state):
 									<h5>flags: <a href="interfaces/readonlyflags.html" class="tsd-signature-type" data-tsd-kind="Interface">ReadonlyFlags</a></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="interfaces/firstcharafter.html" class="tsd-signature-type" data-tsd-kind="Interface">FirstCharAfter</a></h4>
+							<h4 class="tsd-returns-title">Returns <a href="interfaces/firstlookchar.html" class="tsd-signature-type" data-tsd-kind="Interface">FirstLookChar</a></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function">
+					<a name="getfirstcharafterwithcontributors" class="tsd-anchor"></a>
+					<h3>get<wbr>First<wbr>Char<wbr>After<wbr>With<wbr>Contributors</h3>
+					<ul class="tsd-signatures tsd-kind-function">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>First<wbr>Char<wbr>After<wbr>With<wbr>Contributors<span class="tsd-signature-symbol">(</span>afterThis<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Element</span>, direction<span class="tsd-signature-symbol">: </span><a href="modules.html#matchingdirection" class="tsd-signature-type" data-tsd-kind="Type alias">MatchingDirection</a>, flags<span class="tsd-signature-symbol">: </span><a href="interfaces/readonlyflags.html" class="tsd-signature-type" data-tsd-kind="Interface">ReadonlyFlags</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="interfaces/withcontributors.html" class="tsd-signature-type" data-tsd-kind="Interface">WithContributors</a><span class="tsd-signature-symbol">&lt;</span><a href="interfaces/firstlookchar.html" class="tsd-signature-type" data-tsd-kind="Interface">FirstLookChar</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>This function behaves exactly like <a href="modules.html#getfirstcharafter">getFirstCharAfter</a> but it also tracks what elements contribute to the
+									result.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>afterThis: <span class="tsd-signature-type">Element</span></h5>
+								</li>
+								<li>
+									<h5>direction: <a href="modules.html#matchingdirection" class="tsd-signature-type" data-tsd-kind="Type alias">MatchingDirection</a></h5>
+								</li>
+								<li>
+									<h5>flags: <a href="interfaces/readonlyflags.html" class="tsd-signature-type" data-tsd-kind="Interface">ReadonlyFlags</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="interfaces/withcontributors.html" class="tsd-signature-type" data-tsd-kind="Interface">WithContributors</a><span class="tsd-signature-symbol">&lt;</span><a href="interfaces/firstlookchar.html" class="tsd-signature-type" data-tsd-kind="Interface">FirstLookChar</a><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -622,7 +655,7 @@ function Next(element, state):
 					<a name="getfirstconsumedcharafter" class="tsd-anchor"></a>
 					<h3>get<wbr>First<wbr>Consumed<wbr>Char<wbr>After</h3>
 					<ul class="tsd-signatures tsd-kind-function">
-						<li class="tsd-signature tsd-kind-icon">get<wbr>First<wbr>Consumed<wbr>Char<wbr>After<span class="tsd-signature-symbol">(</span>afterThis<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Element</span>, direction<span class="tsd-signature-symbol">: </span><a href="modules.html#matchingdirection" class="tsd-signature-type" data-tsd-kind="Type alias">MatchingDirection</a>, flags<span class="tsd-signature-symbol">: </span><a href="interfaces/readonlyflags.html" class="tsd-signature-type" data-tsd-kind="Interface">ReadonlyFlags</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="interfaces/firstconsumedcharafter.html" class="tsd-signature-type" data-tsd-kind="Interface">FirstConsumedCharAfter</a></li>
+						<li class="tsd-signature tsd-kind-icon">get<wbr>First<wbr>Consumed<wbr>Char<wbr>After<span class="tsd-signature-symbol">(</span>afterThis<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Element</span>, direction<span class="tsd-signature-symbol">: </span><a href="modules.html#matchingdirection" class="tsd-signature-type" data-tsd-kind="Type alias">MatchingDirection</a>, flags<span class="tsd-signature-symbol">: </span><a href="interfaces/readonlyflags.html" class="tsd-signature-type" data-tsd-kind="Interface">ReadonlyFlags</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="modules.html#firstconsumedchar" class="tsd-signature-type" data-tsd-kind="Type alias">FirstConsumedChar</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
@@ -640,7 +673,39 @@ function Next(element, state):
 									<h5>flags: <a href="interfaces/readonlyflags.html" class="tsd-signature-type" data-tsd-kind="Interface">ReadonlyFlags</a></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="interfaces/firstconsumedcharafter.html" class="tsd-signature-type" data-tsd-kind="Interface">FirstConsumedCharAfter</a></h4>
+							<h4 class="tsd-returns-title">Returns <a href="modules.html#firstconsumedchar" class="tsd-signature-type" data-tsd-kind="Type alias">FirstConsumedChar</a></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function">
+					<a name="getfirstconsumedcharafterwithcontributors" class="tsd-anchor"></a>
+					<h3>get<wbr>First<wbr>Consumed<wbr>Char<wbr>After<wbr>With<wbr>Contributors</h3>
+					<ul class="tsd-signatures tsd-kind-function">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>First<wbr>Consumed<wbr>Char<wbr>After<wbr>With<wbr>Contributors<span class="tsd-signature-symbol">(</span>afterThis<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Element</span>, direction<span class="tsd-signature-symbol">: </span><a href="modules.html#matchingdirection" class="tsd-signature-type" data-tsd-kind="Type alias">MatchingDirection</a>, flags<span class="tsd-signature-symbol">: </span><a href="interfaces/readonlyflags.html" class="tsd-signature-type" data-tsd-kind="Interface">ReadonlyFlags</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="interfaces/withcontributors.html" class="tsd-signature-type" data-tsd-kind="Interface">WithContributors</a><span class="tsd-signature-symbol">&lt;</span><a href="modules.html#firstconsumedchar" class="tsd-signature-type" data-tsd-kind="Type alias">FirstConsumedChar</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>This function behaves exactly like <a href="modules.html#getfirstconsumedcharafter">getFirstConsumedCharAfter</a> but it also tracks what elements contribute to
+									the result.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>afterThis: <span class="tsd-signature-type">Element</span></h5>
+								</li>
+								<li>
+									<h5>direction: <a href="modules.html#matchingdirection" class="tsd-signature-type" data-tsd-kind="Type alias">MatchingDirection</a></h5>
+								</li>
+								<li>
+									<h5>flags: <a href="interfaces/readonlyflags.html" class="tsd-signature-type" data-tsd-kind="Interface">ReadonlyFlags</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="interfaces/withcontributors.html" class="tsd-signature-type" data-tsd-kind="Interface">WithContributors</a><span class="tsd-signature-symbol">&lt;</span><a href="modules.html#firstconsumedchar" class="tsd-signature-type" data-tsd-kind="Type alias">FirstConsumedChar</a><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -1302,12 +1367,6 @@ function Next(element, state):
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
 					<li class=" tsd-kind-interface">
-						<a href="interfaces/firstcharafter.html" class="tsd-kind-icon">First<wbr>Char<wbr>After</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="interfaces/firstconsumedcharafter.html" class="tsd-kind-icon">First<wbr>Consumed<wbr>Char<wbr>After</a>
-					</li>
-					<li class=" tsd-kind-interface">
 						<a href="interfaces/firstfullyconsumedchar.html" class="tsd-kind-icon">First<wbr>Fully<wbr>Consumed<wbr>Char</a>
 					</li>
 					<li class=" tsd-kind-interface">
@@ -1324,6 +1383,9 @@ function Next(element, state):
 					</li>
 					<li class=" tsd-kind-interface">
 						<a href="interfaces/readonlyflags.html" class="tsd-kind-icon">Readonly<wbr>Flags</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-has-type-parameter">
+						<a href="interfaces/withcontributors.html" class="tsd-kind-icon">With<wbr>Contributors</a>
 					</li>
 					<li class=" tsd-kind-type-alias tsd-has-type-parameter">
 						<a href="modules.html#ancestor" class="tsd-kind-icon">Ancestor</a>
@@ -1362,10 +1424,16 @@ function Next(element, state):
 						<a href="modules.html#getfirstcharafter" class="tsd-kind-icon">get<wbr>First<wbr>Char<wbr>After</a>
 					</li>
 					<li class=" tsd-kind-function">
+						<a href="modules.html#getfirstcharafterwithcontributors" class="tsd-kind-icon">get<wbr>First<wbr>Char<wbr>After<wbr>With<wbr>Contributors</a>
+					</li>
+					<li class=" tsd-kind-function">
 						<a href="modules.html#getfirstconsumedchar" class="tsd-kind-icon">get<wbr>First<wbr>Consumed<wbr>Char</a>
 					</li>
 					<li class=" tsd-kind-function">
 						<a href="modules.html#getfirstconsumedcharafter" class="tsd-kind-icon">get<wbr>First<wbr>Consumed<wbr>Char<wbr>After</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="modules.html#getfirstconsumedcharafterwithcontributors" class="tsd-kind-icon">get<wbr>First<wbr>Consumed<wbr>Char<wbr>After<wbr>With<wbr>Contributors</a>
 					</li>
 					<li class=" tsd-kind-function">
 						<a href="modules.html#getlengthrange" class="tsd-kind-icon">get<wbr>Length<wbr>Range</a>
