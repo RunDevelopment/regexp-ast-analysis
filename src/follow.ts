@@ -143,7 +143,10 @@ export interface FollowOperations<S> {
  * first element to continue after will be the starting element.
  * @param initialState
  * @param operations
- * @param direction
+ * @param direction The direction in which paths will be followed. If undefined, then the natural matching direction
+ * ({@link getMatchingDirection}) of the start element will be used.
+ *
+ * @typeParam S The type of the state.
  */
 export function followPaths<S>(
 	start: Element,
