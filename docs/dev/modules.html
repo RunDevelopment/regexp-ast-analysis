@@ -530,7 +530,7 @@ function Next(element, state):
 									<li><code>/a+/</code>: This will return infinity for <code>a</code> and 1 for the quantifier <code>a+</code>.</li>
 									<li><code>/((a{0,8}){0,8}){0,8}/</code>: This will return 512 for <code>a</code>.</li>
 									<li><code>/(ba{0})+/</code>: This will return 0 for <code>a</code> and infinity for the quantifier <code>a{0}</code>.</li>
-									<li><code>/(\w(?!a{3}b)))+/</code>: This will return 3 for <code>a</code> because <code>a</code> is inside a lookaround and therefore unaffected by the
+									<li><code>/(\w(?!a{3}b))+/</code>: This will return 3 for <code>a</code> because <code>a</code> is inside a lookaround and therefore unaffected by the
 									<code>(\w(?!a{3}b)))+</code> quantifier.</li>
 								</ul>
 							</div>
