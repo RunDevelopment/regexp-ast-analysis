@@ -1,5 +1,5 @@
 import { Alternative, Element, Quantifier } from "regexpp/ast";
-import { assertionKindToMatchingDirection, getMatchingDirection, MatchingDirection } from "./basic";
+import { getMatchingDirectionFromAssertionKind, getMatchingDirection, MatchingDirection } from "./basic";
 import { assertNever } from "./util";
 
 /**
@@ -171,7 +171,7 @@ export function followPaths<S>(
 			switch (element.type) {
 				case "Assertion": {
 					if (element.kind === "lookahead" || element.kind === "lookbehind") {
-						const assertionDirection = assertionKindToMatchingDirection(element.kind);
+						const assertionDirection = getMatchingDirectionFromAssertionKind(element.kind);
 						const assertion = operations.join(
 							element.alternatives.map(a =>
 								enterAlternative(a, doFork(operations, state, direction), assertionDirection)

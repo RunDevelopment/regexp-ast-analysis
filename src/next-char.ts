@@ -1,7 +1,7 @@
 import { CharSet } from "refa";
 import { Alternative, Element } from "regexpp/ast";
 import {
-	assertionKindToMatchingDirection,
+	getMatchingDirectionFromAssertionKind,
 	isStrictBackreference,
 	getLengthRange,
 	hasSomeDescendant,
@@ -170,7 +170,7 @@ function getFirstConsumedCharImpl(
 					return misdirectedAssertion();
 				case "end":
 				case "start":
-					if (assertionKindToMatchingDirection(element.kind) === direction) {
+					if (getMatchingDirectionFromAssertionKind(element.kind) === direction) {
 						if (flags.multiline) {
 							return lineAssertion();
 						} else {
@@ -181,7 +181,7 @@ function getFirstConsumedCharImpl(
 					}
 				case "lookahead":
 				case "lookbehind":
-					if (assertionKindToMatchingDirection(element.kind) === direction) {
+					if (getMatchingDirectionFromAssertionKind(element.kind) === direction) {
 						if (element.negate) {
 							// we can only meaningfully analyse negative lookarounds of the form `(?![a])`
 							if (hasSomeDescendant(element, d => d !== element && d.type === "Assertion")) {

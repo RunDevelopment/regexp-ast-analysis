@@ -485,7 +485,7 @@ export function invertMatchingDirection(direction: MatchingDirection): MatchingD
  * I.e. the result of `^` is `rtl` (because it asserts the previous character) and the result of `$` is `ltr` (because
  * it asserts the next character).
  */
-export function assertionKindToMatchingDirection(
+export function getMatchingDirectionFromAssertionKind(
 	kind: LookaroundAssertion["kind"] | EdgeAssertion["kind"]
 ): MatchingDirection {
 	return kind === "end" || kind === "lookahead" ? "ltr" : "rtl";
