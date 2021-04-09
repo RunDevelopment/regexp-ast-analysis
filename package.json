@@ -10,7 +10,7 @@
     "test:coverage": "cd tests && nyc --reporter=html mocha -r ts-node/register '**/*.ts'",
     "build": "npx rimraf ./index.* .out/** && npx tsc && rollup -c && npm run build:dts",
     "build:dts": "dts-bundle-generator -o index.d.ts src/index.ts && prettier --write index.d.ts",
-    "build:docs": "typedoc",
+    "build:docs": "typedoc --listInvalidSymbolLinks",
     "prepublishOnly": "npm run build"
   },
   "keywords": [

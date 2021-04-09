@@ -13,7 +13,7 @@ import { assertNever } from "./util";
 export type ToCharSetElement = Character | CharacterClassRange | CharacterSet | CharacterClass;
 
 /**
- * Converts the given element or array of elements into a refa {@link CharSet}.
+ * Converts the given element or array of elements into a refa CharSet.
  *
  * If an array is given, all the character sets of all elements will be unioned. This means that for any two element `a`
  * and `b`, the results of `toCharSet([a, b])` and `toCharSet(a).union(toCharSet(b))` will be the same.

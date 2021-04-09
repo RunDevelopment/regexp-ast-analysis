@@ -207,7 +207,7 @@ function isEmptyImpl(element: Element | Alternative): boolean {
  *   true:
  *   * The referenced capturing group is potentially zero-length.
  *   * The backreferences is not always after its referenced capturing group.
- *     (see {@link backreferenceAlwaysAfterGroup})
+ *     (see {@link isStrictBackreference})
  *
  * ## Relations
  *
@@ -438,7 +438,7 @@ export function getPattern(node: Node): Pattern {
  *
  * @see {@link getMatchingDirection}
  * @see {@link invertMatchingDirection}
- * @see {@link assertionKindToMatchingDirection}
+ * @see {@link getMatchingDirectionFromAssertionKind}
  */
 export type MatchingDirection = "ltr" | "rtl";
 
