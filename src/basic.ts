@@ -173,13 +173,6 @@ function isEmptyImpl(element: Element | Alternative): boolean {
 			return element.elements.every(isEmptyImpl);
 
 		case "Assertion":
-			// assertion do not consume characters but they do usually reject some pre- or suffixes
-			if (element.kind === "lookahead" || element.kind === "lookbehind") {
-				if (!element.negate && isPotentiallyEmpty(element.alternatives)) {
-					// if a positive lookaround is potentially empty, it will trivially accept all pre- or suffixes
-					return true;
-				}
-			}
 			return false;
 
 		case "Backreference":
@@ -237,13 +230,6 @@ function isPotentiallyEmptyImpl(root: Element | Alternative): boolean {
 				return element.elements.every(impl);
 
 			case "Assertion":
-				// assertion do not consume characters but they do usually reject some pre- or suffixes
-				if (element.kind === "lookahead" || element.kind === "lookbehind") {
-					if (!element.negate && element.alternatives.some(impl)) {
-						// if a positive lookaround is potentially empty, it will trivially accept all pre- or suffixes
-						return true;
-					}
-				}
 				return false;
 
 			case "Backreference":
