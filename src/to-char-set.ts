@@ -1,5 +1,6 @@
 import { CharSet, JS } from "refa";
 import { Character, CharacterClass, CharacterClassRange, CharacterSet } from "regexpp/ast";
+import { Chars } from "./chars";
 import { ReadonlyFlags } from "./flags";
 import { MaxChar } from "./max-char";
 import { assertNever } from "./util";
@@ -14,47 +15,99 @@ export type ToCharSetElement = Character | CharacterClassRange | CharacterSet | 
 /**
  * Converts the given element or array of elements into a refa {@link CharSet}.
  *
- * If an array is given, all the character sets of all elements will be unioned.
+ * If an array is given, all the character sets of all elements will be unioned. This means that for any two element `a`
+ * and `b`, the results of `toCharSet([a, b])` and `toCharSet(a).union(toCharSet(b))` will be the same.
  */
 export function toCharSet(elements: ToCharSetElement | readonly ToCharSetElement[], flags: ReadonlyFlags): CharSet {
-	const positiveElements: (Character | CharacterClassRange | CharacterSet)[] = [];
-	let negatedElements: (Character | CharacterClassRange | CharacterSet)[] | undefined = undefined;
-	const addElement = (e: Character | CharacterClassRange | CharacterSet | CharacterClass): void => {
-		if (e.type === "CharacterClass") {
-			if (e.negate) {
-				if (!negatedElements) {
-					negatedElements = [];
-				}
-				negatedElements.push(...e.elements);
-			} else {
-				positiveElements.push(...e.elements);
-			}
-		} else {
-			positiveElements.push(e);
-		}
-	};
+	const { positive, negated } = categorizeElements(elements);
 
-	if (Array.isArray(elements)) {
-		(elements as readonly ToCharSetElement[]).forEach(addElement);
-	} else {
-		addElement(elements as ToCharSetElement);
-	}
-
-	if (negatedElements) {
-		if (positiveElements.length === 0) {
-			return JS.createCharSet(makeRefaCompatible(negatedElements), flags).negate();
-		} else {
-			return JS.createCharSet(makeRefaCompatible(positiveElements), flags).union(
-				JS.createCharSet(makeRefaCompatible(negatedElements), flags).negate()
+	if (negated) {
+		if (positive) {
+			return JS.createCharSet(makeRefaCompatible(positive), flags).union(
+				...negated.map(c => JS.createCharSet(makeRefaCompatible(c.elements), flags).negate())
 			);
+		} else {
+			if (negated.length === 1) {
+				return JS.createCharSet(makeRefaCompatible(negated[0].elements), flags).negate();
+			} else {
+				return Chars.empty(flags).union(
+					...negated.map(c => JS.createCharSet(makeRefaCompatible(c.elements), flags).negate())
+				);
+			}
 		}
+	} else if (positive) {
+		return JS.createCharSet(makeRefaCompatible(positive), flags);
 	} else {
-		return JS.createCharSet(makeRefaCompatible(positiveElements), flags);
+		return Chars.empty(flags);
 	}
 }
+
+interface CategorizedElements {
+	positive: readonly (Character | CharacterClassRange | CharacterSet)[] | undefined;
+	negated: readonly CharacterClass[] | undefined;
+}
+function categorizeElements(elements: ToCharSetElement | readonly ToCharSetElement[]): CategorizedElements {
+	if (Array.isArray(elements)) {
+		const all = elements as readonly ToCharSetElement[];
+		if (areAllPositive(all)) {
+			return { positive: all, negated: undefined };
+		} else if (areAllNegated(all)) {
+			return { positive: undefined, negated: all };
+		} else {
+			const positive: (Character | CharacterClassRange | CharacterSet)[] = [];
+			const negated: CharacterClass[] = [];
+
+			for (let i = 0, l = all.length; i < l; i++) {
+				const e = all[i];
+				if (e.type === "CharacterClass") {
+					if (e.negate) {
+						negated.push(e);
+					} else {
+						positive.push(...e.elements);
+					}
+				} else {
+					positive.push(e);
+				}
+			}
+
+			return { positive, negated };
+		}
+	} else {
+		const e = elements as ToCharSetElement;
+		if (e.type === "CharacterClass") {
+			if (e.negate) {
+				return { positive: undefined, negated: [e] };
+			} else {
+				return { positive: e.elements, negated: undefined };
+			}
+		} else {
+			return { positive: [e], negated: undefined };
+		}
+	}
+}
+function areAllPositive(
+	elements: readonly ToCharSetElement[]
+): elements is readonly (Character | CharacterClassRange | CharacterSet)[] {
+	for (let i = 0, l = elements.length; i < l; i++) {
+		if (elements[i].type === "CharacterClass") {
+			return false;
+		}
+	}
+	return true;
+}
+function areAllNegated(elements: readonly ToCharSetElement[]): elements is readonly CharacterClass[] {
+	for (let i = 0, l = elements.length; i < l; i++) {
+		const e = elements[i];
+		if (e.type !== "CharacterClass" || !e.negate) {
+			return false;
+		}
+	}
+	return true;
+}
+
 type IterableItem<T extends Iterable<unknown>> = T extends Iterable<infer I> ? I : never;
 function makeRefaCompatible(
-	elements: (Character | CharacterClassRange | CharacterSet)[]
+	elements: readonly (Character | CharacterClassRange | CharacterSet)[]
 ): IterableItem<Parameters<typeof JS.createCharSet>[0]>[] {
 	return elements.map(e => {
 		switch (e.type) {
