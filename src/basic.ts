@@ -847,7 +847,7 @@ export function getClosestAncestor(a: Node, b: Node): Node {
  * - `/a+/`: This will return infinity for `a` and 1 for the quantifier `a+`.
  * - `/((a{0,8}){0,8}){0,8}/`: This will return 512 for `a`.
  * - `/(ba{0})+/`: This will return 0 for `a` and infinity for the quantifier `a{0}`.
- * - `/(\w(?!a{3}b)))+/`: This will return 3 for `a` because `a` is inside a lookaround and therefore unaffected by the
+ * - `/(\w(?!a{3}b))+/`: This will return 3 for `a` because `a` is inside a lookaround and therefore unaffected by the
  *   `(\w(?!a{3}b)))+` quantifier.
  */
 export function getEffectiveMaximumRepetition(element: Node): number {
