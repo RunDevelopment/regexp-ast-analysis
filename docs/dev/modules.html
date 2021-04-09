@@ -91,7 +91,6 @@
 							<h3>Functions</h3>
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-function"><a href="modules.html#assertionkindtomatchingdirection" class="tsd-kind-icon">assertion<wbr>Kind<wbr>ToMatching<wbr>Direction</a></li>
-								<li class="tsd-kind-function"><a href="modules.html#backreferencealwaysaftergroup" class="tsd-kind-icon">backreference<wbr>Always<wbr>After<wbr>Group</a></li>
 								<li class="tsd-kind-function tsd-has-type-parameter"><a href="modules.html#followpaths" class="tsd-kind-icon">follow<wbr>Paths</a></li>
 								<li class="tsd-kind-function"><a href="modules.html#getcapturinggroupnumber" class="tsd-kind-icon">get<wbr>Capturing<wbr>Group<wbr>Number</a></li>
 								<li class="tsd-kind-function tsd-has-type-parameter"><a href="modules.html#getclosestancestor" class="tsd-kind-icon">get<wbr>Closest<wbr>Ancestor</a></li>
@@ -111,6 +110,7 @@
 								<li class="tsd-kind-function"><a href="modules.html#isemptybackreference" class="tsd-kind-icon">is<wbr>Empty<wbr>Backreference</a></li>
 								<li class="tsd-kind-function"><a href="modules.html#ispotentiallyempty" class="tsd-kind-icon">is<wbr>Potentially<wbr>Empty</a></li>
 								<li class="tsd-kind-function"><a href="modules.html#ispotentiallyzerolength" class="tsd-kind-icon">is<wbr>Potentially<wbr>Zero<wbr>Length</a></li>
+								<li class="tsd-kind-function"><a href="modules.html#isstrictbackreference" class="tsd-kind-icon">is<wbr>Strict<wbr>Backreference</a></li>
 								<li class="tsd-kind-function"><a href="modules.html#iszerolength" class="tsd-kind-icon">is<wbr>Zero<wbr>Length</a></li>
 								<li class="tsd-kind-function"><a href="modules.html#matchesallcharacters" class="tsd-kind-icon">matches<wbr>All<wbr>Characters</a></li>
 								<li class="tsd-kind-function"><a href="modules.html#matchesnocharacters" class="tsd-kind-icon">matches<wbr>NoCharacters</a></li>
@@ -265,50 +265,6 @@
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="modules.html#matchingdirection" class="tsd-signature-type" data-tsd-kind="Type alias">MatchingDirection</a></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-function">
-					<a name="backreferencealwaysaftergroup" class="tsd-anchor"></a>
-					<h3>backreference<wbr>Always<wbr>After<wbr>Group</h3>
-					<ul class="tsd-signatures tsd-kind-function">
-						<li class="tsd-signature tsd-kind-icon">backreference<wbr>Always<wbr>After<wbr>Group<span class="tsd-signature-symbol">(</span>backreference<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Backreference</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Returns whether the given backreference is always matched <strong>after</strong> the referenced group was matched.</p>
-								</div>
-								<p>If there exists any accepting path which goes through the backreference but not through the referenced capturing
-								group, this will return <code>false</code>.</p>
-								<a href="#examples" id="examples" style="color: inherit; text-decoration: none;">
-									<h2>Examples</h2>
-								</a>
-								<p>The follow examples will all return <code>true</code> for <code>\1</code>:</p>
-								<ul>
-									<li><code>/(a)\1/</code></li>
-									<li><code>/(a)(?:b|\1)/</code></li>
-									<li><code>/(a)\1?/</code></li>
-									<li><code>/(?&lt;=\1(a))b/</code></li>
-								</ul>
-								<p>The follow examples will all return <code>false</code> for <code>\1</code>:</p>
-								<ul>
-									<li><code>/(a)|\1/</code></li>
-									<li><code>/(?:(a)|b)\1/</code></li>
-									<li><code>/(a)?\1/</code></li>
-									<li><code>/(?&lt;=(a)\1)b/</code></li>
-								</ul>
-							</div>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>backreference: <span class="tsd-signature-type">Backreference</span></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -1098,7 +1054,7 @@ function Next(element, state):
 										true:<ul>
 											<li>The referenced capturing group is potentially zero-length.</li>
 											<li>The backreferences is not always after its referenced capturing group.
-											(see <a href="modules.html#backreferencealwaysaftergroup">backreferenceAlwaysAfterGroup</a>)</li>
+											(see {@link backreferenceAlwaysAfterGroup})</li>
 										</ul>
 									</li>
 								</ul>
@@ -1176,6 +1132,51 @@ function Next(element, state):
 							<ul class="tsd-parameters">
 								<li>
 									<h5>element: <span class="tsd-signature-type">Element</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Alternative</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">readonly </span><span class="tsd-signature-type">Alternative</span><span class="tsd-signature-symbol">[]</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function">
+					<a name="isstrictbackreference" class="tsd-anchor"></a>
+					<h3>is<wbr>Strict<wbr>Backreference</h3>
+					<ul class="tsd-signatures tsd-kind-function">
+						<li class="tsd-signature tsd-kind-icon">is<wbr>Strict<wbr>Backreference<span class="tsd-signature-symbol">(</span>backreference<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Backreference</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Returns whether the given backreference is a strict backreference.</p>
+								</div>
+								<p>Strict backreferences are backreferences that are always matched <strong>after</strong> the referenced group was matched. If there
+									exists any path that goes through a backreference but not through the referenced capturing group, that backreference
+								is not strict.</p>
+								<a href="#examples" id="examples" style="color: inherit; text-decoration: none;">
+									<h2>Examples</h2>
+								</a>
+								<p>In the follow examples, <code>\1</code> is a strict backreference:</p>
+								<ul>
+									<li><code>/(a)\1/</code></li>
+									<li><code>/(a)(?:b|\1)/</code></li>
+									<li><code>/(a)\1?/</code></li>
+									<li><code>/(?&lt;=\1(a))b/</code></li>
+								</ul>
+								<p>In the follow examples, <code>\1</code> is not a strict backreference:</p>
+								<ul>
+									<li><code>/(a)|\1/</code></li>
+									<li><code>/(?:(a)|b)\1/</code></li>
+									<li><code>/(a)?\1/</code></li>
+									<li><code>/(?&lt;=(a)\1)b/</code></li>
+								</ul>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>backreference: <span class="tsd-signature-type">Backreference</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
@@ -1405,9 +1406,6 @@ function Next(element, state):
 					<li class=" tsd-kind-function">
 						<a href="modules.html#assertionkindtomatchingdirection" class="tsd-kind-icon">assertion<wbr>Kind<wbr>ToMatching<wbr>Direction</a>
 					</li>
-					<li class=" tsd-kind-function">
-						<a href="modules.html#backreferencealwaysaftergroup" class="tsd-kind-icon">backreference<wbr>Always<wbr>After<wbr>Group</a>
-					</li>
 					<li class=" tsd-kind-function tsd-has-type-parameter">
 						<a href="modules.html#followpaths" class="tsd-kind-icon">follow<wbr>Paths</a>
 					</li>
@@ -1464,6 +1462,9 @@ function Next(element, state):
 					</li>
 					<li class=" tsd-kind-function">
 						<a href="modules.html#ispotentiallyzerolength" class="tsd-kind-icon">is<wbr>Potentially<wbr>Zero<wbr>Length</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="modules.html#isstrictbackreference" class="tsd-kind-icon">is<wbr>Strict<wbr>Backreference</a>
 					</li>
 					<li class=" tsd-kind-function">
 						<a href="modules.html#iszerolength" class="tsd-kind-icon">is<wbr>Zero<wbr>Length</a>
