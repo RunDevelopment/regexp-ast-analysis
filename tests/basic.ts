@@ -2,8 +2,7 @@ import { RegExpParser } from "regexpp";
 import { Backreference, CapturingGroup, Node } from "regexpp/ast";
 import { select, selectFirstWithRaw, selectNamedGroups } from "./helper/select";
 import * as RAA from "../src";
-import { assert, expect } from "chai";
-import { hasSomeDescendant } from "../src";
+import { assert } from "chai";
 
 describe(RAA.backreferenceAlwaysAfterGroup.name, function () {
 	function test(expected: boolean, regexps: RegExp[]): void {
@@ -67,7 +66,7 @@ describe(RAA.getPattern.name, function () {
 		const literal = new RegExpParser().parseLiteral(/a+(?=f(?<name>o)o\b)|[\sa-f]/gi.toString());
 
 		const nodes: Node[] = [];
-		hasSomeDescendant(literal, e => {
+		RAA.hasSomeDescendant(literal, e => {
 			nodes.push(e);
 			return false;
 		});
