@@ -407,6 +407,9 @@ function Next(element, state):
 							<ul class="tsd-type-parameters">
 								<li>
 									<h4>S</h4>
+									<div class="tsd-comment tsd-typography">
+										<p>The type of the state.</p>
+									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -430,6 +433,8 @@ function Next(element, state):
 								<li>
 									<h5><span class="tsd-flag ts-flagOptional">Optional</span> direction: <a href="modules.html#matchingdirection" class="tsd-signature-type" data-tsd-kind="Type alias">MatchingDirection</a></h5>
 									<div class="tsd-comment tsd-typography">
+										<p>The direction in which paths will be followed. If undefined, then the natural matching direction
+										(<a href="modules.html#getmatchingdirection">getMatchingDirection</a>) of the start element will be used.</p>
 									</div>
 								</li>
 							</ul>
@@ -1265,7 +1270,8 @@ function Next(element, state):
 								<div class="lead">
 									<p>Converts the given element or array of elements into a refa {@link CharSet}.</p>
 								</div>
-								<p>If an array is given, all the character sets of all elements will be unioned.</p>
+								<p>If an array is given, all the character sets of all elements will be unioned. This means that for any two element <code>a</code>
+								and <code>b</code>, the results of <code>toCharSet([a, b])</code> and <code>toCharSet(a).union(toCharSet(b))</code> will be the same.</p>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
