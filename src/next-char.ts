@@ -501,36 +501,87 @@ function firstConsumedToLook(first: Readonly<FirstConsumedChar>): FirstLookChar 
 	}
 }
 
-/**
- * The first character consumed after some element.
- *
- * @see {@link getFirstConsumedCharAfter}
- */
-export interface FirstConsumedCharAfter {
-	char: FirstConsumedChar;
-	elements: Element[];
-}
 export function getFirstConsumedCharAfter(
 	afterThis: Element,
 	direction: MatchingDirection,
 	flags: ReadonlyFlags
-): FirstConsumedCharAfter {
-	type State = Readonly<FirstConsumedCharAfter>;
+): FirstConsumedChar {
+	type State = Readonly<FirstConsumedChar>;
 	const result = followPaths<State>(
 		afterThis,
 		"next",
-		{ char: firstConsumedCharEmptyWord(flags), elements: [] },
+		firstConsumedCharEmptyWord(flags),
 		{
 			join(states): State {
-				const elements = new Set<Element>();
-				states.forEach(s => s.elements.forEach(e => elements.add(e)));
+				return firstConsumedCharUnion(states, flags);
+			},
+			enter(element, state, direction): State {
+				const first = getFirstConsumedChar(element, direction, flags);
+				return firstConsumedCharConcat([state, first], flags);
+			},
+			continueInto(): boolean {
+				return false;
+			},
+			continueAfter(_, state): boolean {
+				return state.empty;
+			},
+		},
+		direction
+	);
+
+	return result;
+}
+
+/**
+ * Returns the first character after the given element.
+ *
+ * What "after" means depends the on the given direction which will be interpreted as the current matching
+ * direction. You can use this to get the previous character of an element as well.
+ */
+export function getFirstCharAfter(
+	afterThis: Element,
+	direction: MatchingDirection,
+	flags: ReadonlyFlags
+): FirstLookChar {
+	return firstConsumedToLook(getFirstConsumedCharAfter(afterThis, direction, flags));
+}
+
+/**
+ * A wrapper around a character value that adds which elements contributed to the character value.
+ */
+export interface WithContributors<Char> {
+	char: Char;
+	/**
+	 * A list of elements that all contributed to the result. All sub-elements of the listed elements also contribute.
+	 */
+	contributors: Element[];
+}
+
+/**
+ * This function behaves exactly like {@link getFirstConsumedCharAfter} but it also tracks what elements contribute to
+ * the result.
+ */
+export function getFirstConsumedCharAfterWithContributors(
+	afterThis: Element,
+	direction: MatchingDirection,
+	flags: ReadonlyFlags
+): WithContributors<FirstConsumedChar> {
+	type State = Readonly<WithContributors<FirstConsumedChar>>;
+	const result = followPaths<State>(
+		afterThis,
+		"next",
+		{ char: firstConsumedCharEmptyWord(flags), contributors: [] },
+		{
+			join(states): State {
+				const contributors = new Set<Element>();
+				states.forEach(s => s.contributors.forEach(e => contributors.add(e)));
 
 				return {
 					char: firstConsumedCharUnion(
 						states.map(s => s.char),
 						flags
 					),
-					elements: [...elements],
+					contributors: [...contributors],
 				};
 			},
 
@@ -538,7 +589,7 @@ export function getFirstConsumedCharAfter(
 				const first = getFirstConsumedChar(element, direction, flags);
 				return {
 					char: firstConsumedCharConcat([state.char, first], flags),
-					elements: [...state.elements, element],
+					contributors: [...state.contributors, element],
 				};
 			},
 
@@ -552,33 +603,17 @@ export function getFirstConsumedCharAfter(
 		direction
 	);
 
-	return { char: result.char, elements: result.elements };
-}
-
-/**
- * @see {@link getFirstCharAfter}
- */
-export interface FirstCharAfter {
-	/**
-	 * The first character after the given element.
-	 */
-	char: FirstLookChar;
-	/**
-	 * A list of elements that all contributed to the result. All sub-elements of the listed elements also contribute.
-	 */
-	elements: Element[];
+	return result;
 }
 /**
- * Returns the first character after the given element.
- *
- * What "after" means depends the on the given direction which will be interpreted as the current matching
- * direction. You can use this to get the previous character of an element as well.
+ * This function behaves exactly like {@link getFirstCharAfter} but it also tracks what elements contribute to the
+ * result.
  */
-export function getFirstCharAfter(
+export function getFirstCharAfterWithContributors(
 	afterThis: Element,
 	direction: MatchingDirection,
 	flags: ReadonlyFlags
-): FirstCharAfter {
-	const result = getFirstConsumedCharAfter(afterThis, direction, flags);
-	return { char: firstConsumedToLook(result.char), elements: [...result.elements] };
+): WithContributors<FirstLookChar> {
+	const { char, contributors } = getFirstConsumedCharAfterWithContributors(afterThis, direction, flags);
+	return { char: firstConsumedToLook(char), contributors };
 }

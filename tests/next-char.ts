@@ -254,7 +254,11 @@ describe(RAA.getFirstConsumedCharAfter.name, function () {
 
 					const [marker] = selectNamedGroups(pattern, /^afterThis$/);
 
-					assert.deepEqual(RAA.getFirstConsumedCharAfter(marker, direction, flags).char, expected);
+					assert.deepEqual(RAA.getFirstConsumedCharAfter(marker, direction, flags), expected);
+					assert.deepEqual(
+						RAA.getFirstConsumedCharAfterWithContributors(marker, direction, flags).char,
+						expected
+					);
 				});
 			}
 		}
@@ -284,7 +288,8 @@ describe(RAA.getFirstCharAfter.name, function () {
 
 					const [marker] = selectNamedGroups(pattern, /^afterThis$/);
 
-					assert.deepEqual(RAA.getFirstCharAfter(marker, direction, flags).char, expected);
+					assert.deepEqual(RAA.getFirstCharAfter(marker, direction, flags), expected);
+					assert.deepEqual(RAA.getFirstCharAfterWithContributors(marker, direction, flags).char, expected);
 				});
 			}
 		}
