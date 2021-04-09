@@ -2,7 +2,7 @@ import { CharSet } from "refa";
 import { Alternative, Element } from "regexpp/ast";
 import {
 	assertionKindToMatchingDirection,
-	backreferenceAlwaysAfterGroup,
+	isStrictBackreference,
 	getLengthRange,
 	hasSomeDescendant,
 	isEmptyBackreference,
@@ -271,7 +271,7 @@ function getFirstConsumedCharImpl(
 			// one word character and that is the only (\w) matched.
 			resolvedChar.exact = resolvedChar.exact && resolvedChar.char.size <= 1;
 
-			if (backreferenceAlwaysAfterGroup(element)) {
+			if (isStrictBackreference(element)) {
 				return resolvedChar;
 			} else {
 				// there is at least one path through which the backreference will (possibly) be replaced with the

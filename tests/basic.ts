@@ -4,7 +4,7 @@ import { select, selectFirstWithRaw, selectNamedGroups } from "./helper/select";
 import * as RAA from "../src";
 import { assert } from "chai";
 
-describe(RAA.backreferenceAlwaysAfterGroup.name, function () {
+describe(RAA.isStrictBackreference.name, function () {
 	function test(expected: boolean, regexps: RegExp[]): void {
 		describe(`${expected}`, function () {
 			regexps
@@ -13,7 +13,7 @@ describe(RAA.backreferenceAlwaysAfterGroup.name, function () {
 					it(`${r.raw}`, function () {
 						const refs = select(r.pattern, (e): e is Backreference => e.type === "Backreference");
 						for (const ref of refs) {
-							assert.equal(RAA.backreferenceAlwaysAfterGroup(ref), expected);
+							assert.equal(RAA.isStrictBackreference(ref), expected);
 						}
 					});
 				});

@@ -15,7 +15,7 @@ import {
 	CharacterSet,
 	Assertion,
 } from "regexpp/ast";
-import { backreferenceAlwaysAfterGroup, isEmptyBackreference } from "./basic";
+import { isStrictBackreference, isEmptyBackreference } from "./basic";
 import { assertNever } from "./util";
 
 /**
@@ -62,7 +62,7 @@ export function structurallyEqual(x: Node | null, y: Node | null): boolean {
 			} else {
 				return (
 					structurallyEqual(x.resolved, other.resolved) &&
-					backreferenceAlwaysAfterGroup(x) == backreferenceAlwaysAfterGroup(other)
+					isStrictBackreference(x) == isStrictBackreference(other)
 				);
 			}
 		}

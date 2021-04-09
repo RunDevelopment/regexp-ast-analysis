@@ -256,7 +256,7 @@ function backreferenceIsPotentiallyEmpty(back: Backreference, root: Element | Al
 	if (isEmptyBackreference(back)) {
 		return true;
 	} else if (hasSomeAncestor(back.resolved, a => a === root)) {
-		return !backreferenceAlwaysAfterGroup(back) || isPotentiallyZeroLengthImpl(back.resolved, root);
+		return !isStrictBackreference(back) || isPotentiallyZeroLengthImpl(back.resolved, root);
 	} else {
 		return false;
 	}
@@ -575,28 +575,29 @@ export function isEmptyBackreference(backreference: Backreference): boolean {
 }
 
 /**
- * Returns whether the given backreference is always matched __after__ the referenced group was matched.
+ * Returns whether the given backreference is a strict backreference.
  *
- * If there exists any accepting path which goes through the backreference but not through the referenced capturing
- * group, this will return `false`.
+ * Strict backreferences are backreferences that are always matched __after__ the referenced group was matched. If there
+ * exists any path that goes through a backreference but not through the referenced capturing group, that backreference
+ * is not strict.
  *
  * ## Examples
  *
- * The follow examples will all return `true` for `\1`:
+ * In the follow examples, `\1` is a strict backreference:
  *
  * - `/(a)\1/`
  * - `/(a)(?:b|\1)/`
  * - `/(a)\1?/`
  * - `/(?<=\1(a))b/`
  *
- * The follow examples will all return `false` for `\1`:
+ * In the follow examples, `\1` is not a strict backreference:
  *
  * - `/(a)|\1/`
  * - `/(?:(a)|b)\1/`
  * - `/(a)?\1/`
  * - `/(?<=(a)\1)b/`
  */
-export function backreferenceAlwaysAfterGroup(backreference: Backreference): boolean {
+export function isStrictBackreference(backreference: Backreference): boolean {
 	const group = backreference.resolved;
 
 	if (hasSomeAncestor(backreference, a => a === group)) {
@@ -765,12 +766,12 @@ function getLengthRangeElementImpl(element: Element | Alternative): LengthRange 
 			} else {
 				const resolvedRange = getLengthRangeElementImpl(element.resolved);
 				if (!resolvedRange) {
-					if (backreferenceAlwaysAfterGroup(element)) {
+					if (isStrictBackreference(element)) {
 						return ZERO_LENGTH_RANGE;
 					} else {
 						return undefined;
 					}
-				} else if (resolvedRange.min > 0 && !backreferenceAlwaysAfterGroup(element)) {
+				} else if (resolvedRange.min > 0 && !isStrictBackreference(element)) {
 					return { min: 0, max: resolvedRange.max };
 				} else {
 					return resolvedRange;
