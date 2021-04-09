@@ -1,5 +1,5 @@
 import {} from "regexpp";
-import { CapturingGroup, Character, CharacterClass, CharacterSet, Pattern } from "regexpp/ast";
+import { Alternative, CapturingGroup, Character, CharacterClass, CharacterSet, Element, Pattern } from "regexpp/ast";
 import { Descendant, hasSomeDescendant } from "../../src";
 
 export function select<T extends Descendant<Pattern>>(
@@ -23,6 +23,24 @@ export function selectNamedGroups(pattern: Pattern, name: RegExp = /^/): Capturi
 		pattern,
 		(e): e is CapturingGroup => e.type === "CapturingGroup" && e.name !== null && name.test(e.name)
 	);
+}
+
+export function selectFirstWithRaw(pattern: Pattern, raw: string): Element | Alternative {
+	let result: Element | Alternative | undefined;
+
+	hasSomeDescendant(pattern, e => {
+		if (e.type !== "Pattern" && e.type !== "CharacterClassRange" && e.raw === raw) {
+			result = e;
+			return true;
+		}
+		return false;
+	});
+
+	if (result) {
+		return result;
+	} else {
+		throw new Error(`Cannot find element with raw \`${raw}\` in /${pattern.raw}/.`);
+	}
 }
 
 export function selectSingleChar(pattern: Pattern): Character | CharacterClass | CharacterSet {
