@@ -521,9 +521,6 @@ export function getFirstConsumedCharAfter(
 		"next",
 		{ char: firstConsumedCharEmptyWord(flags), elements: [] },
 		{
-			fork(state): State {
-				return state;
-			},
 			join(states): State {
 				const elements = new Set<Element>();
 				states.forEach(s => s.elements.forEach(e => elements.add(e)));

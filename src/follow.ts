@@ -11,12 +11,18 @@ export interface FollowOperations<S> {
 	/**
 	 * Split off a new path from the given one.
 	 *
-	 * The given state should not be modified. If the state is immutable, then `fork` may be implemented as the identify
-	 * function in regard to `state`.
+	 * This function should not modify the given state.
+	 *
+	 * If the state is immutable, then `fork` may be implemented as the identify function in regard to `state`. If the
+	 * function is omitted, it will default to the identify function.
+	 *
+	 * If the state is mutable, then `fork` must be implemented.
+	 *
+	 * @default x => x
 	 */
-	fork(state: S, direction: MatchingDirection): S;
+	fork?: (state: S, direction: MatchingDirection) => S;
 	/**
-	 * Joins any number but of paths to create a combined path.
+	 * Joins any number of paths to create a combined path.
 	 */
 	join(states: S[], direction: MatchingDirection): S;
 	/**
@@ -168,7 +174,7 @@ export function followPaths<S>(
 						const assertionDirection = assertionKindToMatchingDirection(element.kind);
 						const assertion = operations.join(
 							element.alternatives.map(a =>
-								enterAlternative(a, operations.fork(state, direction), assertionDirection)
+								enterAlternative(a, doFork(operations, state, direction), assertionDirection)
 							),
 							assertionDirection
 						);
@@ -185,7 +191,7 @@ export function followPaths<S>(
 				case "CapturingGroup": {
 					state = operations.join(
 						element.alternatives.map(a =>
-							enterAlternative(a, operations.fork(state, direction), direction)
+							enterAlternative(a, doFork(operations, state, direction), direction)
 						),
 						direction
 					);
@@ -196,7 +202,7 @@ export function followPaths<S>(
 						// do nothing
 					} else if (element.min === 0) {
 						state = operations.join(
-							[state, opEnter(element.element, operations.fork(state, direction), direction)],
+							[state, opEnter(element.element, doFork(operations, state, direction), direction)],
 							direction
 						);
 					} else {
@@ -277,7 +283,7 @@ export function followPaths<S>(
 			while (Array.isArray(after)) {
 				const [quant, other] = after;
 				state = operations.join(
-					[state, opEnter(quant, operations.fork(state, direction), direction)],
+					[state, opEnter(quant, doFork(operations, state, direction), direction)],
 					direction
 				);
 				after = other;
@@ -304,4 +310,12 @@ export function followPaths<S>(
 		initialState = opEnter(start, initialState, direction);
 	}
 	return opNext(start, initialState, direction);
+}
+
+function doFork<S>(operations: FollowOperations<S>, state: S, direction: MatchingDirection): S {
+	if (operations.fork) {
+		return operations.fork(state, direction);
+	} else {
+		return state;
+	}
 }
