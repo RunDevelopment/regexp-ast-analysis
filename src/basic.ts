@@ -114,10 +114,6 @@ function isPotentiallyZeroLengthImpl(e: Element | Alternative, root: Element | A
 	return impl(e);
 
 	function impl(element: Element | Alternative): boolean {
-		if (Array.isArray(element)) {
-			return element.some(impl);
-		}
-
 		switch (element.type) {
 			case "Alternative":
 				return element.elements.every(impl);

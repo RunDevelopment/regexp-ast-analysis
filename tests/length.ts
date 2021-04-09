@@ -30,8 +30,9 @@ describe("length", function () {
 	model.implication(isEmpty, isPotentiallyEmpty);
 	model.implication(isEmpty, isZeroLength);
 	model.implication(isZeroLength, isPotentiallyZeroLength);
-	model.implication(isZeroLength, isLengthMaxZero);
 	model.implication(isPotentiallyEmpty, isPotentiallyZeroLength);
+
+	model.implication(isZeroLength, isLengthMaxZero);
 	model.implication(isPotentiallyZeroLength, isLengthMinZero);
 
 	// test cases
@@ -232,18 +233,13 @@ describe(RAA.getLengthRange.name, function () {
 		{ regexp: /b+?/, expected: { min: 1, max: Infinity } },
 
 		{ regexp: /ab?c?/, expected: { min: 1, max: 3 } },
+		{ regexp: /(?:||){2,4}/, expected: { min: 0, max: 0 } },
+		{ regexp: /(?:a+){0}/, expected: { min: 0, max: 0 } },
+		{ regexp: /a{2,4}/, expected: { min: 2, max: 4 } },
 		{ regexp: /a{2,4}b{5,8}/, expected: { min: 7, max: 12 } },
 		{ regexp: /(?:b{2,4}){5,8}/, expected: { min: 10, max: 32 } },
 		{ regexp: /(?:b{2,3}c?){5,8}/, expected: { min: 10, max: 32 } },
 		{ regexp: /(?:b+){5,8}/, expected: { min: 5, max: Infinity } },
-
-		// Limitations:
-		// "All characters classes/sets are assumed to consume at least one characters and all assertions are assumed
-		// to have some accepting path."
-		{ regexp: /a[]/, expected: { min: 2, max: 2 } },
-		{ regexp: /a\bb/, expected: { min: 2, max: 2 } },
-		{ regexp: /\b\B/, expected: { min: 0, max: 0 } },
-		{ regexp: /a(?!b)b/, expected: { min: 2, max: 2 } },
 
 		// Backreferences
 		{ regexp: /(a)\1/, expected: { min: 2, max: 2 } },
@@ -258,6 +254,14 @@ describe(RAA.getLengthRange.name, function () {
 		{ regexp: /(?:(a)|)(?<backref>\1)/, expected: { min: 0, max: 1 }, selectNamed: true },
 		{ regexp: /(?:(a)|b)\1/, expected: { min: 1, max: 2 } },
 		{ regexp: /(a*)(?<backref>\1)/, expected: { min: 0, max: Infinity }, selectNamed: true },
+
+		// Limitations:
+		// "All characters classes/sets are assumed to consume at least one characters and all assertions are assumed
+		// to have some accepting path."
+		{ regexp: /a[]/, expected: { min: 2, max: 2 } },
+		{ regexp: /a\bb/, expected: { min: 2, max: 2 } },
+		{ regexp: /\b\B/, expected: { min: 0, max: 0 } },
+		{ regexp: /a(?!b)b/, expected: { min: 2, max: 2 } },
 	]);
 
 	function test(cases: TestCase[]): void {

@@ -21,7 +21,7 @@ describe(RAA.backreferenceAlwaysAfterGroup.name, function () {
 	}
 
 	test(true, [/(a)\1/, /(a)(?:b|\1)/, /(a)\1?/, /(?<=\1(a))b/]);
-	test(false, [/(a)|\1/, /(?:(a)|b)\1/, /(a)?\1/, /(?<=(a)\1)b/]);
+	test(false, [/(a)|\1/, /(a\1)/, /(?:(a)|b)\1/, /(a)?\1/, /(?<=(a)\1)b/, /(?=\1(a))/]);
 });
 
 describe(RAA.isEmptyBackreference.name, function () {

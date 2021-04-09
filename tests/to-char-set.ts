@@ -129,5 +129,10 @@ describe(RAA.toCharSet.name, function () {
 				assert.isTrue(expected.equals(actual3));
 			});
 		}
+
+		it(`empty`, function () {
+			assert.isTrue(RAA.toCharSet([], {}).isEmpty);
+			assert.isTrue(RAA.toCharSet([], { unicode: true }).isEmpty);
+		});
 	});
 });
