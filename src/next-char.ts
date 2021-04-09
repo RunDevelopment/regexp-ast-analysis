@@ -138,17 +138,31 @@ export interface FirstPartiallyConsumedChar {
  * lookaround accepts all characters because it doesn't take the `a` after `b?` into consideration.
  */
 export function getFirstConsumedChar(
-	element: Element | Alternative | Alternative[],
+	element: Element | Alternative | readonly Alternative[],
 	direction: MatchingDirection,
 	flags: ReadonlyFlags
 ): FirstConsumedChar {
 	if (Array.isArray(element)) {
-		return firstConsumedCharUnion(
-			element.map(e => getFirstConsumedChar(e, direction, flags)),
-			flags
-		);
+		return getFirstConsumedCharAlternativesImpl(element as readonly Alternative[], direction, flags);
+	} else {
+		return getFirstConsumedCharImpl(element as Element | Alternative, direction, flags);
 	}
-
+}
+function getFirstConsumedCharAlternativesImpl(
+	element: readonly Alternative[],
+	direction: MatchingDirection,
+	flags: ReadonlyFlags
+): FirstConsumedChar {
+	return firstConsumedCharUnion(
+		element.map(e => getFirstConsumedCharImpl(e, direction, flags)),
+		flags
+	);
+}
+function getFirstConsumedCharImpl(
+	element: Element | Alternative,
+	direction: MatchingDirection,
+	flags: ReadonlyFlags
+): FirstConsumedChar {
 	switch (element.type) {
 		case "Assertion":
 			switch (element.kind) {
@@ -173,7 +187,11 @@ export function getFirstConsumedChar(
 							if (hasSomeDescendant(element, d => d !== element && d.type === "Assertion")) {
 								return misdirectedAssertion();
 							}
-							const firstChar = getFirstConsumedChar(element.alternatives, direction, flags);
+							const firstChar = getFirstConsumedCharAlternativesImpl(
+								element.alternatives,
+								direction,
+								flags
+							);
 							const range = getLengthRange(element.alternatives);
 							if (firstChar.empty || !range) {
 								// trivially rejecting
@@ -189,7 +207,11 @@ export function getFirstConsumedChar(
 								return emptyWord({ char: firstChar.char.negate(), edge: true, exact: true });
 							}
 						} else {
-							const firstChar = getFirstConsumedChar(element.alternatives, direction, flags);
+							const firstChar = getFirstConsumedCharAlternativesImpl(
+								element.alternatives,
+								direction,
+								flags
+							);
 							return emptyWord(firstConsumedToLook(firstChar));
 						}
 					} else {
@@ -209,7 +231,7 @@ export function getFirstConsumedChar(
 				return emptyWord();
 			}
 
-			const firstChar = getFirstConsumedChar(element.element, direction, flags);
+			const firstChar = getFirstConsumedCharImpl(element.element, direction, flags);
 			if (element.min === 0) {
 				return firstConsumedCharUnion([emptyWord(), firstChar], flags);
 			} else {
@@ -227,7 +249,7 @@ export function getFirstConsumedChar(
 			return firstConsumedCharConcat(
 				(function* (): Iterable<FirstConsumedChar> {
 					for (const e of elements) {
-						yield getFirstConsumedChar(e, direction, flags);
+						yield getFirstConsumedCharImpl(e, direction, flags);
 					}
 				})(),
 				flags
@@ -236,13 +258,13 @@ export function getFirstConsumedChar(
 
 		case "CapturingGroup":
 		case "Group":
-			return getFirstConsumedChar(element.alternatives, direction, flags);
+			return getFirstConsumedCharAlternativesImpl(element.alternatives, direction, flags);
 
 		case "Backreference": {
 			if (isEmptyBackreference(element)) {
 				return emptyWord();
 			}
-			const resolvedChar = getFirstConsumedChar(element.resolved, direction, flags);
+			const resolvedChar = getFirstConsumedCharImpl(element.resolved, direction, flags);
 
 			// the resolved character is only exact if it is only a single character.
 			// i.e. /(\w)\1/ here the (\w) will capture exactly any word character, but the \1 can only match
@@ -288,6 +310,7 @@ export function getFirstConsumedChar(
 		return firstConsumedCharEmptyWord(flags, look);
 	}
 }
+
 /**
  * Returns first-look-char that is equivalent to a trivially-accepting lookaround.
  */
