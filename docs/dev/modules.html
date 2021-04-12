@@ -881,6 +881,7 @@ function Next(element, state):
 									<div class="tsd-comment tsd-typography">
 										<p>An optional function to decide whether the descendant of the given node will be checked as
 										well.</p>
+										<p>This function will be called with some node only after <code>conditionFn</code> has returned <code>false</code> for this node.</p>
 									</div>
 									<ul class="tsd-parameters">
 										<li class="tsd-parameter-signature">
@@ -1171,6 +1172,7 @@ function Next(element, state):
 									<li><code>/(?:(a)|b)\1/</code></li>
 									<li><code>/(a)?\1/</code></li>
 									<li><code>/(?&lt;=(a)\1)b/</code></li>
+									<li><code>/(?!(a)).\1/</code></li>
 								</ul>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
