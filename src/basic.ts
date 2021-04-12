@@ -518,15 +518,21 @@ export function getMatchingDirectionFromAssertionKind(
 export function isEmptyBackreference(backreference: Backreference): boolean {
 	const group = backreference.resolved;
 
-	if (hasSomeAncestor(backreference, a => a === group)) {
+	const closestAncestor = getClosestAncestor(backreference, group);
+
+	if (closestAncestor === group) {
 		// if the backreference is element of the referenced group
 		return true;
 	}
 
-	if (isZeroLength(group)) {
-		// If the referenced group can only match doesn't consume characters, then it can only capture the empty
-		// string.
+	if (closestAncestor.type !== "Alternative") {
+		// if the closest common ancestor isn't an alternative => they're disjunctive.
 		return true;
+	}
+
+	const backRefAncestors = new Set<Node>();
+	for (let a: Node | null = backreference; a; a = a.parent) {
+		backRefAncestors.add(a);
 	}
 
 	// Now for the hard part:
@@ -551,7 +557,7 @@ export function isEmptyBackreference(backreference: Backreference): boolean {
 					next = parent.elements.slice(0, index);
 				}
 
-				if (next.some(e => hasSomeDescendant(e, d => d === backreference))) {
+				if (next.some(e => backRefAncestors.has(e))) {
 					return true;
 				}
 
@@ -576,7 +582,7 @@ export function isEmptyBackreference(backreference: Backreference): boolean {
 		}
 	}
 
-	return !findBackreference(group);
+	return !findBackreference(group) || isZeroLength(group);
 }
 
 /**
