@@ -1,4 +1,4 @@
-import { RegExpParser } from "regexpp";
+import { RegExpParser, visitRegExpAST } from "regexpp";
 import { Backreference, CapturingGroup, Node } from "regexpp/ast";
 import { select, selectFirstWithRaw, selectNamedGroups } from "./helper/select";
 import * as RAA from "../src";
@@ -166,5 +166,67 @@ describe(RAA.getClosestAncestor.name, function () {
 				}
 			});
 		}
+	}
+});
+
+describe("hasSomeAncestor and hasSomeDescendant condition", function () {
+	test([/a+|(?!(?:b?|d{1,})c)|(a)(\1b)[a-bc]/g]);
+
+	function test(cases: RegExp[]): void {
+		for (const regexp of cases) {
+			it(`${regexp}`, function () {
+				const nodes = allDescendantNodes(new RegExpParser().parseLiteral(regexp.toString()));
+
+				for (const a of nodes) {
+					for (const b of nodes) {
+						assert.equal(
+							RAA.hasSomeAncestor(a, b),
+							RAA.hasSomeAncestor(a, an => an === b)
+						);
+						assert.equal(
+							RAA.hasSomeDescendant(a, b),
+							RAA.hasSomeDescendant(a, an => an === b)
+						);
+						assert.equal(RAA.hasSomeDescendant(a, b), allDescendantNodes(a).includes(b));
+
+						if (a === b) {
+							assert.isFalse(RAA.hasSomeAncestor(a, b));
+							assert.isFalse(RAA.hasSomeAncestor(b, a));
+
+							assert.isTrue(RAA.hasSomeDescendant(a, b));
+							assert.isTrue(RAA.hasSomeDescendant(b, a));
+						} else {
+							assert.equal(RAA.hasSomeDescendant(a, b), RAA.hasSomeAncestor(b, a));
+						}
+					}
+				}
+			});
+		}
+	}
+
+	function allDescendantNodes(node: Node): Node[] {
+		const nodes: Node[] = [];
+
+		const onNode = (n: Node): void => {
+			nodes.push(n);
+		};
+
+		visitRegExpAST(node, {
+			onAlternativeEnter: onNode,
+			onAssertionEnter: onNode,
+			onBackreferenceEnter: onNode,
+			onFlagsEnter: onNode,
+			onGroupEnter: onNode,
+			onPatternEnter: onNode,
+			onCharacterEnter: onNode,
+			onQuantifierEnter: onNode,
+			onCharacterSetEnter: onNode,
+			onRegExpLiteralEnter: onNode,
+			onCapturingGroupEnter: onNode,
+			onCharacterClassEnter: onNode,
+			onCharacterClassRangeEnter: onNode,
+		});
+
+		return nodes;
 	}
 });

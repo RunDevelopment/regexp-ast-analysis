@@ -282,13 +282,36 @@ type AlternativeAncestors = Alternative["parent"] | Quantifier | Alternative | R
 /**
  * Returns whether any of the ancestors of the given node fulfills the given condition.
  *
+ * If the given condition is an AST node instead of a function, `hasSomeAncestor` will behave as if the condition
+ * function was `d => d === conditionNode`.
+ *
  * The ancestors will be iterated in the order from closest to farthest.
  * The condition function will not be called on the given node.
  */
-export function hasSomeAncestor<T extends Node>(node: T, conditionFn: (ancestor: Ancestor<T>) => boolean): boolean {
+export function hasSomeAncestor<T extends Node>(
+	node: T,
+	condition: ((ancestor: Ancestor<T>) => boolean) | Node
+): boolean {
+	if (typeof condition === "function") {
+		return hasSomeAncestorFnImpl(node, condition);
+	} else {
+		return hasSomeAncestorNodeImpl(node, condition);
+	}
+}
+function hasSomeAncestorNodeImpl<T extends Node>(node: T, condition: Node): boolean {
 	let parent: Ancestor<Node> | null = node.parent;
 	while (parent) {
-		if (conditionFn(parent as Ancestor<T>)) {
+		if (parent === condition) {
+			return true;
+		}
+		parent = parent.parent;
+	}
+	return false;
+}
+function hasSomeAncestorFnImpl<T extends Node>(node: T, condition: (ancestor: Ancestor<T>) => boolean): boolean {
+	let parent: Ancestor<Node> | null = node.parent;
+	while (parent) {
+		if (condition(parent as Ancestor<T>)) {
 			return true;
 		}
 		parent = parent.parent;
@@ -315,16 +338,36 @@ type DescendantsImpl<T extends Node> =
  * The descendants will be iterated in a DFS top-to-bottom manner from left to right with the first node being the
  * given node.
  *
- * This function is short-circuited, so as soon as any `conditionFn` returns `true`, `true` will be returned.
+ * If the given condition is an AST node instead of a function, `hasSomeDescendant` will behave as if the condition
+ * function was `d => d === conditionNode`.
+ *
+ * This function is short-circuited, so as soon as any `condition` returns `true`, `true` will be returned.
  *
  * @param node
- * @param conditionFn
+ * @param condition
  * @param descentConditionFn An optional function to decide whether the descendant of the given node will be checked as
  * well.
  *
- * This function will be called with some node only after `conditionFn` has returned `false` for this node.
+ * This function will be called with some node only after `condition` has returned `false` for this node.
  */
 export function hasSomeDescendant<T extends Node>(
+	node: T,
+	condition: ((descendant: Descendant<T>) => boolean) | Node,
+	descentConditionFn?: (descendant: Descendant<T>) => boolean
+): boolean {
+	if (typeof condition === "function") {
+		return hasSomeDescendantImpl(node, condition, descentConditionFn);
+	} else {
+		if (descentConditionFn) {
+			return hasSomeDescendantImpl(node, d => d === condition, descentConditionFn);
+		} else {
+			// instead of checking the O(n) descendant nodes of `node`, we can instead check the O(log n) ancestor
+			// nodes of `condition`
+			return node === condition || hasSomeAncestor(condition, node);
+		}
+	}
+}
+function hasSomeDescendantImpl<T extends Node>(
 	node: T & Node,
 	conditionFn: (descendant: Descendant<T>) => boolean,
 	descentConditionFn?: (descendant: Descendant<T>) => boolean
@@ -339,29 +382,29 @@ export function hasSomeDescendant<T extends Node>(
 
 	switch (node.type) {
 		case "Alternative":
-			return node.elements.some(e => hasSomeDescendant(e, conditionFn, descentConditionFn));
+			return node.elements.some(e => hasSomeDescendantImpl(e, conditionFn, descentConditionFn));
 		case "Assertion":
 			if (node.kind === "lookahead" || node.kind === "lookbehind") {
-				return node.alternatives.some(a => hasSomeDescendant(a, conditionFn, descentConditionFn));
+				return node.alternatives.some(a => hasSomeDescendantImpl(a, conditionFn, descentConditionFn));
 			}
 			return false;
 		case "CapturingGroup":
 		case "Group":
 		case "Pattern":
-			return node.alternatives.some(a => hasSomeDescendant(a, conditionFn, descentConditionFn));
+			return node.alternatives.some(a => hasSomeDescendantImpl(a, conditionFn, descentConditionFn));
 		case "CharacterClass":
-			return node.elements.some(e => hasSomeDescendant(e, conditionFn, descentConditionFn));
+			return node.elements.some(e => hasSomeDescendantImpl(e, conditionFn, descentConditionFn));
 		case "CharacterClassRange":
 			return (
-				hasSomeDescendant(node.min, conditionFn, descentConditionFn) ||
-				hasSomeDescendant(node.max, conditionFn, descentConditionFn)
+				hasSomeDescendantImpl(node.min, conditionFn, descentConditionFn) ||
+				hasSomeDescendantImpl(node.max, conditionFn, descentConditionFn)
 			);
 		case "Quantifier":
-			return hasSomeDescendant(node.element, conditionFn, descentConditionFn);
+			return hasSomeDescendantImpl(node.element, conditionFn, descentConditionFn);
 		case "RegExpLiteral":
 			return (
-				hasSomeDescendant(node.pattern, conditionFn, descentConditionFn) ||
-				hasSomeDescendant(node.flags, conditionFn, descentConditionFn)
+				hasSomeDescendantImpl(node.pattern, conditionFn, descentConditionFn) ||
+				hasSomeDescendantImpl(node.flags, conditionFn, descentConditionFn)
 			);
 	}
 	return false;
