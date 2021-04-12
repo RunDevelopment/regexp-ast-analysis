@@ -17,7 +17,6 @@ import {
 	Backreference,
 	CharacterSet,
 	EdgeAssertion,
-	BranchNode,
 } from "regexpp/ast";
 import { assertNever } from "./util";
 
