@@ -20,7 +20,7 @@ describe(RAA.isStrictBackreference.name, function () {
 		});
 	}
 
-	test(true, [/(a)\1/, /(a)(?:b|\1)/, /(a)\1?/, /(?<=\1(a))b/]);
+	test(true, [/(a)\1/, /(a)(?:b|\1)/, /(a)\1?/, /(?<=\1(a))b/, /(?!(a)\1)/]);
 	test(false, [
 		/(a)|\1/,
 		/(a\1)/,
@@ -50,7 +50,7 @@ describe(RAA.isEmptyBackreference.name, function () {
 	}
 
 	test(true, [/(\b)a\1/, /(a)b|\1/, /(a\1)/, /\1(a)/, /(?:\1(a))+/, /(?<=(a)\1)b/, /(?!(a))\w\1/, /(?!(?!(a)))\w\1/]);
-	test(false, [/(?:(a)|b)\1/, /(a)?\1/, /(a)\1/, /(?=(a))\w\1/]);
+	test(false, [/(?:(a)|b)\1/, /(a)?\1/, /(a)\1/, /(?=(a))\w\1/, /(?!(a)\1)/]);
 });
 
 describe(RAA.getCapturingGroupNumber.name, function () {
