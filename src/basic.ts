@@ -558,6 +558,9 @@ export function isEmptyBackreference(backreference: Backreference): boolean {
 				if (parentParent.type === "Pattern") {
 					// can't go up.
 					return false;
+				} else if (parentParent.type === "Assertion" && parentParent.negate) {
+					// The captured text of a capturing group will be reset after leaving a negated lookaround
+					return false;
 				} else {
 					return findBackreference(parentParent);
 				}
@@ -596,6 +599,7 @@ export function isEmptyBackreference(backreference: Backreference): boolean {
  * - `/(?:(a)|b)\1/`
  * - `/(a)?\1/`
  * - `/(?<=(a)\1)b/`
+ * - `/(?!(a)).\1/`
  */
 export function isStrictBackreference(backreference: Backreference): boolean {
 	const group = backreference.resolved;
@@ -631,6 +635,9 @@ export function isStrictBackreference(backreference: Backreference): boolean {
 				const parentParent = parent.parent;
 				if (parentParent.type === "Pattern") {
 					// can't go up.
+					return false;
+				} else if (parentParent.type === "Assertion" && parentParent.negate) {
+					// The captured text of a capturing group will be reset after leaving a negated lookaround
 					return false;
 				} else {
 					if (parentParent.alternatives.length > 1) {

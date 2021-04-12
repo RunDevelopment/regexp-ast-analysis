@@ -21,7 +21,16 @@ describe(RAA.isStrictBackreference.name, function () {
 	}
 
 	test(true, [/(a)\1/, /(a)(?:b|\1)/, /(a)\1?/, /(?<=\1(a))b/]);
-	test(false, [/(a)|\1/, /(a\1)/, /(?:(a)|b)\1/, /(a)?\1/, /(?<=(a)\1)b/, /(?=\1(a))/]);
+	test(false, [
+		/(a)|\1/,
+		/(a\1)/,
+		/(?:(a)|b)\1/,
+		/(a)?\1/,
+		/(?<=(a)\1)b/,
+		/(?=\1(a))/,
+		/(?!(a))\w\1/,
+		/(?!(?!(a)))\w\1/,
+	]);
 });
 
 describe(RAA.isEmptyBackreference.name, function () {
@@ -40,8 +49,8 @@ describe(RAA.isEmptyBackreference.name, function () {
 		});
 	}
 
-	test(true, [/(\b)a\1/, /(a)b|\1/, /(a\1)/, /\1(a)/, /(?:\1(a))+/, /(?<=(a)\1)b/]);
-	test(false, [/(?:(a)|b)\1/, /(a)?\1/, /(a)\1/]);
+	test(true, [/(\b)a\1/, /(a)b|\1/, /(a\1)/, /\1(a)/, /(?:\1(a))+/, /(?<=(a)\1)b/, /(?!(a))\w\1/, /(?!(?!(a)))\w\1/]);
+	test(false, [/(?:(a)|b)\1/, /(a)?\1/, /(a)\1/, /(?=(a))\w\1/]);
 });
 
 describe(RAA.getCapturingGroupNumber.name, function () {
