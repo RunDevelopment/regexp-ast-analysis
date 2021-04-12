@@ -321,6 +321,8 @@ type DescendantsImpl<T extends Node> =
  * @param conditionFn
  * @param descentConditionFn An optional function to decide whether the descendant of the given node will be checked as
  * well.
+ *
+ * This function will be called with some node only after `conditionFn` has returned `false` for this node.
  */
 export function hasSomeDescendant<T extends Node>(
 	node: T & Node,
