@@ -612,9 +612,21 @@ export function isEmptyBackreference(backreference: Backreference): boolean {
 export function isStrictBackreference(backreference: Backreference): boolean {
 	const group = backreference.resolved;
 
-	if (hasSomeAncestor(backreference, a => a === group)) {
+	const closestAncestor = getClosestAncestor(backreference, group);
+
+	if (closestAncestor === group) {
 		// if the backreference is element of the referenced group
 		return false;
+	}
+
+	if (closestAncestor.type !== "Alternative") {
+		// if the closest common ancestor isn't an alternative => they're disjunctive.
+		return false;
+	}
+
+	const backRefAncestors = new Set<Node>();
+	for (let a: Node | null = backreference; a; a = a.parent) {
+		backRefAncestors.add(a);
 	}
 
 	function findBackreference(node: Element): boolean {
@@ -635,7 +647,7 @@ export function isStrictBackreference(backreference: Backreference): boolean {
 					next = parent.elements.slice(0, index);
 				}
 
-				if (next.some(e => hasSomeDescendant(e, d => d === backreference))) {
+				if (next.some(e => backRefAncestors.has(e))) {
 					return true;
 				}
 
