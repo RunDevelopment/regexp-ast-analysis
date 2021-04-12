@@ -855,55 +855,62 @@ function getLengthRangeElementImpl(element: Element | Alternative): LengthRange 
 }
 
 /**
+ * The type of the closest ancestor of two nodes with the given types.
+ *
+ * @see {@link getClosestAncestor}
+ */
+export type ClosestAncestor<A extends Node, B extends Node> = Exclude<A | B, Descendant<Pattern>> extends never
+	? // if the two nodes are both descendants of a Pattern node (e.g. all elements are), then we know that the
+	  // the closest ancestor cannot be the RegExpLiteral
+	  Exclude<(A | Ancestor<A>) & (B | Ancestor<B>), RegExpLiteral>
+	: (A | Ancestor<A>) & (B | Ancestor<B>);
+
+/**
  * Returns the closest ancestor of the given nodes.
  *
  * If the two nodes are the same node, the given node will be returned.
+ *
+ * If the two given nodes are not part of the same AST tree, an error will be thrown.
  */
-export function getClosestAncestor<A extends Node, B extends Node>(a: A, b: B): (A | Ancestor<A>) & (B | Ancestor<B>);
+export function getClosestAncestor<A extends Node, B extends Node>(a: A, b: B): ClosestAncestor<A, B>;
 export function getClosestAncestor(a: Node, b: Node): Node {
 	if (a === b) {
+		// trivial
 		return a;
 	} else if (a.parent && a.parent === b.parent) {
+		// this case is quite common and doesn't require any memory allocation
 		return a.parent;
-	} else if (hasSomeAncestor(a, an => an === b)) {
-		return b;
-	} else if (hasSomeAncestor(b, an => an === a)) {
-		return a;
 	} else {
-		if (a.parent && b.parent) {
-			const aAncestors: BranchNode[] = [];
-			const bAncestors: BranchNode[] = [];
+		const aPath = getPathToRoot(a);
+		const bPath = getPathToRoot(b);
 
-			for (let an: BranchNode | null = a.parent; an; an = an.parent) {
-				aAncestors.push(an);
-			}
-			for (let an: BranchNode | null = b.parent; an; an = an.parent) {
-				bAncestors.push(an);
-			}
-
-			while (aAncestors.length && bAncestors.length) {
-				if (aAncestors[aAncestors.length - 1] === bAncestors[bAncestors.length - 1]) {
-					aAncestors.pop();
-					bAncestors.pop();
-				} else {
-					break;
-				}
-			}
-
-			if (aAncestors.length === 0) {
-				return a.parent;
-			}
-			if (bAncestors.length === 0) {
-				return b.parent;
-			}
-
-			const p = aAncestors.pop()!.parent;
-			if (p) {
-				return p;
+		while (true) {
+			if (aPath.length === 0) {
+				return a;
+			} else if (bPath.length === 0) {
+				return b;
+			} else if (aPath[aPath.length - 1] === bPath[bPath.length - 1]) {
+				aPath.pop();
+				bPath.pop();
+			} else {
+				break;
 			}
 		}
+
+		const p = aPath[aPath.length - 1].parent;
+		if (p) {
+			return p;
+		}
+
 		throw new Error("The two nodes are not part of the same tree.");
 	}
+}
+function getPathToRoot(a: Node): Node[] {
+	const path: Node[] = [];
+	for (let an: Node | null = a; an; an = an.parent) {
+		path.push(an);
+	}
+	return path;
 }
 
 /**
