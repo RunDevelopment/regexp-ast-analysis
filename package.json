@@ -9,7 +9,7 @@
     "test": "cd tests && mocha -r ts-node/register '**/*.ts'",
     "test:coverage": "cd tests && nyc --reporter=html mocha -r ts-node/register '**/*.ts'",
     "build": "npx rimraf ./index.* .out/** && npx tsc && rollup -c && npm run build:dts",
-    "build:dts": "dts-bundle-generator -o index.d.ts src/index.ts && prettier --write index.d.ts",
+    "build:dts": "dts-bundle-generator -o index.d.ts src/index.ts --export-referenced-types=false && prettier --write index.d.ts",
     "build:docs": "typedoc --listInvalidSymbolLinks",
     "prepublishOnly": "npm run build"
   },
@@ -33,7 +33,7 @@
     "@typescript-eslint/eslint-plugin": "^4.14.2",
     "@typescript-eslint/parser": "^4.14.2",
     "chai": "^4.3.0",
-    "dts-bundle-generator": "^5.8.0",
+    "dts-bundle-generator": "^5.9.0",
     "eslint": "^7.19.0",
     "eslint-config-prettier": "^6.15.0",
     "eslint-plugin-prettier": "^3.3.1",
