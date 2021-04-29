@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.2.0 (2021-04-29)
+
+### Breaking
+
+- Private types aren't exported anymore. (They were never supposed to be exported in the first place.)
+
+### Changed
+
+- Updated refa to v0.8.
+
+
 ## 0.1.3 (2021-04-13)
 
 ### Fixed
