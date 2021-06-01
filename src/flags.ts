@@ -4,16 +4,46 @@
  * All properties are optional and assumed to be `false` by default.
  */
 export interface ReadonlyFlags {
-	/** @default false */
+	/**
+	 * The `s` flag.
+	 *
+	 * @default false
+	 */
 	readonly dotAll?: boolean;
-	/** @default false */
+	/**
+	 * The `g` flag.
+	 *
+	 * @default false
+	 */
 	readonly global?: boolean;
-	/** @default false */
+	/**
+	 * The `d` flag.
+	 *
+	 * @default false
+	 */
+	readonly hasIndices?: boolean;
+	/**
+	 * The `i` flag.
+	 *
+	 * @default false
+	 */
 	readonly ignoreCase?: boolean;
-	/** @default false */
+	/**
+	 * The `m` flag.
+	 *
+	 * @default false
+	 */
 	readonly multiline?: boolean;
-	/** @default false */
+	/**
+	 * The `y` flag.
+	 *
+	 * @default false
+	 */
 	readonly sticky?: boolean;
-	/** @default false */
+	/**
+	 * The `u` flag.
+	 *
+	 * @default false
+	 */
 	readonly unicode?: boolean;
 }
