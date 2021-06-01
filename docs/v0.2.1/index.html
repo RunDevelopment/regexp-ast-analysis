@@ -1,0 +1,234 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>regexp-ast-analysis - v0.2.1</title>
+	<meta name="description" content="Documentation for regexp-ast-analysis - v0.2.1">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="assets/css/main.css">
+	<script async src="assets/js/search.js" id="search-script"></script>
+</head>
+<body>
+<header>
+	<div class="tsd-page-toolbar">
+		<div class="container">
+			<div class="table-wrap">
+				<div class="table-cell" id="tsd-search" data-index="assets/js/search.json" data-base=".">
+					<div class="field">
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+						<input id="tsd-search-field" type="text" />
+					</div>
+					<ul class="results">
+						<li class="state loading">Preparing search index...</li>
+						<li class="state failure">The search index is not available</li>
+					</ul>
+					<a href="index.html" class="title">regexp-ast-analysis - v0.2.1</a>
+				</div>
+				<div class="table-cell" id="tsd-widgets">
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tsd-page-title">
+		<div class="container">
+			<h1>regexp-ast-analysis - v0.2.1</h1>
+		</div>
+	</div>
+</header>
+<div class="container container-main">
+	<div class="row">
+		<div class="col-8 col-content">
+			<div class="tsd-panel tsd-typography">
+				<a href="#regexp-ast-analysis" id="regexp-ast-analysis" style="color: inherit; text-decoration: none;">
+					<h1>RegExp AST analysis</h1>
+				</a>
+				<p><a href="https://github.com/RunDevelopment/regexp-ast-analysis/actions"><img src="https://github.com/RunDevelopment/regexp-ast-analysis/workflows/Node.js%20CI/badge.svg" alt="Actions Status"></a>
+				<a href="https://www.npmjs.com/package/regexp-ast-analysis"><img src="https://img.shields.io/npm/v/regexp-ast-analysis" alt="npm"></a></p>
+				<p>This is a library providing functionalities to analyse <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp">JavaScript RegExp</a>.</p>
+				<p>All functions operate on AST nodes produced by <a href="https://github.com/mysticatea/regexpp">regexpp</a>. Characters are parsed by <a href="https://github.com/RunDevelopment/refa">refa</a>.</p>
+				<a href="#usage" id="usage" style="color: inherit; text-decoration: none;">
+					<h2>Usage</h2>
+				</a>
+				<p>Install the library using npm:</p>
+				<pre><code class="language-bash"><span style="color: #000000">npm i regexp-ast-analysis</span>
+</code></pre>
+				<p>Import the library:</p>
+				<pre><code class="language-js"><span style="color: #AF00DB">import</span><span style="color: #000000"> </span><span style="color: #0000FF">*</span><span style="color: #000000"> </span><span style="color: #AF00DB">as</span><span style="color: #000000"> </span><span style="color: #001080">RAA</span><span style="color: #000000"> </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;regexp-ast-analysis&quot;</span><span style="color: #000000">;</span>
+</code></pre>
+				<a href="#documentation" id="documentation" style="color: inherit; text-decoration: none;">
+					<h2>Documentation</h2>
+				</a>
+				<p>Links to the full API documentation:</p>
+				<ul>
+					<li><a href="https://rundevelopment.github.io/regexp-ast-analysis/docs/latest/">Latest release</a></li>
+					<li><a href="https://rundevelopment.github.io/regexp-ast-analysis/docs/dev/">Development</a></li>
+				</ul>
+			</div>
+		</div>
+		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+			<nav class="tsd-navigation primary">
+				<ul>
+					<li class=" ">
+						<a href="modules.html">Exports</a>
+					</li>
+					<li class=" tsd-kind-namespace">
+						<a href="modules/chars.html">Chars</a>
+					</li>
+				</ul>
+			</nav>
+			<nav class="tsd-navigation secondary menu-sticky">
+				<ul class="before-current">
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/firstfullyconsumedchar.html" class="tsd-kind-icon">First<wbr>Fully<wbr>Consumed<wbr>Char</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/firstlookchar.html" class="tsd-kind-icon">First<wbr>Look<wbr>Char</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/firstpartiallyconsumedchar.html" class="tsd-kind-icon">First<wbr>Partially<wbr>Consumed<wbr>Char</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-has-type-parameter">
+						<a href="interfaces/followoperations.html" class="tsd-kind-icon">Follow<wbr>Operations</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/lengthrange.html" class="tsd-kind-icon">Length<wbr>Range</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/readonlyflags.html" class="tsd-kind-icon">Readonly<wbr>Flags</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-has-type-parameter">
+						<a href="interfaces/withcontributors.html" class="tsd-kind-icon">With<wbr>Contributors</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-has-type-parameter">
+						<a href="modules.html#ancestor" class="tsd-kind-icon">Ancestor</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-has-type-parameter">
+						<a href="modules.html#closestancestor" class="tsd-kind-icon">Closest<wbr>Ancestor</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-has-type-parameter">
+						<a href="modules.html#descendant" class="tsd-kind-icon">Descendant</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="modules.html#firstconsumedchar" class="tsd-kind-icon">First<wbr>Consumed<wbr>Char</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="modules.html#matchingdirection" class="tsd-kind-icon">Matching<wbr>Direction</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="modules.html#tocharsetelement" class="tsd-kind-icon">To<wbr>Char<wbr>Set<wbr>Element</a>
+					</li>
+					<li class=" tsd-kind-function tsd-has-type-parameter">
+						<a href="modules.html#followpaths" class="tsd-kind-icon">follow<wbr>Paths</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="modules.html#getcapturinggroupnumber" class="tsd-kind-icon">get<wbr>Capturing<wbr>Group<wbr>Number</a>
+					</li>
+					<li class=" tsd-kind-function tsd-has-type-parameter">
+						<a href="modules.html#getclosestancestor" class="tsd-kind-icon">get<wbr>Closest<wbr>Ancestor</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="modules.html#geteffectivemaximumrepetition" class="tsd-kind-icon">get<wbr>Effective<wbr>Maximum<wbr>Repetition</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="modules.html#getfirstcharafter" class="tsd-kind-icon">get<wbr>First<wbr>Char<wbr>After</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="modules.html#getfirstcharafterwithcontributors" class="tsd-kind-icon">get<wbr>First<wbr>Char<wbr>After<wbr>With<wbr>Contributors</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="modules.html#getfirstconsumedchar" class="tsd-kind-icon">get<wbr>First<wbr>Consumed<wbr>Char</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="modules.html#getfirstconsumedcharafter" class="tsd-kind-icon">get<wbr>First<wbr>Consumed<wbr>Char<wbr>After</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="modules.html#getfirstconsumedcharafterwithcontributors" class="tsd-kind-icon">get<wbr>First<wbr>Consumed<wbr>Char<wbr>After<wbr>With<wbr>Contributors</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="modules.html#getlengthrange" class="tsd-kind-icon">get<wbr>Length<wbr>Range</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="modules.html#getmatchingdirection" class="tsd-kind-icon">get<wbr>Matching<wbr>Direction</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="modules.html#getmatchingdirectionfromassertionkind" class="tsd-kind-icon">get<wbr>Matching<wbr>Direction<wbr>From<wbr>Assertion<wbr>Kind</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="modules.html#getpattern" class="tsd-kind-icon">get<wbr>Pattern</a>
+					</li>
+					<li class=" tsd-kind-function tsd-has-type-parameter">
+						<a href="modules.html#hassomeancestor" class="tsd-kind-icon">has<wbr>Some<wbr>Ancestor</a>
+					</li>
+					<li class=" tsd-kind-function tsd-has-type-parameter">
+						<a href="modules.html#hassomedescendant" class="tsd-kind-icon">has<wbr>Some<wbr>Descendant</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="modules.html#invertmatchingdirection" class="tsd-kind-icon">invert<wbr>Matching<wbr>Direction</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="modules.html#isempty" class="tsd-kind-icon">is<wbr>Empty</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="modules.html#isemptybackreference" class="tsd-kind-icon">is<wbr>Empty<wbr>Backreference</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="modules.html#ispotentiallyempty" class="tsd-kind-icon">is<wbr>Potentially<wbr>Empty</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="modules.html#ispotentiallyzerolength" class="tsd-kind-icon">is<wbr>Potentially<wbr>Zero<wbr>Length</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="modules.html#isstrictbackreference" class="tsd-kind-icon">is<wbr>Strict<wbr>Backreference</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="modules.html#iszerolength" class="tsd-kind-icon">is<wbr>Zero<wbr>Length</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="modules.html#matchesallcharacters" class="tsd-kind-icon">matches<wbr>All<wbr>Characters</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="modules.html#matchesnocharacters" class="tsd-kind-icon">matches<wbr>NoCharacters</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="modules.html#structurallyequal" class="tsd-kind-icon">structurally<wbr>Equal</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="modules.html#tocharset" class="tsd-kind-icon">to<wbr>Char<wbr>Set</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</div>
+</div>
+<footer>
+	<div class="container">
+		<h2>Legend</h2>
+		<div class="tsd-legend-group">
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-interface"><span class="tsd-kind-icon">Method</span></li>
+			</ul>
+		</div>
+	</div>
+</footer>
+<div class="overlay"></div>
+<script src="assets/js/main.js"></script>
+</body>
+</html>
