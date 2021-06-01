@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.2.1 (2021-06-01)
+
+### Changed
+
+- Added support for `d` flag.
+
+
 ## 0.2.0 (2021-04-29)
 
 ### Breaking
