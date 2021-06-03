@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.2.2 (2021-06-03)
+
+### Changed
+
+- All `getFirst{Consumed,}Char*` functions can now handle word boundary assertions.
+
+
 ## 0.2.1 (2021-06-01)
 
 ### Changed
