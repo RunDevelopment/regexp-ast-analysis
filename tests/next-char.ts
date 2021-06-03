@@ -132,6 +132,43 @@ describe(RAA.getFirstConsumedChar.name, function () {
 		{ regexp: /(?<=a)[ab]/, expected: { char: toCharSet(/[ab]/), exact: false, empty: false } },
 		{ regexp: /\b[ab]/, expected: { char: toCharSet(/[ab]/), exact: false, empty: false } },
 
+		{
+			regexp: /\b/,
+			expected: {
+				char: toCharSet(/[]/),
+				exact: true,
+				empty: true,
+				look: { char: toCharSet(/[^]/), exact: false, edge: true },
+			},
+		},
+		{
+			regexp: /\B/,
+			expected: {
+				char: toCharSet(/[]/),
+				exact: true,
+				empty: true,
+				look: { char: toCharSet(/[^]/), exact: false, edge: true },
+			},
+		},
+		{
+			regexp: /^\b/,
+			expected: {
+				char: toCharSet(/[]/),
+				exact: true,
+				empty: true,
+				look: { char: toCharSet(/[\w]/), exact: false, edge: false },
+			},
+		},
+		{
+			regexp: /^\B/,
+			expected: {
+				char: toCharSet(/[]/),
+				exact: true,
+				empty: true,
+				look: { char: toCharSet(/[\W]/), exact: false, edge: true },
+			},
+		},
+
 		// make exact again
 		{ regexp: /\b[ab]|[ab]/, expected: { char: toCharSet(/[ab]/), exact: true, empty: false } },
 		// doesn't work here unfortunately
