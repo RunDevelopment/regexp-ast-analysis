@@ -244,6 +244,76 @@ describe(RAA.getFirstConsumedCharAfter.name, function () {
 				look: { char: toCharSet(/[^]/), exact: true, edge: true },
 			},
 		},
+
+		// word boundary assertions
+		{
+			regexp: /(?<afterThis>a|b)\b/,
+			expected: {
+				char: toCharSet(/[]/),
+				exact: true,
+				empty: true,
+				look: { char: toCharSet(/[\W]/), exact: true, edge: true },
+			},
+		},
+		{
+			regexp: /(?:a|b)(?<afterThis>)\b/,
+			expected: {
+				char: toCharSet(/[]/),
+				exact: true,
+				empty: true,
+				look: { char: toCharSet(/[\W]/), exact: true, edge: true },
+			},
+		},
+		{
+			regexp: /(?:a|b(?<afterThis>))\b/,
+			expected: {
+				char: toCharSet(/[]/),
+				exact: true,
+				empty: true,
+				look: { char: toCharSet(/[\W]/), exact: true, edge: true },
+			},
+		},
+		{
+			regexp: /;(?<afterThis>)\b[\d.]+/,
+			expected: {
+				char: toCharSet(/[\d]/),
+				exact: true,
+				empty: false,
+			},
+		},
+		{
+			regexp: /;(?<afterThis>)\b\b\b\b\b\b[\d.]+/,
+			expected: {
+				char: toCharSet(/[\d]/),
+				exact: true,
+				empty: false,
+			},
+		},
+		{
+			regexp: /;(?<afterThis>)\B[\d.]+/,
+			expected: {
+				char: toCharSet(/[.]/),
+				exact: true,
+				empty: false,
+			},
+		},
+		{
+			regexp: /;(?<afterThis>)\B\B\B[\d.]+/,
+			expected: {
+				char: toCharSet(/[.]/),
+				exact: true,
+				empty: false,
+			},
+		},
+		{
+			regexp: /^(?<afterThis>)\b/,
+			expected: {
+				char: toCharSet(/[]/),
+				exact: true,
+				empty: true,
+				look: { char: toCharSet(/[\w]/), exact: true, edge: false },
+			},
+		},
 	]);
 
 	function test(cases: TestCase[]): void {

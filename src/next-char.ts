@@ -1,5 +1,5 @@
 import { CharSet } from "refa";
-import { Alternative, Element } from "regexpp/ast";
+import { Alternative, Element, WordBoundaryAssertion } from "regexpp/ast";
 import {
 	getMatchingDirectionFromAssertionKind,
 	isStrictBackreference,
@@ -7,6 +7,7 @@ import {
 	hasSomeDescendant,
 	isEmptyBackreference,
 	MatchingDirection,
+	invertMatchingDirection,
 } from "./basic";
 import { toCharSet } from "./to-char-set";
 import { followPaths } from "./follow";
@@ -122,6 +123,20 @@ export interface FirstPartiallyConsumedChar {
 	look: FirstLookChar;
 }
 
+class ImplOptions {
+	readonly currentWordBoundaries: WordBoundaryAssertion[] = [];
+
+	isCurrentWordBoundary(element: WordBoundaryAssertion): boolean {
+		return this.currentWordBoundaries.some(e => e === element);
+	}
+	pushWordBoundary(element: WordBoundaryAssertion): void {
+		this.currentWordBoundaries.push(element);
+	}
+	popWordBoundary(): void {
+		this.currentWordBoundaries.pop();
+	}
+}
+
 /**
  * If a character is returned, it guaranteed to be a super set of the actual character. If the given element is
  * always of zero length, then the empty character set will be returned.
@@ -142,32 +157,75 @@ export function getFirstConsumedChar(
 	direction: MatchingDirection,
 	flags: ReadonlyFlags
 ): FirstConsumedChar {
+	const options = new ImplOptions();
+
 	if (Array.isArray(element)) {
-		return getFirstConsumedCharAlternativesImpl(element as readonly Alternative[], direction, flags);
+		return getFirstConsumedCharAlternativesImpl(element as readonly Alternative[], direction, flags, options);
 	} else {
-		return getFirstConsumedCharImpl(element as Element | Alternative, direction, flags);
+		return getFirstConsumedCharImpl(element as Element | Alternative, direction, flags, options);
 	}
 }
 function getFirstConsumedCharAlternativesImpl(
 	element: readonly Alternative[],
 	direction: MatchingDirection,
-	flags: ReadonlyFlags
+	flags: ReadonlyFlags,
+	options: ImplOptions
 ): FirstConsumedChar {
 	return firstConsumedCharUnion(
-		element.map(e => getFirstConsumedCharImpl(e, direction, flags)),
+		element.map(e => getFirstConsumedCharImpl(e, direction, flags, options)),
 		flags
 	);
 }
 function getFirstConsumedCharImpl(
 	element: Element | Alternative,
 	direction: MatchingDirection,
-	flags: ReadonlyFlags
+	flags: ReadonlyFlags,
+	options: ImplOptions
 ): FirstConsumedChar {
 	switch (element.type) {
 		case "Assertion":
 			switch (element.kind) {
 				case "word":
-					return misdirectedAssertion();
+					if (options.isCurrentWordBoundary(element)) {
+						// this means that the value of a word boundary assertion depends on itself indirectly.
+						// we have to stop the recursion here because infinite recursion is possible otherwise.
+						return misdirectedAssertion();
+					} else {
+						options.pushWordBoundary(element);
+						const before = getFirstCharAfterImpl(
+							element,
+							invertMatchingDirection(direction),
+							flags,
+							options
+						);
+						options.popWordBoundary();
+
+						// Remember:
+						//   \B == (?<=\w)(?=\w)|(?<!\w)(?!\w)
+						//   \b == (?<!\w)(?=\w)|(?<=\w)(?!\w)
+
+						const word = Chars.word(flags);
+
+						if (before.edge) {
+							// this forces our hand a little. Since the previous "character" might be the start/end of
+							// the string, we have to enter the alternative that starts with `(?<!\w)`
+							if (before.char.isDisjointWith(word)) {
+								return wordAssertion(element.negate);
+							} else {
+								// it might be either of the alternatives
+								return misdirectedAssertion();
+							}
+						} else {
+							if (before.char.isDisjointWith(word)) {
+								return wordAssertion(element.negate);
+							} else if (before.char.isSubsetOf(word)) {
+								return wordAssertion(!element.negate);
+							} else {
+								// it might be either of the alternatives
+								return misdirectedAssertion();
+							}
+						}
+					}
 				case "end":
 				case "start":
 					if (getMatchingDirectionFromAssertionKind(element.kind) === direction) {
@@ -190,7 +248,8 @@ function getFirstConsumedCharImpl(
 							const firstChar = getFirstConsumedCharAlternativesImpl(
 								element.alternatives,
 								direction,
-								flags
+								flags,
+								options
 							);
 							const range = getLengthRange(element.alternatives);
 							if (firstChar.empty || !range) {
@@ -210,7 +269,8 @@ function getFirstConsumedCharImpl(
 							const firstChar = getFirstConsumedCharAlternativesImpl(
 								element.alternatives,
 								direction,
-								flags
+								flags,
+								options
 							);
 							return emptyWord(firstConsumedToLook(firstChar));
 						}
@@ -231,7 +291,7 @@ function getFirstConsumedCharImpl(
 				return emptyWord();
 			}
 
-			const firstChar = getFirstConsumedCharImpl(element.element, direction, flags);
+			const firstChar = getFirstConsumedCharImpl(element.element, direction, flags, options);
 			if (element.min === 0) {
 				return firstConsumedCharUnion([emptyWord(), firstChar], flags);
 			} else {
@@ -249,7 +309,7 @@ function getFirstConsumedCharImpl(
 			return firstConsumedCharConcat(
 				(function* (): Iterable<FirstConsumedChar> {
 					for (const e of elements) {
-						yield getFirstConsumedCharImpl(e, direction, flags);
+						yield getFirstConsumedCharImpl(e, direction, flags, options);
 					}
 				})(),
 				flags
@@ -258,13 +318,13 @@ function getFirstConsumedCharImpl(
 
 		case "CapturingGroup":
 		case "Group":
-			return getFirstConsumedCharAlternativesImpl(element.alternatives, direction, flags);
+			return getFirstConsumedCharAlternativesImpl(element.alternatives, direction, flags, options);
 
 		case "Backreference": {
 			if (isEmptyBackreference(element)) {
 				return emptyWord();
 			}
-			const resolvedChar = getFirstConsumedCharImpl(element.resolved, direction, flags);
+			const resolvedChar = getFirstConsumedCharImpl(element.resolved, direction, flags, options);
 
 			// the resolved character is only exact if it is only a single character.
 			// i.e. /(\w)\1/ here the (\w) will capture exactly any word character, but the \1 can only match
@@ -303,6 +363,15 @@ function getFirstConsumedCharImpl(
 		return emptyWord({
 			char: Chars.lineTerminator(flags),
 			edge: true,
+			exact: true,
+		});
+	}
+	function wordAssertion(negate: boolean): FirstPartiallyConsumedChar {
+		const word = Chars.word(flags);
+
+		return emptyWord({
+			char: negate ? word.negate() : word,
+			edge: negate,
 			exact: true,
 		});
 	}
@@ -506,6 +575,14 @@ export function getFirstConsumedCharAfter(
 	direction: MatchingDirection,
 	flags: ReadonlyFlags
 ): FirstConsumedChar {
+	return getFirstConsumedCharAfterImpl(afterThis, direction, flags, new ImplOptions());
+}
+function getFirstConsumedCharAfterImpl(
+	afterThis: Element,
+	direction: MatchingDirection,
+	flags: ReadonlyFlags,
+	options: ImplOptions
+): FirstConsumedChar {
 	type State = Readonly<FirstConsumedChar>;
 	const result = followPaths<State>(
 		afterThis,
@@ -516,7 +593,7 @@ export function getFirstConsumedCharAfter(
 				return firstConsumedCharUnion(states, flags);
 			},
 			enter(element, state, direction): State {
-				const first = getFirstConsumedChar(element, direction, flags);
+				const first = getFirstConsumedCharImpl(element, direction, flags, options);
 				return firstConsumedCharConcat([state, first], flags);
 			},
 			continueInto(): boolean {
@@ -543,7 +620,15 @@ export function getFirstCharAfter(
 	direction: MatchingDirection,
 	flags: ReadonlyFlags
 ): FirstLookChar {
-	return firstConsumedToLook(getFirstConsumedCharAfter(afterThis, direction, flags));
+	return getFirstCharAfterImpl(afterThis, direction, flags, new ImplOptions());
+}
+function getFirstCharAfterImpl(
+	afterThis: Element,
+	direction: MatchingDirection,
+	flags: ReadonlyFlags,
+	options: ImplOptions
+): FirstLookChar {
+	return firstConsumedToLook(getFirstConsumedCharAfterImpl(afterThis, direction, flags, options));
 }
 
 /**
@@ -566,6 +651,14 @@ export function getFirstConsumedCharAfterWithContributors(
 	direction: MatchingDirection,
 	flags: ReadonlyFlags
 ): WithContributors<FirstConsumedChar> {
+	return getFirstConsumedCharAfterWithContributorsImpl(afterThis, direction, flags, new ImplOptions());
+}
+function getFirstConsumedCharAfterWithContributorsImpl(
+	afterThis: Element,
+	direction: MatchingDirection,
+	flags: ReadonlyFlags,
+	option: ImplOptions
+): WithContributors<FirstConsumedChar> {
 	type State = Readonly<WithContributors<FirstConsumedChar>>;
 	const result = followPaths<State>(
 		afterThis,
@@ -586,7 +679,7 @@ export function getFirstConsumedCharAfterWithContributors(
 			},
 
 			enter(element, state, direction): State {
-				const first = getFirstConsumedChar(element, direction, flags);
+				const first = getFirstConsumedCharImpl(element, direction, flags, option);
 				return {
 					char: firstConsumedCharConcat([state.char, first], flags),
 					contributors: [...state.contributors, element],
@@ -614,6 +707,14 @@ export function getFirstCharAfterWithContributors(
 	direction: MatchingDirection,
 	flags: ReadonlyFlags
 ): WithContributors<FirstLookChar> {
-	const { char, contributors } = getFirstConsumedCharAfterWithContributors(afterThis, direction, flags);
+	return getFirstCharAfterWithContributorsImpl(afterThis, direction, flags, new ImplOptions());
+}
+function getFirstCharAfterWithContributorsImpl(
+	afterThis: Element,
+	direction: MatchingDirection,
+	flags: ReadonlyFlags,
+	option: ImplOptions
+): WithContributors<FirstLookChar> {
+	const { char, contributors } = getFirstConsumedCharAfterWithContributorsImpl(afterThis, direction, flags, option);
 	return { char: firstConsumedToLook(char), contributors };
 }
