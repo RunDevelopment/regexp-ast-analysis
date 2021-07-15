@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.2.3 (2021-07-15)
+
+### Changed
+
+- Updated refa and regexpp.
+
+
 ## 0.2.2 (2021-06-03)
 
 ### Changed
