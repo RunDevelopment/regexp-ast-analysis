@@ -1,5 +1,5 @@
 import { CharSet } from "refa";
-import { Alternative, Element, WordBoundaryAssertion } from "regexpp/ast";
+import { Alternative, Assertion, Element, WordBoundaryAssertion } from "regexpp/ast";
 import {
 	getMatchingDirectionFromAssertionKind,
 	isStrictBackreference,
@@ -206,6 +206,139 @@ function getFirstConsumedCharImpl(
 	}
 	return result;
 }
+function getFirstConsumedCharAssertionImpl(
+	element: Assertion,
+	direction: MatchingDirection,
+	flags: ReadonlyFlags,
+	options: ImplOptions
+): FirstConsumedChar {
+	switch (element.kind) {
+		case "word":
+			if (options.isCurrentWordBoundary(element)) {
+				// this means that the value of a word boundary assertion depends on itself indirectly.
+				// we have to stop the recursion here because infinite recursion is possible otherwise.
+				return misdirectedAssertion();
+			} else {
+				options.pushWordBoundary(element);
+				const before = getFirstCharAfterImpl(element, invertMatchingDirection(direction), flags, options);
+				options.popWordBoundary();
+
+				// Remember:
+				//   \B == (?<=\w)(?=\w)|(?<!\w)(?!\w)
+				//   \b == (?<!\w)(?=\w)|(?<=\w)(?!\w)
+
+				const word = Chars.word(flags);
+
+				if (before.edge) {
+					// this forces our hand a little. Since the previous "character" might be the start/end of
+					// the string, we have to enter the alternative that starts with `(?<!\w)`
+					if (before.char.isDisjointWith(word)) {
+						return wordAssertion(element.negate);
+					} else {
+						// it might be either of the alternatives
+						return misdirectedAssertion();
+					}
+				} else {
+					if (before.char.isDisjointWith(word)) {
+						return wordAssertion(element.negate);
+					} else if (before.char.isSubsetOf(word)) {
+						return wordAssertion(!element.negate);
+					} else {
+						// it might be either of the alternatives
+						return misdirectedAssertion();
+					}
+				}
+			}
+		case "end":
+		case "start":
+			if (getMatchingDirectionFromAssertionKind(element.kind) === direction) {
+				if (flags.multiline) {
+					return lineAssertion();
+				} else {
+					return edgeAssertion();
+				}
+			} else {
+				return misdirectedAssertion();
+			}
+		case "lookahead":
+		case "lookbehind":
+			if (getMatchingDirectionFromAssertionKind(element.kind) === direction) {
+				if (element.negate) {
+					// we can only meaningfully analyse negative lookarounds of the form `(?![a])`
+					if (hasSomeDescendant(element, d => d !== element && d.type === "Assertion")) {
+						return misdirectedAssertion();
+					}
+					const firstChar = getFirstConsumedCharAlternativesImpl(
+						element.alternatives,
+						direction,
+						flags,
+						options
+					);
+					const range = getLengthRange(element.alternatives);
+					if (firstChar.empty || !range) {
+						// trivially rejecting
+						return { char: Chars.empty(flags), empty: false, exact: true };
+					}
+
+					if (!firstChar.exact || range.max !== 1) {
+						// the goal to to convert `(?![a])` to `(?=[^a]|$)` but this negation is only correct
+						// if the characters are exact and if the assertion asserts at most one character
+						// E.g. `(?![a][b])` == `(?=$|[^a]|[a][^b])`
+						return misdirectedAssertion();
+					} else {
+						return emptyWord({ char: firstChar.char.negate(), edge: true, exact: true });
+					}
+				} else {
+					const firstChar = getFirstConsumedCharAlternativesImpl(
+						element.alternatives,
+						direction,
+						flags,
+						options
+					);
+					return emptyWord(firstConsumedToLook(firstChar));
+				}
+			} else {
+				return misdirectedAssertion();
+			}
+		default:
+			throw assertNever(element);
+	}
+
+	/**
+	 * The result for an assertion that (partly) assert for the wrong matching direction.
+	 */
+	function misdirectedAssertion(): FirstPartiallyConsumedChar {
+		return emptyWord({
+			char: Chars.all(flags),
+			edge: true,
+			// This is the important part.
+			// Since the allowed chars depend on the previous chars, we don't know which will be allowed.
+			exact: false,
+		});
+	}
+	function edgeAssertion(): FirstPartiallyConsumedChar {
+		return emptyWord(firstLookCharEdgeAccepting(flags));
+	}
+	function lineAssertion(): FirstPartiallyConsumedChar {
+		return emptyWord({
+			char: Chars.lineTerminator(flags),
+			edge: true,
+			exact: true,
+		});
+	}
+	function wordAssertion(negate: boolean): FirstPartiallyConsumedChar {
+		const word = Chars.word(flags);
+
+		return emptyWord({
+			char: negate ? word.negate() : word,
+			edge: negate,
+			exact: true,
+		});
+	}
+	function emptyWord(look?: FirstLookChar): FirstPartiallyConsumedChar {
+		return firstConsumedCharEmptyWord(flags, look);
+	}
+}
 function getFirstConsumedCharUncachedImpl(
 	element: Element | Alternative,
 	direction: MatchingDirection,
@@ -214,102 +347,7 @@ function getFirstConsumedCharUncachedImpl(
 ): FirstConsumedChar {
 	switch (element.type) {
 		case "Assertion":
-			switch (element.kind) {
-				case "word":
-					if (options.isCurrentWordBoundary(element)) {
-						// this means that the value of a word boundary assertion depends on itself indirectly.
-						// we have to stop the recursion here because infinite recursion is possible otherwise.
-						return misdirectedAssertion();
-					} else {
-						options.pushWordBoundary(element);
-						const before = getFirstCharAfterImpl(
-							element,
-							invertMatchingDirection(direction),
-							flags,
-							options
-						);
-						options.popWordBoundary();
-
-						// Remember:
-						//   \B == (?<=\w)(?=\w)|(?<!\w)(?!\w)
-						//   \b == (?<!\w)(?=\w)|(?<=\w)(?!\w)
-
-						const word = Chars.word(flags);
-
-						if (before.edge) {
-							// this forces our hand a little. Since the previous "character" might be the start/end of
-							// the string, we have to enter the alternative that starts with `(?<!\w)`
-							if (before.char.isDisjointWith(word)) {
-								return wordAssertion(element.negate);
-							} else {
-								// it might be either of the alternatives
-								return misdirectedAssertion();
-							}
-						} else {
-							if (before.char.isDisjointWith(word)) {
-								return wordAssertion(element.negate);
-							} else if (before.char.isSubsetOf(word)) {
-								return wordAssertion(!element.negate);
-							} else {
-								// it might be either of the alternatives
-								return misdirectedAssertion();
-							}
-						}
-					}
-				case "end":
-				case "start":
-					if (getMatchingDirectionFromAssertionKind(element.kind) === direction) {
-						if (flags.multiline) {
-							return lineAssertion();
-						} else {
-							return edgeAssertion();
-						}
-					} else {
-						return misdirectedAssertion();
-					}
-				case "lookahead":
-				case "lookbehind":
-					if (getMatchingDirectionFromAssertionKind(element.kind) === direction) {
-						if (element.negate) {
-							// we can only meaningfully analyse negative lookarounds of the form `(?![a])`
-							if (hasSomeDescendant(element, d => d !== element && d.type === "Assertion")) {
-								return misdirectedAssertion();
-							}
-							const firstChar = getFirstConsumedCharAlternativesImpl(
-								element.alternatives,
-								direction,
-								flags,
-								options
-							);
-							const range = getLengthRange(element.alternatives);
-							if (firstChar.empty || !range) {
-								// trivially rejecting
-								return { char: Chars.empty(flags), empty: false, exact: true };
-							}
-
-							if (!firstChar.exact || range.max !== 1) {
-								// the goal to to convert `(?![a])` to `(?=[^a]|$)` but this negation is only correct
-								// if the characters are exact and if the assertion asserts at most one character
-								// E.g. `(?![a][b])` == `(?=$|[^a]|[a][^b])`
-								return misdirectedAssertion();
-							} else {
-								return emptyWord({ char: firstChar.char.negate(), edge: true, exact: true });
-							}
-						} else {
-							const firstChar = getFirstConsumedCharAlternativesImpl(
-								element.alternatives,
-								direction,
-								flags,
-								options
-							);
-							return emptyWord(firstConsumedToLook(firstChar));
-						}
-					} else {
-						return misdirectedAssertion();
-					}
-				default:
-					throw assertNever(element);
-			}
+			return getFirstConsumedCharAssertionImpl(element, direction, flags, options);
 
 		case "Character":
 		case "CharacterSet":
@@ -374,37 +412,6 @@ function getFirstConsumedCharUncachedImpl(
 			throw assertNever(element);
 	}
 
-	/**
-	 * The result for an assertion that (partly) assert for the wrong matching direction.
-	 */
-	function misdirectedAssertion(): FirstPartiallyConsumedChar {
-		return emptyWord({
-			char: Chars.all(flags),
-			edge: true,
-			// This is the important part.
-			// Since the allowed chars depend on the previous chars, we don't know which will be allowed.
-			exact: false,
-		});
-	}
-	function edgeAssertion(): FirstPartiallyConsumedChar {
-		return emptyWord(firstLookCharEdgeAccepting(flags));
-	}
-	function lineAssertion(): FirstPartiallyConsumedChar {
-		return emptyWord({
-			char: Chars.lineTerminator(flags),
-			edge: true,
-			exact: true,
-		});
-	}
-	function wordAssertion(negate: boolean): FirstPartiallyConsumedChar {
-		const word = Chars.word(flags);
-
-		return emptyWord({
-			char: negate ? word.negate() : word,
-			edge: negate,
-			exact: true,
-		});
-	}
 	function emptyWord(look?: FirstLookChar): FirstPartiallyConsumedChar {
 		return firstConsumedCharEmptyWord(flags, look);
 	}
