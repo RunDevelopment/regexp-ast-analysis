@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.2.4 (2021-08-12)
+
+### Fixed
+
+- Fixed `getFirst{Consumed,}Char*` functions taking exponential time for some word boundary assertions.
+
+
 ## 0.2.3 (2021-07-15)
 
 ### Changed
