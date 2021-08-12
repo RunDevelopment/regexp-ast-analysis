@@ -124,16 +124,33 @@ export interface FirstPartiallyConsumedChar {
 }
 
 class ImplOptions {
-	readonly currentWordBoundaries: WordBoundaryAssertion[] = [];
+	private readonly _currentWordBoundaries: WordBoundaryAssertion[] = [];
+	private readonly _ltrCache = new Map<Element | Alternative, FirstConsumedChar>();
+	private readonly _rtlCache = new Map<Element | Alternative, FirstConsumedChar>();
 
 	isCurrentWordBoundary(element: WordBoundaryAssertion): boolean {
-		return this.currentWordBoundaries.some(e => e === element);
+		return this._currentWordBoundaries.some(e => e === element);
 	}
 	pushWordBoundary(element: WordBoundaryAssertion): void {
-		this.currentWordBoundaries.push(element);
+		this._currentWordBoundaries.push(element);
 	}
 	popWordBoundary(): void {
-		this.currentWordBoundaries.pop();
+		this._currentWordBoundaries.pop();
+	}
+
+	getCached(element: Element | Alternative, dir: MatchingDirection): FirstConsumedChar | undefined {
+		if (dir === "ltr") {
+			return this._ltrCache.get(element);
+		} else {
+			return this._rtlCache.get(element);
+		}
+	}
+	setCached(element: Element | Alternative, dir: MatchingDirection, result: FirstConsumedChar): void {
+		if (dir === "ltr") {
+			this._ltrCache.set(element, result);
+		} else {
+			this._rtlCache.set(element, result);
+		}
 	}
 }
 
@@ -177,6 +194,19 @@ function getFirstConsumedCharAlternativesImpl(
 	);
 }
 function getFirstConsumedCharImpl(
+	element: Element | Alternative,
+	direction: MatchingDirection,
+	flags: ReadonlyFlags,
+	options: ImplOptions
+): FirstConsumedChar {
+	let result = options.getCached(element, direction);
+	if (result === undefined) {
+		result = getFirstConsumedCharUncachedImpl(element, direction, flags, options);
+		options.setCached(element, direction, result);
+	}
+	return result;
+}
+function getFirstConsumedCharUncachedImpl(
 	element: Element | Alternative,
 	direction: MatchingDirection,
 	flags: ReadonlyFlags,

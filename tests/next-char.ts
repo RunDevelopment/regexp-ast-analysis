@@ -1,6 +1,6 @@
 import { assert } from "chai";
 import { CharSet } from "refa";
-import { RegExpParser } from "regexpp";
+import { RegExpParser, visitRegExpAST } from "regexpp";
 import * as RAA from "../src";
 import { MatchingDirection } from "../src";
 import { selectNamedGroups, selectSingleChar } from "./helper/select";
@@ -211,6 +211,73 @@ describe(RAA.getFirstConsumedChar.name, function () {
 			}
 		}
 	}
+
+	it("performance test", function () {
+		this.timeout(1000);
+
+		const monster = /(:\s*)(?!\s)(?:!?\s*(?:(?:\?|\bp>|(?:\[\]|\*(?!\*)|\*\*)(?:\s*a\)|\s*ct\b|\s*ve\b|\s*ao\b)*)\s*)*(?:\bpe\b|(?:\be\.)?\b(?!\bk\b)(?!\d)\w+\b(?:\.\b(?!\bk\b)(?!\d)\w+\b)*(?!\s+\b(?!\bk\b)(?!\d)\w+\b)))+(?=\s*(?:a\)\s*)?[=;,)])|(?!\s)(?:!?\s*(?:(?:\?|\bp>|(?:\[\]|\*(?!\*)|\*\*)(?:\s*a\)|\s*ct\b|\s*ve\b|\s*ao\b)*)\s*)*(?:\bpe\b|(?:\be\.)?\b(?!\bk\b)(?!\d)\w+\b(?:\.\b(?!\bk\b)(?!\d)\w+\b)*(?!\s+\b(?!\bk\b)(?!\d)\w+\b)))+(?=\s*(?:a\)\s*)?\{)/;
+
+		const { pattern, flags } = new RegExpParser().parseLiteral(monster.toString());
+
+		type WordAssertionResult = ["all" | "word", "all" | "word"];
+		const expected: Record<number, WordAssertionResult> = {
+			"30": ["all", "word"],
+			"72": ["word", "all"],
+			"80": ["word", "all"],
+			"88": ["word", "all"],
+			"101": ["all", "word"],
+			"105": ["word", "all"],
+			"111": ["all", "word"],
+			"118": ["all", "word"],
+			"123": ["all", "word"],
+			"126": ["word", "all"],
+			"138": ["word", "all"],
+			"145": ["word", "word"],
+			"150": ["all", "word"],
+			"153": ["word", "all"],
+			"165": ["word", "all"],
+			"175": ["word", "word"],
+			"180": ["all", "word"],
+			"183": ["word", "all"],
+			"195": ["word", "all"],
+			"249": ["all", "word"],
+			"291": ["word", "all"],
+			"299": ["word", "all"],
+			"307": ["word", "all"],
+			"320": ["all", "word"],
+			"324": ["word", "all"],
+			"330": ["all", "word"],
+			"337": ["all", "word"],
+			"342": ["all", "word"],
+			"345": ["word", "all"],
+			"357": ["word", "all"],
+			"364": ["word", "word"],
+			"369": ["all", "word"],
+			"372": ["word", "all"],
+			"384": ["word", "all"],
+			"394": ["word", "word"],
+			"399": ["all", "word"],
+			"402": ["word", "all"],
+			"414": ["word", "all"],
+		};
+		const actual: Record<number, WordAssertionResult> = {};
+
+		visitRegExpAST(pattern, {
+			onAssertionEnter(node) {
+				if (node.kind !== "word") return;
+
+				const ltr = RAA.getFirstConsumedChar(node, "ltr", flags);
+				const rtl = RAA.getFirstConsumedChar(node, "rtl", flags);
+				if (!ltr.empty || !rtl.empty) {
+					assert.fail("What?");
+				}
+
+				actual[node.start] = [ltr.look.char.isAll ? "all" : "word", rtl.look.char.isAll ? "all" : "word"];
+			},
+		});
+
+		assert.deepStrictEqual(actual, expected);
+	});
 });
 
 describe(RAA.getFirstConsumedCharAfter.name, function () {
