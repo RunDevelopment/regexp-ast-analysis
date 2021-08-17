@@ -581,7 +581,7 @@ export function isEmptyBackreference(backreference: Backreference): boolean {
 	// If there exists a path through the regular expression which connect the group and the backreference, then
 	// the backreference can capture the group iff we only move up, down, or right relative to the group.
 
-	function findBackreference(node: Element): boolean {
+	function findBackreference(node: CapturingGroup | Group | LookaroundAssertion | Quantifier): boolean {
 		const parent = node.parent;
 
 		switch (parent.type) {
@@ -618,9 +618,6 @@ export function isEmptyBackreference(backreference: Backreference): boolean {
 
 			case "Quantifier":
 				return findBackreference(parent);
-
-			default:
-				throw new Error("What happened?");
 		}
 	}
 
@@ -671,7 +668,7 @@ export function isStrictBackreference(backreference: Backreference): boolean {
 		backRefAncestors.add(a);
 	}
 
-	function findBackreference(node: Element): boolean {
+	function findBackreference(node: CapturingGroup | Group | LookaroundAssertion | Quantifier): boolean {
 		const parent = node.parent;
 
 		switch (parent.type) {
@@ -716,9 +713,6 @@ export function isStrictBackreference(backreference: Backreference): boolean {
 					return false;
 				}
 				return findBackreference(parent);
-
-			default:
-				throw new Error("What happened?");
 		}
 	}
 
