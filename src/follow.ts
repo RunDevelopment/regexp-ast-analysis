@@ -155,7 +155,7 @@ export interface FollowOperations<S> {
  * @typeParam S The type of the state.
  */
 export function followPaths<S>(
-	start: Element,
+	start: Element | Alternative,
 	startMode: "enter" | "next",
 	initialState: S,
 	operations: FollowOperations<S>,
@@ -306,6 +306,40 @@ export function followPaths<S>(
 	if (!direction) {
 		direction = getMatchingDirection(start);
 	}
+
+	if (start.type === "Alternative") {
+		// Alternatives are a little tricky.
+		// The basic ideas are the following:
+		//  1) If we want to *enter* an alternative, we can just enter its first element instead.
+		//  2) If we want to *leave* an alternative, we can leave its parent element instead.
+		//     This gets more complex because the parent might be an assertion or the pattern.
+
+		if (start.elements.length === 0) {
+			// For empty alternatives, entering is the same as leaving
+			startMode = "next";
+		}
+
+		if (startMode === "enter") {
+			start = getFirstElement(start, direction)!;
+		} else {
+			const parent = start.parent;
+
+			if (parent.type === "Assertion" || parent.type === "Pattern") {
+				// We have to end here
+				if (operations.endPath) {
+					return operations.endPath(
+						initialState,
+						direction,
+						parent.type === "Assertion" ? "assertion" : "pattern"
+					);
+				}
+				return initialState;
+			}
+
+			start = parent;
+		}
+	}
+
 	if (startMode === "enter") {
 		initialState = opEnter(start, initialState, direction);
 	}
@@ -317,5 +351,13 @@ function doFork<S>(operations: FollowOperations<S>, state: S, direction: Matchin
 		return operations.fork(state, direction);
 	} else {
 		return state;
+	}
+}
+
+function getFirstElement(a: Alternative, dir: MatchingDirection): Element | undefined {
+	if (dir === "ltr") {
+		return a.elements[0];
+	} else {
+		return a.elements[a.elements.length - 1];
 	}
 }

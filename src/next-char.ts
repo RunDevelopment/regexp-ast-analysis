@@ -608,14 +608,14 @@ function firstConsumedToLook(first: Readonly<FirstConsumedChar>): FirstLookChar 
 }
 
 export function getFirstConsumedCharAfter(
-	afterThis: Element,
+	afterThis: Element | Alternative,
 	direction: MatchingDirection,
 	flags: ReadonlyFlags
 ): FirstConsumedChar {
 	return getFirstConsumedCharAfterImpl(afterThis, direction, flags, new ImplOptions());
 }
 function getFirstConsumedCharAfterImpl(
-	afterThis: Element,
+	afterThis: Element | Alternative,
 	direction: MatchingDirection,
 	flags: ReadonlyFlags,
 	options: ImplOptions
@@ -653,14 +653,14 @@ function getFirstConsumedCharAfterImpl(
  * direction. You can use this to get the previous character of an element as well.
  */
 export function getFirstCharAfter(
-	afterThis: Element,
+	afterThis: Element | Alternative,
 	direction: MatchingDirection,
 	flags: ReadonlyFlags
 ): FirstLookChar {
 	return getFirstCharAfterImpl(afterThis, direction, flags, new ImplOptions());
 }
 function getFirstCharAfterImpl(
-	afterThis: Element,
+	afterThis: Element | Alternative,
 	direction: MatchingDirection,
 	flags: ReadonlyFlags,
 	options: ImplOptions
@@ -684,14 +684,14 @@ export interface WithContributors<Char> {
  * the result.
  */
 export function getFirstConsumedCharAfterWithContributors(
-	afterThis: Element,
+	afterThis: Element | Alternative,
 	direction: MatchingDirection,
 	flags: ReadonlyFlags
 ): WithContributors<FirstConsumedChar> {
 	return getFirstConsumedCharAfterWithContributorsImpl(afterThis, direction, flags, new ImplOptions());
 }
 function getFirstConsumedCharAfterWithContributorsImpl(
-	afterThis: Element,
+	afterThis: Element | Alternative,
 	direction: MatchingDirection,
 	flags: ReadonlyFlags,
 	option: ImplOptions
@@ -740,14 +740,14 @@ function getFirstConsumedCharAfterWithContributorsImpl(
  * result.
  */
 export function getFirstCharAfterWithContributors(
-	afterThis: Element,
+	afterThis: Element | Alternative,
 	direction: MatchingDirection,
 	flags: ReadonlyFlags
 ): WithContributors<FirstLookChar> {
 	return getFirstCharAfterWithContributorsImpl(afterThis, direction, flags, new ImplOptions());
 }
 function getFirstCharAfterWithContributorsImpl(
-	afterThis: Element,
+	afterThis: Element | Alternative,
 	direction: MatchingDirection,
 	flags: ReadonlyFlags,
 	option: ImplOptions
