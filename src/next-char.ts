@@ -12,7 +12,7 @@ import {
 import { toCharSet } from "./to-char-set";
 import { followPaths } from "./follow";
 import { ReadonlyFlags } from "./flags";
-import { assertNever } from "./util";
+import { assertNever, isReadonlyArray } from "./util";
 import { Chars } from "./chars";
 
 /**
@@ -176,10 +176,10 @@ export function getFirstConsumedChar(
 ): FirstConsumedChar {
 	const options = new ImplOptions();
 
-	if (Array.isArray(element)) {
-		return getFirstConsumedCharAlternativesImpl(element as readonly Alternative[], direction, flags, options);
+	if (isReadonlyArray(element)) {
+		return getFirstConsumedCharAlternativesImpl(element, direction, flags, options);
 	} else {
-		return getFirstConsumedCharImpl(element as Element | Alternative, direction, flags, options);
+		return getFirstConsumedCharImpl(element, direction, flags, options);
 	}
 }
 function getFirstConsumedCharAlternativesImpl(

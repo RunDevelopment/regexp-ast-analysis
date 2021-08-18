@@ -3,7 +3,7 @@ import { Character, CharacterClass, CharacterClassRange, CharacterSet } from "re
 import { Chars } from "./chars";
 import { ReadonlyFlags } from "./flags";
 import { MaxChar } from "./max-char";
-import { assertNever } from "./util";
+import { assertNever, isReadonlyArray } from "./util";
 
 /**
  * All possible element types that are accepted by {@link toCharSet}.
@@ -47,8 +47,8 @@ interface CategorizedElements {
 	negated: readonly CharacterClass[] | undefined;
 }
 function categorizeElements(elements: ToCharSetElement | readonly ToCharSetElement[]): CategorizedElements {
-	if (Array.isArray(elements)) {
-		const all = elements as readonly ToCharSetElement[];
+	if (isReadonlyArray(elements)) {
+		const all = elements;
 		if (areAllPositive(all)) {
 			return { positive: all, negated: undefined };
 		} else if (areAllNegated(all)) {
@@ -73,7 +73,7 @@ function categorizeElements(elements: ToCharSetElement | readonly ToCharSetEleme
 			return { positive, negated };
 		}
 	} else {
-		const e = elements as ToCharSetElement;
+		const e = elements;
 		if (e.type === "CharacterClass") {
 			if (e.negate) {
 				return { positive: undefined, negated: [e] };

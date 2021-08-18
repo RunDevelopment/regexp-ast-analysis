@@ -18,27 +18,26 @@ import {
 	CharacterSet,
 	EdgeAssertion,
 } from "regexpp/ast";
-import { assertNever } from "./util";
+import { assertNever, isReadonlyArray } from "./util";
 
 function isInvokeEvery(
 	element: Element | Alternative | readonly Alternative[],
 	fn: (e: Element | Alternative) => boolean
 ): boolean {
-	if (Array.isArray(element)) {
-		const alternatives = element as readonly Alternative[];
-		return alternatives.length > 0 && alternatives.every(fn);
+	if (isReadonlyArray(element)) {
+		return element.every(fn);
 	} else {
-		return fn(element as Element | Alternative);
+		return fn(element);
 	}
 }
 function isInvokeSome(
 	element: Element | Alternative | readonly Alternative[],
 	fn: (e: Element | Alternative) => boolean
 ): boolean {
-	if (Array.isArray(element)) {
-		return (element as readonly Alternative[]).some(fn);
+	if (isReadonlyArray(element)) {
+		return element.some(fn);
 	} else {
-		return fn(element as Element | Alternative);
+		return fn(element);
 	}
 }
 /**
@@ -755,10 +754,10 @@ const ONE_LENGTH_RANGE: LengthRange = { min: 1, max: 1 };
  * @see {@link isPotentiallyEmpty}
  */
 export function getLengthRange(element: Element | Alternative | readonly Alternative[]): LengthRange | undefined {
-	if (Array.isArray(element)) {
-		return getLengthRangeAlternativesImpl(element as readonly Alternative[]);
+	if (isReadonlyArray(element)) {
+		return getLengthRangeAlternativesImpl(element);
 	} else {
-		return getLengthRangeElementImpl(element as Element | Alternative);
+		return getLengthRangeElementImpl(element);
 	}
 }
 function getLengthRangeAlternativesImpl(alternatives: readonly Alternative[]): LengthRange | undefined {
