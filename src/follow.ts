@@ -26,13 +26,45 @@ export interface FollowOperations<S> {
 	 */
 	join(states: S[], direction: MatchingDirection): S;
 	/**
-	 * This function is called when dealing to general lookarounds (it will __not__ be called for predefined assertion -
-	 * `^`, `$`, `\b`, `\B`).
+	 * This function is called when dealing with lookarounds.
+	 *
+	 * It will __not__ be called for predefined assertion - `^`, `$`, `\b`, `\B`. Use {@link FollowOperations.enter} or
+	 * {@link FollowOperations.leave} for predefined assertions instead.
+	 *
+	 * @default x => x
 	 */
 	assert?: (state: S, direction: MatchingDirection, assertion: S, assertionDirection: MatchingDirection) => S;
 
+	/**
+	 * This function is called when entering an element.
+	 *
+	 * Operations for elements are called in the following order:
+	 *
+	 * 1. {@link FollowOperations.enter}
+	 * 2. if {@link FollowOperations.continueInto} return `true`
+	 *    1. Element-specific operations (if any) that can change the current state.
+	 * 3. {@link FollowOperations.leave}
+	 * 4. {@link FollowOperations.continueAfter} (optional; might not be called for every element)
+	 *
+	 * @default (_, x) => x
+	 */
 	enter?: (element: Element, state: S, direction: MatchingDirection) => S;
+	/**
+	 * This function is called when leaving an element.
+	 *
+	 * See the documentation on {@link FollowOperations.enter} for more details.
+	 *
+	 * @default (_, x) => x
+	 */
 	leave?: (element: Element, state: S, direction: MatchingDirection) => S;
+	/**
+	 * This function is called when a path ends.
+	 *
+	 * Paths end at the end the patterns and assertions. It means that there is no element after the pattern/assertion
+	 * in that direction.
+	 *
+	 * @default x => x
+	 */
 	endPath?: (state: S, direction: MatchingDirection, reason: "pattern" | "assertion") => S;
 
 	/**
@@ -40,7 +72,11 @@ export interface FollowOperations<S> {
 	 * (return `false`). If the element is skipped, the given state will not be changed and passed as-is to the `leave`
 	 * function.
 	 *
-	 * You shouldn't modify state in this function. Modify state in the `enter` function instead.
+	 * You shouldn't modify state in this function. Modify state in {@link FollowOperations.enter} instead.
+	 *
+	 * See the documentation on {@link FollowOperations.enter} for more details.
+	 *
+	 * @default () => true
 	 */
 	continueInto?: (element: Element, state: S, direction: MatchingDirection) => boolean;
 	/**
@@ -50,7 +86,11 @@ export interface FollowOperations<S> {
 	 * If the current path is a fork path, then only the elements until the fork is joined will be skipped. A stopped
 	 * fork path will be joined with all other forks like normal.
 	 *
-	 * You shouldn't modify state in this function. Modify state in the `leave` function instead.
+	 * You shouldn't modify state in this function. Modify state in {@link FollowOperations.leave} instead.
+	 *
+	 * See the documentation on {@link FollowOperations.enter} for more details.
+	 *
+	 * @default () => true
 	 */
 	continueAfter?: (element: Element, state: S, direction: MatchingDirection) => boolean;
 }
