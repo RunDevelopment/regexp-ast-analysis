@@ -126,9 +126,15 @@
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>This function is called when dealing to general lookarounds (it will <strong>not</strong> be called for predefined assertion -
-							<code>^</code>, <code>$</code>, <code>\b</code>, <code>\B</code>).</p>
+							<p>This function is called when dealing with lookarounds.</p>
 						</div>
+						<p>It will <strong>not</strong> be called for predefined assertion - <code>^</code>, <code>$</code>, <code>\b</code>, <code>\B</code>. Use <a href="followoperations.html#enter">FollowOperations.enter</a> or
+						<a href="followoperations.html#leave">FollowOperations.leave</a> for predefined assertions instead.</p>
+						<dl class="tsd-comment-tags">
+							<dt>default</dt>
+							<dd><p>x =&gt; x</p>
+							</dd>
+						</dl>
 					</div>
 					<div class="tsd-type-declaration">
 						<h4>Type declaration</h4>
@@ -174,7 +180,13 @@
 						</div>
 						<p>If the current path is a fork path, then only the elements until the fork is joined will be skipped. A stopped
 						fork path will be joined with all other forks like normal.</p>
-						<p>You shouldn&#39;t modify state in this function. Modify state in the <code>leave</code> function instead.</p>
+						<p>You shouldn&#39;t modify state in this function. Modify state in <a href="followoperations.html#leave">FollowOperations.leave</a> instead.</p>
+						<p>See the documentation on <a href="followoperations.html#enter">FollowOperations.enter</a> for more details.</p>
+						<dl class="tsd-comment-tags">
+							<dt>default</dt>
+							<dd><p>() =&gt; true</p>
+							</dd>
+						</dl>
 					</div>
 					<div class="tsd-type-declaration">
 						<h4>Type declaration</h4>
@@ -216,7 +228,13 @@
 								(return <code>false</code>). If the element is skipped, the given state will not be changed and passed as-is to the <code>leave</code>
 							function.</p>
 						</div>
-						<p>You shouldn&#39;t modify state in this function. Modify state in the <code>enter</code> function instead.</p>
+						<p>You shouldn&#39;t modify state in this function. Modify state in <a href="followoperations.html#enter">FollowOperations.enter</a> instead.</p>
+						<p>See the documentation on <a href="followoperations.html#enter">FollowOperations.enter</a> for more details.</p>
+						<dl class="tsd-comment-tags">
+							<dt>default</dt>
+							<dd><p>() =&gt; true</p>
+							</dd>
+						</dl>
 					</div>
 					<div class="tsd-type-declaration">
 						<h4>Type declaration</h4>
@@ -252,6 +270,18 @@
 					<div class="tsd-signature tsd-kind-icon">end<wbr>Path<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">(</span>state<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">S</span>, direction<span class="tsd-signature-symbol">: </span><a href="../modules.html#matchingdirection" class="tsd-signature-type" data-tsd-kind="Type alias">MatchingDirection</a>, reason<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">&quot;pattern&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;assertion&quot;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">S</span></div>
 					<aside class="tsd-sources">
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>This function is called when a path ends.</p>
+						</div>
+						<p>Paths end at the end the patterns and assertions. It means that there is no element after the pattern/assertion
+						in that direction.</p>
+						<dl class="tsd-comment-tags">
+							<dt>default</dt>
+							<dd><p>x =&gt; x</p>
+							</dd>
+						</dl>
+					</div>
 					<div class="tsd-type-declaration">
 						<h4>Type declaration</h4>
 						<ul class="tsd-parameters">
@@ -286,6 +316,26 @@
 					<div class="tsd-signature tsd-kind-icon">enter<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">(</span>element<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Element</span>, state<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">S</span>, direction<span class="tsd-signature-symbol">: </span><a href="../modules.html#matchingdirection" class="tsd-signature-type" data-tsd-kind="Type alias">MatchingDirection</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">S</span></div>
 					<aside class="tsd-sources">
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>This function is called when entering an element.</p>
+						</div>
+						<p>Operations for elements are called in the following order:</p>
+						<ol>
+							<li><a href="followoperations.html#enter">FollowOperations.enter</a></li>
+							<li>if <a href="followoperations.html#continueinto">FollowOperations.continueInto</a> return <code>true</code><ol>
+									<li>Element-specific operations (if any) that can change the current state.</li>
+								</ol>
+							</li>
+							<li><a href="followoperations.html#leave">FollowOperations.leave</a></li>
+							<li><a href="followoperations.html#continueafter">FollowOperations.continueAfter</a> (optional; might not be called for every element)</li>
+						</ol>
+						<dl class="tsd-comment-tags">
+							<dt>default</dt>
+							<dd><p>(_, x) =&gt; x</p>
+							</dd>
+						</dl>
+					</div>
 					<div class="tsd-type-declaration">
 						<h4>Type declaration</h4>
 						<ul class="tsd-parameters">
@@ -365,6 +415,17 @@
 					<div class="tsd-signature tsd-kind-icon">leave<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">(</span>element<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Element</span>, state<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">S</span>, direction<span class="tsd-signature-symbol">: </span><a href="../modules.html#matchingdirection" class="tsd-signature-type" data-tsd-kind="Type alias">MatchingDirection</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">S</span></div>
 					<aside class="tsd-sources">
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>This function is called when leaving an element.</p>
+						</div>
+						<p>See the documentation on <a href="followoperations.html#enter">FollowOperations.enter</a> for more details.</p>
+						<dl class="tsd-comment-tags">
+							<dt>default</dt>
+							<dd><p>(_, x) =&gt; x</p>
+							</dd>
+						</dl>
+					</div>
 					<div class="tsd-type-declaration">
 						<h4>Type declaration</h4>
 						<ul class="tsd-parameters">
