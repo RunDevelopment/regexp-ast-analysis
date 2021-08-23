@@ -1,4 +1,4 @@
-import { Alternative, Element, Quantifier } from "regexpp/ast";
+import { Alternative, Element, LookaroundAssertion, Quantifier } from "regexpp/ast";
 import { getMatchingDirectionFromAssertionKind, getMatchingDirection, MatchingDirection } from "./basic";
 import { assertNever } from "./util";
 
@@ -93,6 +93,25 @@ export interface FollowOperations<S> {
 	 * @default () => true
 	 */
 	continueAfter?: (element: Element, state: S, direction: MatchingDirection) => boolean;
+	/**
+	 * Whether the current path should continue outside the given lookaround assertion.
+	 *
+	 * Paths that leave an assertion may be followed if the current direction is the opposite of the matching direction
+	 * of the lookaround assertion. This allows operations to see more. E.g. in `a(?!b)`, the `a` can be reached from
+	 * `b` if the given direction for `b` is right-to-left.
+	 *
+	 * This function is only called iff `getMatchingDirectionFromAssertionKind(element.kind) !== direction`.
+	 *
+	 * If this function returns `false`, {@link FollowOperations.endPath} is guaranteed to be called next.
+	 * If this function returns `true`, {@link FollowOperations.continueAfter} is guaranteed to be called next for the
+	 * lookaround assertion.
+	 *
+	 * You shouldn't modify state in this function. Modify state in {@link FollowOperations.endPath} or
+	 * {@link FollowOperations.enter} instead.
+	 *
+	 * @default () => false
+	 */
+	continueOutside?: (element: LookaroundAssertion, state: S, direction: MatchingDirection) => boolean;
 }
 
 /**
@@ -218,9 +237,7 @@ export function followPaths<S>(
 							),
 							assertionDirection
 						);
-						if (operations.endPath) {
-							state = operations.endPath(state, assertionDirection, "assertion");
-						}
+						state = endPath(state, assertionDirection, "assertion");
 						if (operations.assert) {
 							state = operations.assert(state, direction, assertion, assertionDirection);
 						}
@@ -275,50 +292,8 @@ export function followPaths<S>(
 	}
 
 	function opNext(element: Element, state: S, direction: MatchingDirection): S {
-		type NextElement = false | Element | "pattern" | "assertion" | [Quantifier, NextElement];
-		function getNextElement(element: Element): NextElement {
-			const parent = element.parent;
-			if (parent.type === "CharacterClass" || parent.type === "CharacterClassRange") {
-				throw new Error("The given element cannot be part of a character class.");
-			}
-
-			const continuePath = operations.continueAfter?.(element, state, direction) ?? true;
-			if (!continuePath) {
-				return false;
-			}
-
-			if (parent.type === "Quantifier") {
-				// This is difficult.
-				// The main problem is that paths coming out of the quantifier might loop back into itself. This means that
-				// we have to consider the path that leaves the quantifier and the path that goes back into the quantifier.
-				if (parent.max <= 1) {
-					// Can't loop, so we only have to consider the path going out of the quantifier.
-					return getNextElement(parent);
-				} else {
-					return [parent, getNextElement(parent)];
-				}
-			} else {
-				const nextIndex = parent.elements.indexOf(element) + (direction === "ltr" ? +1 : -1);
-				const nextElement: Element | undefined = parent.elements[nextIndex];
-
-				if (nextElement) {
-					return nextElement;
-				} else {
-					const parentParent = parent.parent;
-					if (parentParent.type === "Pattern") {
-						return "pattern";
-					} else if (parentParent.type === "Assertion") {
-						return "assertion";
-					} else if (parentParent.type === "CapturingGroup" || parentParent.type === "Group") {
-						return getNextElement(parentParent);
-					}
-					throw assertNever(parentParent);
-				}
-			}
-		}
-
 		for (;;) {
-			let after = getNextElement(element);
+			let after = getNextElement(element, state, direction);
 			while (Array.isArray(after)) {
 				const [quant, other] = after;
 				state = operations.join(
@@ -331,15 +306,71 @@ export function followPaths<S>(
 			if (after === false) {
 				return state;
 			} else if (after === "assertion" || after === "pattern") {
-				if (operations.endPath) {
-					state = operations.endPath(state, direction, after);
-				}
-				return state;
+				return endPath(state, direction, after);
 			} else {
 				state = opEnter(after, state, direction);
 				element = after;
 			}
 		}
+	}
+	type NextElement = false | Element | "pattern" | "assertion" | [Quantifier, NextElement];
+	function getNextElement(element: Element, state: S, direction: MatchingDirection): NextElement {
+		const parent = element.parent;
+		if (parent.type === "CharacterClass" || parent.type === "CharacterClassRange") {
+			throw new Error("The given element cannot be part of a character class.");
+		}
+
+		const continuePath = operations.continueAfter?.(element, state, direction) ?? true;
+		if (!continuePath) {
+			return false;
+		}
+
+		if (parent.type === "Quantifier") {
+			// This is difficult.
+			// The main problem is that paths coming out of the quantifier might loop back into itself. This means that
+			// we have to consider the path that leaves the quantifier and the path that goes back into the quantifier.
+			if (parent.max <= 1) {
+				// Can't loop, so we only have to consider the path going out of the quantifier.
+				return getNextElement(parent, state, direction);
+			} else {
+				return [parent, getNextElement(parent, state, direction)];
+			}
+		} else {
+			const nextIndex = parent.elements.indexOf(element) + (direction === "ltr" ? +1 : -1);
+			const nextElement: Element | undefined = parent.elements[nextIndex];
+
+			if (nextElement) {
+				return nextElement;
+			} else {
+				const parentParent = parent.parent;
+				if (parentParent.type === "Pattern") {
+					return "pattern";
+				} else if (parentParent.type === "Assertion") {
+					if (continueOutside(parentParent, state, direction)) {
+						return getNextElement(parentParent, state, direction);
+					}
+
+					return "assertion";
+				} else if (parentParent.type === "CapturingGroup" || parentParent.type === "Group") {
+					return getNextElement(parentParent, state, direction);
+				}
+				throw assertNever(parentParent);
+			}
+		}
+	}
+	function continueOutside(assertion: LookaroundAssertion, state: S, direction: MatchingDirection): boolean {
+		if (!operations.continueOutside) {
+			return false;
+		}
+
+		const assertionDirection = getMatchingDirectionFromAssertionKind(assertion.kind);
+		return assertionDirection !== direction && operations.continueOutside(assertion, state, direction);
+	}
+	function endPath(state: S, direction: MatchingDirection, reason: "assertion" | "pattern"): S {
+		if (operations.endPath) {
+			return operations.endPath(state, direction, reason);
+		}
+		return state;
 	}
 
 	if (!direction) {
@@ -363,16 +394,10 @@ export function followPaths<S>(
 		} else {
 			const parent = start.parent;
 
-			if (parent.type === "Assertion" || parent.type === "Pattern") {
-				// We have to end here
-				if (operations.endPath) {
-					return operations.endPath(
-						initialState,
-						direction,
-						parent.type === "Assertion" ? "assertion" : "pattern"
-					);
-				}
-				return initialState;
+			if (parent.type === "Pattern") {
+				return endPath(initialState, direction, "pattern");
+			} else if (parent.type === "Assertion" && !continueOutside(parent, initialState, direction)) {
+				return endPath(initialState, direction, "assertion");
 			}
 
 			start = parent;
