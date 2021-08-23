@@ -229,15 +229,15 @@ describe(RAA.getFirstConsumedChar.name, function () {
 			"105": ["word", "all"],
 			"111": ["all", "word"],
 			"118": ["all", "word"],
-			"123": ["all", "word"],
+			"123": ["word", "word"],
 			"126": ["word", "all"],
 			"138": ["word", "all"],
 			"145": ["word", "word"],
-			"150": ["all", "word"],
+			"150": ["word", "word"],
 			"153": ["word", "all"],
 			"165": ["word", "all"],
 			"175": ["word", "word"],
-			"180": ["all", "word"],
+			"180": ["word", "word"],
 			"183": ["word", "all"],
 			"195": ["word", "all"],
 			"249": ["all", "word"],
@@ -248,15 +248,15 @@ describe(RAA.getFirstConsumedChar.name, function () {
 			"324": ["word", "all"],
 			"330": ["all", "word"],
 			"337": ["all", "word"],
-			"342": ["all", "word"],
+			"342": ["word", "word"],
 			"345": ["word", "all"],
 			"357": ["word", "all"],
 			"364": ["word", "word"],
-			"369": ["all", "word"],
+			"369": ["word", "word"],
 			"372": ["word", "all"],
 			"384": ["word", "all"],
 			"394": ["word", "word"],
-			"399": ["all", "word"],
+			"399": ["word", "word"],
 			"402": ["word", "all"],
 			"414": ["word", "all"],
 		};
@@ -325,7 +325,7 @@ describe(RAA.getFirstConsumedCharAfter.name, function () {
 		},
 		{
 			// This is interesting because `followPaths` used to be implemented in a way that caused this pattern to
-			// create exponentially many path, taking exponentially much time.
+			// create exponentially many paths, taking exponentially much time.
 			regexp: /(a(b(c(d(e(f(g(h(i(j(k(l(m(n(o(p(q(r(s(t(u(v(w(x(y(?<afterThis>)){2}){2}){2}){2}){2}){2}){2}){2}){2}){2}){2}){2}){2}){2}){2}){2}){2}){2}){2}){2}){2}){2}){2}){2}){2}z/,
 			expected: { char: toCharSet(/[a-z]/), exact: true, empty: false },
 		},
@@ -417,6 +417,16 @@ describe(RAA.getFirstConsumedCharAfter.name, function () {
 				empty: true,
 				look: { char: toCharSet(/[\w]/), exact: true, edge: false },
 			},
+		},
+		{
+			regexp: /a(?=(?<afterThis>)b)/,
+			direction: "ltr",
+			expected: { char: toCharSet(/[b]/), exact: true, empty: false },
+		},
+		{
+			regexp: /a(?=(?<afterThis>)b)/,
+			direction: "rtl",
+			expected: { char: toCharSet(/[a]/), exact: true, empty: false },
 		},
 	]);
 

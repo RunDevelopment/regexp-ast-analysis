@@ -639,6 +639,9 @@ function getFirstConsumedCharAfterImpl(
 			continueAfter(_, state): boolean {
 				return state.empty;
 			},
+			continueOutside(): boolean {
+				return true;
+			},
 		},
 		direction
 	);
@@ -728,6 +731,9 @@ function getFirstConsumedCharAfterWithContributorsImpl(
 			},
 			continueAfter(_, state): boolean {
 				return state.char.empty;
+			},
+			continueOutside(): boolean {
+				return true;
 			},
 		},
 		direction
