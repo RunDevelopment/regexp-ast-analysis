@@ -317,8 +317,7 @@ export function followPaths<S>(
 			}
 		}
 
-		// eslint-disable-next-line no-constant-condition
-		while (true) {
+		for (;;) {
 			let after = getNextElement(element);
 			while (Array.isArray(after)) {
 				const [quant, other] = after;
