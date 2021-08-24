@@ -14,6 +14,7 @@ import { followPaths } from "./follow";
 import { ReadonlyFlags } from "./flags";
 import { assertNever, isReadonlyArray } from "./util";
 import { Chars } from "./chars";
+import { CacheInstance } from "./cache";
 
 /**
  * The first character after some point.
@@ -125,8 +126,21 @@ export interface FirstPartiallyConsumedChar {
 
 class ImplOptions {
 	private readonly _currentWordBoundaries: WordBoundaryAssertion[] = [];
-	private readonly _ltrCache = new Map<Element | Alternative, FirstConsumedChar>();
-	private readonly _rtlCache = new Map<Element | Alternative, FirstConsumedChar>();
+	private readonly _ltrCache: WeakMap<Element | Alternative, Readonly<FirstConsumedChar>>;
+	private readonly _rtlCache: WeakMap<Element | Alternative, Readonly<FirstConsumedChar>>;
+
+	constructor(flags: ReadonlyFlags) {
+		// We need a cache to avoid an exponential worst case regarding boundary assertions.
+		// If the current flags are a cache instance, we'll use the cache from there and if not, then we'll create a
+		// new cache.
+		if (flags instanceof CacheInstance) {
+			this._ltrCache = flags.getFirstConsumedCharLTR;
+			this._rtlCache = flags.getFirstConsumedCharRTL;
+		} else {
+			this._ltrCache = new WeakMap();
+			this._rtlCache = new WeakMap();
+		}
+	}
 
 	isCurrentWordBoundary(element: WordBoundaryAssertion): boolean {
 		return this._currentWordBoundaries.some(e => e === element);
@@ -138,19 +152,32 @@ class ImplOptions {
 		this._currentWordBoundaries.pop();
 	}
 
-	getCached(element: Element | Alternative, dir: MatchingDirection): FirstConsumedChar | undefined {
+	getCached(element: Element | Alternative, dir: MatchingDirection): Readonly<FirstConsumedChar> | undefined {
 		if (dir === "ltr") {
 			return this._ltrCache.get(element);
 		} else {
 			return this._rtlCache.get(element);
 		}
 	}
-	setCached(element: Element | Alternative, dir: MatchingDirection, result: FirstConsumedChar): void {
+	setCached(element: Element | Alternative, dir: MatchingDirection, result: Readonly<FirstConsumedChar>): void {
 		if (dir === "ltr") {
 			this._ltrCache.set(element, result);
 		} else {
 			this._rtlCache.set(element, result);
 		}
+	}
+}
+
+function copyFirstConsumedChar(toCopy: Readonly<FirstConsumedChar>): FirstConsumedChar {
+	if (toCopy.empty) {
+		return {
+			char: toCopy.char,
+			empty: true,
+			exact: toCopy.exact,
+			look: { ...toCopy.look },
+		};
+	} else {
+		return { ...toCopy };
 	}
 }
 
@@ -174,20 +201,23 @@ export function getFirstConsumedChar(
 	direction: MatchingDirection,
 	flags: ReadonlyFlags
 ): FirstConsumedChar {
-	const options = new ImplOptions();
+	const options = new ImplOptions(flags);
 
+	let result;
 	if (isReadonlyArray(element)) {
-		return getFirstConsumedCharAlternativesImpl(element, direction, flags, options);
+		result = getFirstConsumedCharAlternativesImpl(element, direction, flags, options);
 	} else {
-		return getFirstConsumedCharImpl(element, direction, flags, options);
+		result = getFirstConsumedCharImpl(element, direction, flags, options);
 	}
+
+	return copyFirstConsumedChar(result);
 }
 function getFirstConsumedCharAlternativesImpl(
 	element: readonly Alternative[],
 	direction: MatchingDirection,
 	flags: ReadonlyFlags,
 	options: ImplOptions
-): FirstConsumedChar {
+): Readonly<FirstConsumedChar> {
 	return firstConsumedCharUnion(
 		element.map(e => getFirstConsumedCharImpl(e, direction, flags, options)),
 		flags
@@ -198,7 +228,7 @@ function getFirstConsumedCharImpl(
 	direction: MatchingDirection,
 	flags: ReadonlyFlags,
 	options: ImplOptions
-): FirstConsumedChar {
+): Readonly<FirstConsumedChar> {
 	let result = options.getCached(element, direction);
 	if (result === undefined) {
 		result = getFirstConsumedCharUncachedImpl(element, direction, flags, options);
@@ -211,7 +241,7 @@ function getFirstConsumedCharAssertionImpl(
 	direction: MatchingDirection,
 	flags: ReadonlyFlags,
 	options: ImplOptions
-): FirstConsumedChar {
+): Readonly<FirstConsumedChar> {
 	switch (element.kind) {
 		case "word":
 			if (options.isCurrentWordBoundary(element)) {
@@ -344,7 +374,7 @@ function getFirstConsumedCharUncachedImpl(
 	direction: MatchingDirection,
 	flags: ReadonlyFlags,
 	options: ImplOptions
-): FirstConsumedChar {
+): Readonly<FirstConsumedChar> {
 	switch (element.type) {
 		case "Assertion":
 			return getFirstConsumedCharAssertionImpl(element, direction, flags, options);
@@ -375,7 +405,7 @@ function getFirstConsumedCharUncachedImpl(
 			}
 
 			return firstConsumedCharConcat(
-				(function* (): Iterable<FirstConsumedChar> {
+				(function* (): Iterable<Readonly<FirstConsumedChar>> {
 					for (const e of elements) {
 						yield getFirstConsumedCharImpl(e, direction, flags, options);
 					}
@@ -392,12 +422,14 @@ function getFirstConsumedCharUncachedImpl(
 			if (isEmptyBackreference(element)) {
 				return emptyWord();
 			}
-			const resolvedChar = getFirstConsumedCharImpl(element.resolved, direction, flags, options);
+			let resolvedChar = getFirstConsumedCharImpl(element.resolved, direction, flags, options);
 
 			// the resolved character is only exact if it is only a single character.
 			// i.e. /(\w)\1/ here the (\w) will capture exactly any word character, but the \1 can only match
 			// one word character and that is the only (\w) matched.
-			resolvedChar.exact = resolvedChar.exact && resolvedChar.char.size <= 1;
+			if (resolvedChar.exact && resolvedChar.char.size > 1) {
+				resolvedChar = { ...resolvedChar, exact: false };
+			}
 
 			if (isStrictBackreference(element)) {
 				return resolvedChar;
@@ -612,7 +644,7 @@ export function getFirstConsumedCharAfter(
 	direction: MatchingDirection,
 	flags: ReadonlyFlags
 ): FirstConsumedChar {
-	return getFirstConsumedCharAfterImpl(afterThis, direction, flags, new ImplOptions());
+	return getFirstConsumedCharAfterImpl(afterThis, direction, flags, new ImplOptions(flags));
 }
 function getFirstConsumedCharAfterImpl(
 	afterThis: Element | Alternative,
@@ -660,7 +692,7 @@ export function getFirstCharAfter(
 	direction: MatchingDirection,
 	flags: ReadonlyFlags
 ): FirstLookChar {
-	return getFirstCharAfterImpl(afterThis, direction, flags, new ImplOptions());
+	return getFirstCharAfterImpl(afterThis, direction, flags, new ImplOptions(flags));
 }
 function getFirstCharAfterImpl(
 	afterThis: Element | Alternative,
@@ -691,7 +723,7 @@ export function getFirstConsumedCharAfterWithContributors(
 	direction: MatchingDirection,
 	flags: ReadonlyFlags
 ): WithContributors<FirstConsumedChar> {
-	return getFirstConsumedCharAfterWithContributorsImpl(afterThis, direction, flags, new ImplOptions());
+	return getFirstConsumedCharAfterWithContributorsImpl(afterThis, direction, flags, new ImplOptions(flags));
 }
 function getFirstConsumedCharAfterWithContributorsImpl(
 	afterThis: Element | Alternative,
@@ -750,7 +782,7 @@ export function getFirstCharAfterWithContributors(
 	direction: MatchingDirection,
 	flags: ReadonlyFlags
 ): WithContributors<FirstLookChar> {
-	return getFirstCharAfterWithContributorsImpl(afterThis, direction, flags, new ImplOptions());
+	return getFirstCharAfterWithContributorsImpl(afterThis, direction, flags, new ImplOptions(flags));
 }
 function getFirstCharAfterWithContributorsImpl(
 	afterThis: Element | Alternative,

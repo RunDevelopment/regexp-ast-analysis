@@ -1,5 +1,6 @@
 import { CharSet, JS } from "refa";
 import { Character, CharacterClass, CharacterClassRange, CharacterSet } from "regexpp/ast";
+import { CacheInstance } from "./cache";
 import { Chars } from "./chars";
 import { ReadonlyFlags } from "./flags";
 import { MaxChar } from "./max-char";
@@ -19,10 +20,16 @@ export type ToCharSetElement = Character | CharacterClassRange | CharacterSet | 
  * and `b`, the results of `toCharSet([a, b])` and `toCharSet(a).union(toCharSet(b))` will be the same.
  */
 export function toCharSet(elements: ToCharSetElement | readonly ToCharSetElement[], flags: ReadonlyFlags): CharSet {
+	if (!isReadonlyArray(elements)) {
+		return toCharSetSimpleCached(elements, flags);
+	} else if (elements.length === 1) {
+		return toCharSetSimpleCached(elements[0], flags);
+	}
+
 	const { positive, negated } = categorizeElements(elements);
 
-	if (negated) {
-		if (positive) {
+	if (negated.length) {
+		if (positive.length) {
 			return JS.createCharSet(makeRefaCompatible(positive), flags).union(
 				...negated.map(c => JS.createCharSet(makeRefaCompatible(c.elements), flags).negate())
 			);
@@ -35,92 +42,73 @@ export function toCharSet(elements: ToCharSetElement | readonly ToCharSetElement
 				);
 			}
 		}
-	} else if (positive) {
+	} else if (positive.length) {
 		return JS.createCharSet(makeRefaCompatible(positive), flags);
 	} else {
 		return Chars.empty(flags);
 	}
 }
 
-interface CategorizedElements {
-	positive: readonly (Character | CharacterClassRange | CharacterSet)[] | undefined;
-	negated: readonly CharacterClass[] | undefined;
-}
-function categorizeElements(elements: ToCharSetElement | readonly ToCharSetElement[]): CategorizedElements {
-	if (isReadonlyArray(elements)) {
-		const all = elements;
-		if (areAllPositive(all)) {
-			return { positive: all, negated: undefined };
-		} else if (areAllNegated(all)) {
-			return { positive: undefined, negated: all };
-		} else {
-			const positive: (Character | CharacterClassRange | CharacterSet)[] = [];
-			const negated: CharacterClass[] = [];
-
-			for (let i = 0, l = all.length; i < l; i++) {
-				const e = all[i];
-				if (e.type === "CharacterClass") {
-					if (e.negate) {
-						negated.push(e);
-					} else {
-						positive.push(...e.elements);
-					}
-				} else {
-					positive.push(e);
-				}
-			}
-
-			return { positive, negated };
+function toCharSetSimpleCached(element: ToCharSetElement, flags: ReadonlyFlags): CharSet {
+	if (flags instanceof CacheInstance) {
+		let cached = flags.toCharSet.get(element);
+		if (cached === undefined) {
+			cached = toCharSetSimple(element, flags);
+			flags.toCharSet.set(element, cached);
 		}
+		return cached;
 	} else {
-		const e = elements;
+		return toCharSetSimple(element, flags);
+	}
+}
+function toCharSetSimple(element: ToCharSetElement, flags: ReadonlyFlags): CharSet {
+	if (element.type === "CharacterClass") {
+		const cs = JS.createCharSet(makeRefaCompatible(element.elements), flags);
+		return element.negate ? cs.negate() : cs;
+	}
+
+	return JS.createCharSet([toRefaCharElement(element)], flags);
+}
+
+interface CategorizedElements {
+	positive: readonly (Character | CharacterClassRange | CharacterSet)[];
+	negated: readonly CharacterClass[];
+}
+function categorizeElements(elements: readonly ToCharSetElement[]): CategorizedElements {
+	const positive: (Character | CharacterClassRange | CharacterSet)[] = [];
+	const negated: CharacterClass[] = [];
+
+	for (const e of elements) {
 		if (e.type === "CharacterClass") {
 			if (e.negate) {
-				return { positive: undefined, negated: [e] };
+				negated.push(e);
 			} else {
-				return { positive: e.elements, negated: undefined };
+				positive.push(...e.elements);
 			}
 		} else {
-			return { positive: [e], negated: undefined };
+			positive.push(e);
 		}
 	}
-}
-function areAllPositive(
-	elements: readonly ToCharSetElement[]
-): elements is readonly (Character | CharacterClassRange | CharacterSet)[] {
-	for (let i = 0, l = elements.length; i < l; i++) {
-		if (elements[i].type === "CharacterClass") {
-			return false;
-		}
-	}
-	return true;
-}
-function areAllNegated(elements: readonly ToCharSetElement[]): elements is readonly CharacterClass[] {
-	for (let i = 0, l = elements.length; i < l; i++) {
-		const e = elements[i];
-		if (e.type !== "CharacterClass" || !e.negate) {
-			return false;
-		}
-	}
-	return true;
+
+	return { positive, negated };
 }
 
 type IterableItem<T extends Iterable<unknown>> = T extends Iterable<infer I> ? I : never;
-function makeRefaCompatible(
-	elements: readonly (Character | CharacterClassRange | CharacterSet)[]
-): IterableItem<Parameters<typeof JS.createCharSet>[0]>[] {
-	return elements.map(e => {
-		switch (e.type) {
-			case "Character":
-				return e.value;
-			case "CharacterClassRange":
-				return { min: e.min.value, max: e.max.value };
-			case "CharacterSet":
-				return e;
-			default:
-				throw assertNever(e);
-		}
-	});
+type RefaChar = IterableItem<Parameters<typeof JS.createCharSet>[0]>;
+function makeRefaCompatible(elements: readonly (Character | CharacterClassRange | CharacterSet)[]): RefaChar[] {
+	return elements.map(toRefaCharElement);
+}
+function toRefaCharElement(e: Character | CharacterClassRange | CharacterSet): RefaChar {
+	switch (e.type) {
+		case "Character":
+			return e.value;
+		case "CharacterClassRange":
+			return { min: e.min.value, max: e.max.value };
+		case "CharacterSet":
+			return e;
+		default:
+			throw assertNever(e);
+	}
 }
 
 /**
@@ -135,7 +123,7 @@ export function matchesAllCharacters(char: ToCharSetElement, flags: ReadonlyFlag
 		return char.min.value === 0 && char.max.value === (flags.unicode ? MaxChar.UNICODE : MaxChar.UTF16);
 	} else if (char.type === "CharacterSet") {
 		if (char.kind === "property") {
-			return JS.createCharSet([char], flags).isAll;
+			return toCharSet(char, flags).isAll;
 		} else if (char.kind === "any") {
 			return !!flags.dotAll;
 		} else {
@@ -164,7 +152,7 @@ export function matchesNoCharacters(char: ToCharSetElement, flags: ReadonlyFlags
 		return false;
 	} else if (char.type === "CharacterSet") {
 		if (char.kind === "property") {
-			return JS.createCharSet([char], flags).isEmpty;
+			return toCharSet(char, flags).isEmpty;
 		} else {
 			return false;
 		}
