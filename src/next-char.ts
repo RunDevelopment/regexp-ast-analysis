@@ -77,12 +77,9 @@ export namespace FirstLookChar {
 	 * Converts the given {@link FirstLookChar} to a {@link FirstConsumedChar}.
 	 *
 	 * This operation does little more than creating an empty consumed char and using the given look char as its
-	 * {@link FirstLookChar.look} property.
+	 * {@link FirstPartiallyConsumedChar.look} property.
 	 *
 	 * This is semantically equivalent to `(?=a|$)` -> `[]|(?=a|$)`.
-	 *
-	 * @param look
-	 * @returns
 	 */
 	export function toConsumed(look: FirstLookChar): FirstPartiallyConsumedChar {
 		return {
@@ -156,9 +153,6 @@ export interface FirstPartiallyConsumedChar {
 export namespace FirstConsumedChar {
 	/**
 	 * Returns a {@link FirstConsumedChar} that is equivalent to the empty concatenation.
-	 *
-	 * @param flags
-	 * @returns
 	 */
 	export function emptyConcat(flags: ReadonlyFlags): FirstPartiallyConsumedChar {
 		return {
@@ -170,9 +164,6 @@ export namespace FirstConsumedChar {
 	}
 	/**
 	 * Returns a {@link FirstConsumedChar} that is equivalent to the empty union (or empty set).
-	 *
-	 * @param flags
-	 * @returns
 	 */
 	export function emptyUnion(flags: ReadonlyFlags): FirstFullyConsumedChar {
 		return {
@@ -187,11 +178,10 @@ export namespace FirstConsumedChar {
 	 *
 	 * This is conceptually equivalent to wrapping the given consumed character into a lookaround.
 	 *
-	 * @param char
-	 * @returns
+	 * This is semantically equivalent to `a|(?=b|$)` -> `(?=a|(?=b|$))` == `(?=[ab]|$)`.
 	 */
-	export function toLook(char: FirstConsumedChar): FirstLookChar {
-		if (char.empty) {
+	export function toLook(consumed: FirstConsumedChar): FirstLookChar {
+		if (consumed.empty) {
 			// We have 2 cases:
 			//   (1) (?=a|(?=b))
 			//       (?=a|b)
@@ -199,21 +189,21 @@ export namespace FirstConsumedChar {
 			//   (2) (?=a|(?=b|$))
 			//       (?=a|b|$)
 			//       (?=[ab]|$)
-			const union = CharUnion.fromMaximum(char.char.maximum);
-			union.add(char.char, char.exact);
-			union.add(char.look.char, char.look.exact);
+			const union = CharUnion.fromMaximum(consumed.char.maximum);
+			union.add(consumed.char, consumed.exact);
+			union.add(consumed.look.char, consumed.look.exact);
 
 			return {
 				char: union.char,
 				exact: union.exact,
-				edge: char.look.edge,
+				edge: consumed.look.edge,
 			};
 		} else {
 			// It's already in the correct form:
 			//   (?=a)
 			return {
-				char: char.char,
-				exact: char.exact,
+				char: consumed.char,
+				exact: consumed.exact,
 				edge: false,
 			};
 		}
@@ -223,12 +213,8 @@ export namespace FirstConsumedChar {
 	 * Creates the union of all the given {@link FirstConsumedChar}s.
 	 *
 	 * The result is independent of the order in which the characters are given.
-	 *
-	 * @param chars
-	 * @param flags
-	 * @returns
 	 */
-	export function unionAll(chars: Iterable<FirstConsumedChar>, flags: ReadonlyFlags): FirstConsumedChar {
+	export function union(chars: Iterable<FirstConsumedChar>, flags: ReadonlyFlags): FirstConsumedChar {
 		const union = CharUnion.fromFlags(flags);
 		const looks: FirstLookChar[] = [];
 
@@ -290,13 +276,9 @@ export namespace FirstConsumedChar {
 	/**
 	 * Creates the concatenation of all the given {@link FirstConsumedChar}s.
 	 *
-	 * The given char iterable is evaluated **lazily**.
-	 *
-	 * @param chars
-	 * @param flags
-	 * @returns
+	 * The given char iterable is evaluated **lazily**. The implementation will try to iterate as few chars as possible.
 	 */
-	export function concatAll(chars: Iterable<FirstConsumedChar>, flags: ReadonlyFlags): FirstConsumedChar {
+	export function concat(chars: Iterable<FirstConsumedChar>, flags: ReadonlyFlags): FirstConsumedChar {
 		const union = CharUnion.fromFlags(flags);
 		let look = firstLookCharTriviallyAccepting(flags);
 
@@ -451,7 +433,7 @@ function getFirstConsumedCharAlternativesImpl(
 	flags: ReadonlyFlags,
 	options: ImplOptions
 ): FirstConsumedChar {
-	return FirstConsumedChar.unionAll(
+	return FirstConsumedChar.union(
 		alternatives.map(e => getFirstConsumedCharImpl(e, direction, flags, options)),
 		flags
 	);
@@ -648,7 +630,7 @@ function getFirstConsumedCharUncachedImpl(
 				elements.reverse();
 			}
 
-			return FirstConsumedChar.concatAll(
+			return FirstConsumedChar.concat(
 				(function* (): Iterable<FirstConsumedChar> {
 					for (const e of elements) {
 						yield getFirstConsumedCharImpl(e, direction, flags, options);
@@ -734,11 +716,11 @@ function getFirstConsumedCharAfterImpl(
 		FirstConsumedChar.emptyConcat(flags),
 		{
 			join(states): State {
-				return FirstConsumedChar.unionAll(states, flags);
+				return FirstConsumedChar.union(states, flags);
 			},
 			enter(element, state, direction): State {
 				const first = getFirstConsumedCharImpl(element, direction, flags, options);
-				return FirstConsumedChar.concatAll([state, first], flags);
+				return FirstConsumedChar.concat([state, first], flags);
 			},
 			continueInto(): boolean {
 				return false;
@@ -817,7 +799,7 @@ function getFirstConsumedCharAfterWithContributorsImpl(
 				states.forEach(s => s.contributors.forEach(e => contributors.add(e)));
 
 				return {
-					char: FirstConsumedChar.unionAll(
+					char: FirstConsumedChar.union(
 						states.map(s => s.char),
 						flags
 					),
@@ -828,7 +810,7 @@ function getFirstConsumedCharAfterWithContributorsImpl(
 			enter(element, state, direction): State {
 				const first = getFirstConsumedCharImpl(element, direction, flags, option);
 				return {
-					char: FirstConsumedChar.concatAll([state.char, first], flags),
+					char: FirstConsumedChar.concat([state.char, first], flags),
 					contributors: [...state.contributors, element],
 				};
 			},
