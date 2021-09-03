@@ -128,7 +128,7 @@ export interface FirstPartiallyConsumedChar {
  * This namespace contains methods for working with {@link FirstConsumedChar}s.
  */
 // eslint-disable-next-line @typescript-eslint/no-namespace
-export namespace FirstConsumedChar {
+export namespace FirstConsumedChars {
 	/**
 	 * Returns a {@link FirstConsumedChar} that is equivalent to the empty concatenation.
 	 */
@@ -411,7 +411,7 @@ function getFirstConsumedCharAlternativesImpl(
 	flags: ReadonlyFlags,
 	options: ImplOptions
 ): FirstConsumedChar {
-	return FirstConsumedChar.union(
+	return FirstConsumedChars.union(
 		alternatives.map(e => getFirstConsumedCharImpl(e, direction, flags, options)),
 		flags
 	);
@@ -529,7 +529,7 @@ function getFirstConsumedCharAssertionImpl(
 						flags,
 						options
 					);
-					return emptyWord(FirstConsumedChar.toLook(firstChar));
+					return emptyWord(FirstConsumedChars.toLook(firstChar));
 				}
 			} else {
 				return misdirectedAssertion();
@@ -590,12 +590,12 @@ function getFirstConsumedCharUncachedImpl(
 
 		case "Quantifier": {
 			if (element.max === 0) {
-				return FirstConsumedChar.emptyConcat(flags);
+				return FirstConsumedChars.emptyConcat(flags);
 			}
 
 			const firstChar = getFirstConsumedCharImpl(element.element, direction, flags, options);
 			if (element.min === 0) {
-				return FirstConsumedChar.makeOptional(firstChar);
+				return FirstConsumedChars.makeOptional(firstChar);
 			} else {
 				return firstChar;
 			}
@@ -608,7 +608,7 @@ function getFirstConsumedCharUncachedImpl(
 				elements.reverse();
 			}
 
-			return FirstConsumedChar.concat(
+			return FirstConsumedChars.concat(
 				(function* (): Iterable<FirstConsumedChar> {
 					for (const e of elements) {
 						yield getFirstConsumedCharImpl(e, direction, flags, options);
@@ -624,7 +624,7 @@ function getFirstConsumedCharUncachedImpl(
 
 		case "Backreference": {
 			if (isEmptyBackreference(element)) {
-				return FirstConsumedChar.emptyConcat(flags);
+				return FirstConsumedChars.emptyConcat(flags);
 			}
 			let resolvedChar = getFirstConsumedCharImpl(element.resolved, direction, flags, options);
 
@@ -640,7 +640,7 @@ function getFirstConsumedCharUncachedImpl(
 			} else {
 				// there is at least one path through which the backreference will (possibly) be replaced with the
 				// empty string
-				return FirstConsumedChar.makeOptional(resolvedChar);
+				return FirstConsumedChars.makeOptional(resolvedChar);
 			}
 		}
 
@@ -691,14 +691,14 @@ function getFirstConsumedCharAfterImpl(
 	const result = followPaths<State>(
 		afterThis,
 		"next",
-		FirstConsumedChar.emptyConcat(flags),
+		FirstConsumedChars.emptyConcat(flags),
 		{
 			join(states): State {
-				return FirstConsumedChar.union(states, flags);
+				return FirstConsumedChars.union(states, flags);
 			},
 			enter(element, state, direction): State {
 				const first = getFirstConsumedCharImpl(element, direction, flags, options);
-				return FirstConsumedChar.concat([state, first], flags);
+				return FirstConsumedChars.concat([state, first], flags);
 			},
 			continueInto(): boolean {
 				return false;
@@ -735,7 +735,7 @@ function getFirstCharAfterImpl(
 	flags: ReadonlyFlags,
 	options: ImplOptions
 ): FirstLookChar {
-	return FirstConsumedChar.toLook(getFirstConsumedCharAfterImpl(afterThis, direction, flags, options));
+	return FirstConsumedChars.toLook(getFirstConsumedCharAfterImpl(afterThis, direction, flags, options));
 }
 
 /**
@@ -770,14 +770,14 @@ function getFirstConsumedCharAfterWithContributorsImpl(
 	const result = followPaths<State>(
 		afterThis,
 		"next",
-		{ char: FirstConsumedChar.emptyConcat(flags), contributors: [] },
+		{ char: FirstConsumedChars.emptyConcat(flags), contributors: [] },
 		{
 			join(states): State {
 				const contributors = new Set<Element>();
 				states.forEach(s => s.contributors.forEach(e => contributors.add(e)));
 
 				return {
-					char: FirstConsumedChar.union(
+					char: FirstConsumedChars.union(
 						states.map(s => s.char),
 						flags
 					),
@@ -788,7 +788,7 @@ function getFirstConsumedCharAfterWithContributorsImpl(
 			enter(element, state, direction): State {
 				const first = getFirstConsumedCharImpl(element, direction, flags, option);
 				return {
-					char: FirstConsumedChar.concat([state.char, first], flags),
+					char: FirstConsumedChars.concat([state.char, first], flags),
 					contributors: [...state.contributors, element],
 				};
 			},
@@ -826,5 +826,5 @@ function getFirstCharAfterWithContributorsImpl(
 	option: ImplOptions
 ): WithContributors<FirstLookChar> {
 	const { char, contributors } = getFirstConsumedCharAfterWithContributorsImpl(afterThis, direction, flags, option);
-	return { char: FirstConsumedChar.toLook(char), contributors };
+	return { char: FirstConsumedChars.toLook(char), contributors };
 }
