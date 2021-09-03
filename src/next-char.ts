@@ -69,6 +69,32 @@ export interface FirstLookChar {
 	readonly exact: boolean;
 }
 /**
+ * This namespace contains methods for working with {@link FirstLookChar}s.
+ */
+// eslint-disable-next-line @typescript-eslint/no-namespace
+export namespace FirstLookChar {
+	/**
+	 * Converts the given {@link FirstLookChar} to a {@link FirstConsumedChar}.
+	 *
+	 * This operation does little more than creating an empty consumed char and using the given look char as its
+	 * {@link FirstLookChar.look} property.
+	 *
+	 * This is semantically equivalent to `(?=a|$)` -> `[]|(?=a|$)`.
+	 *
+	 * @param look
+	 * @returns
+	 */
+	export function toConsumed(look: FirstLookChar): FirstPartiallyConsumedChar {
+		return {
+			char: CharSet.empty(look.char.maximum),
+			exact: true,
+			empty: true,
+			look: look,
+		};
+	}
+}
+
+/**
  * The first character consumed by some element.
  *
  * The first character can either be fully consumed or partially consumed. A fully consumed character means that all
@@ -123,7 +149,6 @@ export interface FirstPartiallyConsumedChar {
 	 */
 	readonly look: FirstLookChar;
 }
-
 /**
  * This namespace contains methods for working with {@link FirstConsumedChar}s.
  */
