@@ -12,7 +12,7 @@ import {
 import { toCharSet } from "./to-char-set";
 import { followPaths } from "./follow";
 import { ReadonlyFlags } from "./flags";
-import { assertNever, isReadonlyArray } from "./util";
+import { assertNever, CharUnion, isReadonlyArray } from "./util";
 import { Chars } from "./chars";
 import { CacheInstance } from "./cache";
 
@@ -124,6 +124,188 @@ export interface FirstPartiallyConsumedChar {
 	readonly look: FirstLookChar;
 }
 
+/**
+ * This namespace contains methods for working with {@link FirstConsumedChar}s.
+ */
+// eslint-disable-next-line @typescript-eslint/no-namespace
+export namespace FirstConsumedChar {
+	/**
+	 * Converts the given {@link FirstConsumedChar} to a {@link FirstLookChar}.
+	 *
+	 * This is conceptually equivalent to wrapping the given consumed character into a lookaround.
+	 *
+	 * @param char
+	 * @returns
+	 */
+	export function toLook(char: FirstConsumedChar): FirstLookChar {
+		if (char.empty) {
+			// We have 2 cases:
+			//   (1) (?=a|(?=b))
+			//       (?=a|b)
+			//       (?=[ab])
+			//   (2) (?=a|(?=b|$))
+			//       (?=a|b|$)
+			//       (?=[ab]|$)
+			const union = CharUnion.fromMaximum(char.char.maximum);
+			union.add(char.char, char.exact);
+			union.add(char.look.char, char.look.exact);
+
+			return {
+				char: union.char,
+				exact: union.exact,
+				edge: char.look.edge,
+			};
+		} else {
+			// It's already in the correct form:
+			//   (?=a)
+			return {
+				char: char.char,
+				exact: char.exact,
+				edge: false,
+			};
+		}
+	}
+
+	/**
+	 * Creates the union of all the given {@link FirstConsumedChar}s.
+	 *
+	 * The result is independent of the order in which the characters are given.
+	 *
+	 * @param chars
+	 * @param flags
+	 * @returns
+	 */
+	export function unionAll(chars: Iterable<FirstConsumedChar>, flags: ReadonlyFlags): FirstConsumedChar {
+		const union = CharUnion.fromFlags(flags);
+		const looks: FirstLookChar[] = [];
+
+		for (const itemChar of chars) {
+			union.add(itemChar.char, itemChar.exact);
+			if (itemChar.empty) {
+				looks.push(itemChar.look);
+			}
+		}
+
+		if (looks.length > 0) {
+			if (looks.length === 1) {
+				return {
+					char: union.char,
+					exact: union.exact,
+					empty: true,
+					look: looks[0],
+				};
+			}
+
+			// This means that the unioned elements look something like this:
+			//   (a|(?=g)|b?|x)
+			//
+			// Adding the trivially accepting look after all all alternatives that can be empty, we'll get:
+			//   (a|(?=g)|b?|x)
+			//   (a|(?=g)|b?(?=[^]|$)|x)
+			//   (a|(?=g)|b(?=[^]|$)|(?=[^]|$)|x)
+			//
+			// Since we are only interested in the first character, the look in `b(?=[^]|$)` can be removed.
+			//   (a|(?=g)|b|(?=[^]|$)|x)
+			//   (a|b|x|(?=g)|(?=[^]|$))
+			//   ([abx]|(?=g)|(?=[^]|$))
+			//
+			// To union the looks, we can simply use the fact that `(?=a)|(?=b)` == `(?=a|b)`
+			//   ([abx]|(?=g)|(?=[^]|$))
+			//   ([abx]|(?=g|[^]|$))
+			//   ([abx]|(?=[^]|$))
+			//
+			// And with that we are done. This is exactly the form of a first partial char. Getting the exactness of the
+			// union of normal chars and look chars follows the same rules.
+
+			const lookUnion = CharUnion.fromFlags(flags);
+			let edge = false;
+			for (const look of looks) {
+				lookUnion.add(look.char, look.exact);
+				edge = edge || look.edge;
+			}
+			return {
+				char: union.char,
+				exact: union.exact,
+				empty: true,
+				look: { char: lookUnion.char, exact: lookUnion.exact, edge },
+			};
+		} else {
+			return { char: union.char, exact: union.exact, empty: false };
+		}
+	}
+
+	/**
+	 * Creates the concatenation of all the given {@link FirstConsumedChar}s.
+	 *
+	 * The given char iterable is evaluated **lazily**.
+	 *
+	 * @param chars
+	 * @param flags
+	 * @returns
+	 */
+	export function concatAll(chars: Iterable<FirstConsumedChar>, flags: ReadonlyFlags): FirstConsumedChar {
+		const union = CharUnion.fromFlags(flags);
+		let look = firstLookCharTriviallyAccepting(flags);
+
+		for (const item of chars) {
+			union.add(item.char.intersect(look.char), look.exact && item.exact);
+
+			if (item.empty) {
+				// This is the hard case. We need to convert the expression
+				//   (a|(?=b))(c|(?=d))
+				// into an expression
+				//   e|(?=f)
+				// (we will completely ignore edge assertions for now)
+				//
+				// To do that, we'll use the following idea:
+				//   (a|(?=b))(c|(?=d))
+				//   a(c|(?=d))|(?=b)(c|(?=d))
+				//   ac|a(?=d)|(?=b)c|(?=b)(?=d)
+				//
+				// Since we are only interested in the first char, we can remove the `c` in `ac` and the `(?=d)` in
+				// `a(?=d)`. Furthermore, `(?=b)c` is a single char, so let's call it `C` for now.
+				//   ac|a(?=d)|(?=b)c|(?=b)(?=d)
+				//   a|a|C|(?=b)(?=d)
+				//   [aC]|(?=b)(?=d)
+				//   [aC]|(?=(?=b)d)
+				//
+				// This is *almost* the desired form. We now have to convert `(?=(?=b)d)` to an expression of the form
+				// `(?=f)`. This is the point where we can't ignore edge assertions any longer. Let's look at all possible
+				// cases and see how it plays out. Also, let `D` be the char intersection of `b` and `d`.
+				//   (1) (?=(?=b)d)
+				//       (?=D)
+				//
+				//   (2) (?=(?=b)(d|$))
+				//       (?=(?=b)d|(?=b)$)
+				//       (?=D)
+				//
+				//   (3) (?=(?=b|$)d)
+				//       (?=((?=b)|$)d)
+				//       (?=(?=b)d|$d)
+				//       (?=D)
+				//
+				//   (4) (?=(?=b|$)(d|$))
+				//       (?=((?=b)|$)(d|$))
+				//       (?=(?=b)(d|$)|$(d|$))
+				//       (?=(?=b)d|(?=b)$|$d|$$)
+				//       (?=D|$)
+				//
+				// As we can see, the look char is always `D` and the edge is only accepted if it's accepted by both.
+
+				const charIntersection = look.char.intersect(item.look.char);
+				look = {
+					char: charIntersection,
+					exact: (look.exact && item.look.exact) || charIntersection.isEmpty,
+					edge: look.edge && item.look.edge,
+				};
+			} else {
+				return { char: union.char, exact: union.exact, empty: false };
+			}
+		}
+		return { char: union.char, exact: union.exact, empty: true, look };
+	}
+}
+
 class ImplOptions {
 	private readonly _currentWordBoundaries: WordBoundaryAssertion[] = [];
 	private readonly _ltrCache: WeakMap<Element | Alternative, FirstConsumedChar>;
@@ -202,7 +384,7 @@ function getFirstConsumedCharAlternativesImpl(
 	flags: ReadonlyFlags,
 	options: ImplOptions
 ): FirstConsumedChar {
-	return firstConsumedCharUnion(
+	return FirstConsumedChar.unionAll(
 		alternatives.map(e => getFirstConsumedCharImpl(e, direction, flags, options)),
 		flags
 	);
@@ -320,7 +502,7 @@ function getFirstConsumedCharAssertionImpl(
 						flags,
 						options
 					);
-					return emptyWord(firstConsumedToLook(firstChar));
+					return emptyWord(FirstConsumedChar.toLook(firstChar));
 				}
 			} else {
 				return misdirectedAssertion();
@@ -386,7 +568,7 @@ function getFirstConsumedCharUncachedImpl(
 
 			const firstChar = getFirstConsumedCharImpl(element.element, direction, flags, options);
 			if (element.min === 0) {
-				return firstConsumedCharUnion([emptyWord(), firstChar], flags);
+				return FirstConsumedChar.unionAll([emptyWord(), firstChar], flags);
 			} else {
 				return firstChar;
 			}
@@ -399,7 +581,7 @@ function getFirstConsumedCharUncachedImpl(
 				elements.reverse();
 			}
 
-			return firstConsumedCharConcat(
+			return FirstConsumedChar.concatAll(
 				(function* (): Iterable<FirstConsumedChar> {
 					for (const e of elements) {
 						yield getFirstConsumedCharImpl(e, direction, flags, options);
@@ -431,7 +613,7 @@ function getFirstConsumedCharUncachedImpl(
 			} else {
 				// there is at least one path through which the backreference will (possibly) be replaced with the
 				// empty string
-				return firstConsumedCharUnion([resolvedChar, emptyWord()], flags);
+				return FirstConsumedChar.unionAll([resolvedChar, emptyWord()], flags);
 			}
 		}
 
@@ -468,179 +650,6 @@ function firstConsumedCharEmptyWord(flags: ReadonlyFlags, look?: FirstLookChar):
 		look: look ?? firstLookCharTriviallyAccepting(flags),
 	};
 }
-class CharUnion {
-	private _exactChars: CharSet;
-	private _inexactChars: CharSet;
-
-	get char(): CharSet {
-		return this._exactChars.union(this._inexactChars);
-	}
-	get exact(): boolean {
-		// basic idea here is that the union or an exact superset with an inexact subset will be exact
-		return this._exactChars.isSupersetOf(this._inexactChars);
-	}
-
-	private constructor(empty: CharSet) {
-		this._exactChars = empty;
-		this._inexactChars = empty;
-	}
-
-	add(char: CharSet, exact: boolean): void {
-		if (exact) {
-			this._exactChars = this._exactChars.union(char);
-		} else {
-			this._inexactChars = this._inexactChars.union(char);
-		}
-	}
-
-	static fromFlags(flags: ReadonlyFlags): CharUnion {
-		return new CharUnion(Chars.empty(flags));
-	}
-	static fromMaximum(maximum: number): CharUnion {
-		return new CharUnion(CharSet.empty(maximum));
-	}
-}
-function firstConsumedCharUnion(iter: Iterable<FirstConsumedChar>, flags: ReadonlyFlags): FirstConsumedChar {
-	const union = CharUnion.fromFlags(flags);
-	const looks: FirstLookChar[] = [];
-
-	for (const itemChar of iter) {
-		union.add(itemChar.char, itemChar.exact);
-		if (itemChar.empty) {
-			looks.push(itemChar.look);
-		}
-	}
-
-	if (looks.length > 0) {
-		// This means that the unioned elements look something like this:
-		//   (a|(?=g)|b?|x)
-		//
-		// Adding the trivially accepting look after all all alternatives that can be empty, we'll get:
-		//   (a|(?=g)|b?|x)
-		//   (a|(?=g)|b?(?=[^]|$)|x)
-		//   (a|(?=g)|b(?=[^]|$)|(?=[^]|$)|x)
-		//
-		// Since we are only interested in the first character, the look in `b(?=[^]|$)` can be removed.
-		//   (a|(?=g)|b|(?=[^]|$)|x)
-		//   (a|b|x|(?=g)|(?=[^]|$))
-		//   ([abx]|(?=g)|(?=[^]|$))
-		//
-		// To union the looks, we can simply use the fact that `(?=a)|(?=b)` == `(?=a|b)`
-		//   ([abx]|(?=g)|(?=[^]|$))
-		//   ([abx]|(?=g|[^]|$))
-		//   ([abx]|(?=[^]|$))
-		//
-		// And with that we are done. This is exactly the form of a first partial char. Getting the exactness of the
-		// union of normal chars and look chars follows the same rules.
-
-		const lookUnion = CharUnion.fromFlags(flags);
-		let edge = false;
-		for (const look of looks) {
-			lookUnion.add(look.char, look.exact);
-			edge = edge || look.edge;
-		}
-		return {
-			char: union.char,
-			exact: union.exact,
-			empty: true,
-			look: { char: lookUnion.char, exact: lookUnion.exact, edge },
-		};
-	} else {
-		return { char: union.char, exact: union.exact, empty: false };
-	}
-}
-function firstConsumedCharConcat(iter: Iterable<FirstConsumedChar>, flags: ReadonlyFlags): FirstConsumedChar {
-	const union = CharUnion.fromFlags(flags);
-	let look = firstLookCharTriviallyAccepting(flags);
-
-	for (const item of iter) {
-		union.add(item.char.intersect(look.char), look.exact && item.exact);
-
-		if (item.empty) {
-			// This is the hard case. We need to convert the expression
-			//   (a|(?=b))(c|(?=d))
-			// into an expression
-			//   e|(?=f)
-			// (we will completely ignore edge assertions for now)
-			//
-			// To do that, we'll use the following idea:
-			//   (a|(?=b))(c|(?=d))
-			//   a(c|(?=d))|(?=b)(c|(?=d))
-			//   ac|a(?=d)|(?=b)c|(?=b)(?=d)
-			//
-			// Since we are only interested in the first char, we can remove the `c` in `ac` and the `(?=d)` in
-			// `a(?=d)`. Furthermore, `(?=b)c` is a single char, so let's call it `C` for now.
-			//   ac|a(?=d)|(?=b)c|(?=b)(?=d)
-			//   a|a|C|(?=b)(?=d)
-			//   [aC]|(?=b)(?=d)
-			//   [aC]|(?=(?=b)d)
-			//
-			// This is *almost* the desired form. We now have to convert `(?=(?=b)d)` to an expression of the form
-			// `(?=f)`. This is the point where we can't ignore edge assertions any longer. Let's look at all possible
-			// cases and see how it plays out. Also, let `D` be the char intersection of `b` and `d`.
-			//   (1) (?=(?=b)d)
-			//       (?=D)
-			//
-			//   (2) (?=(?=b)(d|$))
-			//       (?=(?=b)d|(?=b)$)
-			//       (?=D)
-			//
-			//   (3) (?=(?=b|$)d)
-			//       (?=((?=b)|$)d)
-			//       (?=(?=b)d|$d)
-			//       (?=D)
-			//
-			//   (4) (?=(?=b|$)(d|$))
-			//       (?=((?=b)|$)(d|$))
-			//       (?=(?=b)(d|$)|$(d|$))
-			//       (?=(?=b)d|(?=b)$|$d|$$)
-			//       (?=D|$)
-			//
-			// As we can see, the look char is always `D` and the edge is only accepted if it's accepted by both.
-
-			const charIntersection = look.char.intersect(item.look.char);
-			look = {
-				char: charIntersection,
-				exact: (look.exact && item.look.exact) || charIntersection.isEmpty,
-				edge: look.edge && item.look.edge,
-			};
-		} else {
-			return { char: union.char, exact: union.exact, empty: false };
-		}
-	}
-	return { char: union.char, exact: union.exact, empty: true, look };
-}
-/**
- * This wraps the first-consumed-char object in a look.
- */
-function firstConsumedToLook(first: Readonly<FirstConsumedChar>): FirstLookChar {
-	if (first.empty) {
-		// We have 2 cases:
-		//   (1) (?=a|(?=b))
-		//       (?=a|b)
-		//       (?=[ab])
-		//   (2) (?=a|(?=b|$))
-		//       (?=a|b|$)
-		//       (?=[ab]|$)
-		const union = CharUnion.fromMaximum(first.char.maximum);
-		union.add(first.char, first.exact);
-		union.add(first.look.char, first.look.exact);
-
-		return {
-			char: union.char,
-			exact: union.exact,
-			edge: first.look.edge,
-		};
-	} else {
-		// It's already in the correct form:
-		//   (?=a)
-		return {
-			char: first.char,
-			exact: first.exact,
-			edge: false,
-		};
-	}
-}
 
 export function getFirstConsumedCharAfter(
 	afterThis: Element | Alternative,
@@ -662,11 +671,11 @@ function getFirstConsumedCharAfterImpl(
 		firstConsumedCharEmptyWord(flags),
 		{
 			join(states): State {
-				return firstConsumedCharUnion(states, flags);
+				return FirstConsumedChar.unionAll(states, flags);
 			},
 			enter(element, state, direction): State {
 				const first = getFirstConsumedCharImpl(element, direction, flags, options);
-				return firstConsumedCharConcat([state, first], flags);
+				return FirstConsumedChar.concatAll([state, first], flags);
 			},
 			continueInto(): boolean {
 				return false;
@@ -703,7 +712,7 @@ function getFirstCharAfterImpl(
 	flags: ReadonlyFlags,
 	options: ImplOptions
 ): FirstLookChar {
-	return firstConsumedToLook(getFirstConsumedCharAfterImpl(afterThis, direction, flags, options));
+	return FirstConsumedChar.toLook(getFirstConsumedCharAfterImpl(afterThis, direction, flags, options));
 }
 
 /**
@@ -745,7 +754,7 @@ function getFirstConsumedCharAfterWithContributorsImpl(
 				states.forEach(s => s.contributors.forEach(e => contributors.add(e)));
 
 				return {
-					char: firstConsumedCharUnion(
+					char: FirstConsumedChar.unionAll(
 						states.map(s => s.char),
 						flags
 					),
@@ -756,7 +765,7 @@ function getFirstConsumedCharAfterWithContributorsImpl(
 			enter(element, state, direction): State {
 				const first = getFirstConsumedCharImpl(element, direction, flags, option);
 				return {
-					char: firstConsumedCharConcat([state.char, first], flags),
+					char: FirstConsumedChar.concatAll([state.char, first], flags),
 					contributors: [...state.contributors, element],
 				};
 			},
@@ -794,5 +803,5 @@ function getFirstCharAfterWithContributorsImpl(
 	option: ImplOptions
 ): WithContributors<FirstLookChar> {
 	const { char, contributors } = getFirstConsumedCharAfterWithContributorsImpl(afterThis, direction, flags, option);
-	return { char: firstConsumedToLook(char), contributors };
+	return { char: FirstConsumedChar.toLook(char), contributors };
 }
