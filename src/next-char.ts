@@ -485,31 +485,39 @@ function firstConsumedCharEmptyWord(flags: ReadonlyFlags, look?: FirstLookChar):
 	};
 }
 class CharUnion {
-	char: CharSet;
-	exact: boolean;
-	private constructor(char: CharSet) {
-		this.char = char;
-		this.exact = true;
-	}
-	add(char: CharSet, exact: boolean): void {
-		// basic idea here is that the union or an exact superset with an inexact subset will be exact
-		if (this.exact && !exact && !this.char.isSupersetOf(char)) {
-			this.exact = false;
-		} else if (!this.exact && exact && char.isSupersetOf(this.char)) {
-			this.exact = true;
-		}
+	private _exactChars: CharSet;
+	private _inexactChars: CharSet;
 
-		this.char = this.char.union(char);
+	get char(): CharSet {
+		return this._exactChars.union(this._inexactChars);
 	}
-	static emptyFromFlags(flags: ReadonlyFlags): CharUnion {
+	get exact(): boolean {
+		// basic idea here is that the union or an exact superset with an inexact subset will be exact
+		return this._exactChars.isSupersetOf(this._inexactChars);
+	}
+
+	private constructor(empty: CharSet) {
+		this._exactChars = empty;
+		this._inexactChars = empty;
+	}
+
+	add(char: CharSet, exact: boolean): void {
+		if (exact) {
+			this._exactChars = this._exactChars.union(char);
+		} else {
+			this._inexactChars = this._inexactChars.union(char);
+		}
+	}
+
+	static fromFlags(flags: ReadonlyFlags): CharUnion {
 		return new CharUnion(Chars.empty(flags));
 	}
-	static emptyFromMaximum(maximum: number): CharUnion {
+	static fromMaximum(maximum: number): CharUnion {
 		return new CharUnion(CharSet.empty(maximum));
 	}
 }
 function firstConsumedCharUnion(iter: Iterable<Readonly<FirstConsumedChar>>, flags: ReadonlyFlags): FirstConsumedChar {
-	const union = CharUnion.emptyFromFlags(flags);
+	const union = CharUnion.fromFlags(flags);
 	const looks: FirstLookChar[] = [];
 
 	for (const itemChar of iter) {
@@ -541,7 +549,7 @@ function firstConsumedCharUnion(iter: Iterable<Readonly<FirstConsumedChar>>, fla
 		// And with that we are done. This is exactly the form of a first partial char. Getting the exactness of the
 		// union of normal chars and look chars follows the same rules.
 
-		const lookUnion = CharUnion.emptyFromFlags(flags);
+		const lookUnion = CharUnion.fromFlags(flags);
 		let edge = false;
 		for (const look of looks) {
 			lookUnion.add(look.char, look.exact);
@@ -558,7 +566,7 @@ function firstConsumedCharUnion(iter: Iterable<Readonly<FirstConsumedChar>>, fla
 	}
 }
 function firstConsumedCharConcat(iter: Iterable<Readonly<FirstConsumedChar>>, flags: ReadonlyFlags): FirstConsumedChar {
-	const union = CharUnion.emptyFromFlags(flags);
+	const union = CharUnion.fromFlags(flags);
 	let look = firstLookCharTriviallyAccepting(flags);
 
 	for (const item of iter) {
@@ -630,7 +638,7 @@ function firstConsumedToLook(first: Readonly<FirstConsumedChar>): FirstLookChar 
 		//   (2) (?=a|(?=b|$))
 		//       (?=a|b|$)
 		//       (?=[ab]|$)
-		const union = CharUnion.emptyFromMaximum(first.char.maximum);
+		const union = CharUnion.fromMaximum(first.char.maximum);
 		union.add(first.char, first.exact);
 		union.add(first.look.char, first.look.exact);
 
