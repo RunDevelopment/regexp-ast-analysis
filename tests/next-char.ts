@@ -122,6 +122,63 @@ describe(RAA.getFirstConsumedChar.name, function () {
 			},
 		},
 
+		{
+			regexp: /(?=a)/m,
+			expected: {
+				char: toCharSet(/[]/),
+				exact: true,
+				empty: true,
+				look: { char: toCharSet(/[a]/), exact: true, edge: false },
+			},
+		},
+		{
+			regexp: /(?!a)/m,
+			expected: {
+				char: toCharSet(/[]/),
+				exact: true,
+				empty: true,
+				look: { char: toCharSet(/[^a]/), exact: true, edge: true },
+			},
+		},
+		{
+			regexp: /(?=abc)/m,
+			expected: {
+				char: toCharSet(/[]/),
+				exact: true,
+				empty: true,
+				look: { char: toCharSet(/[a]/), exact: true, edge: false },
+			},
+		},
+		{
+			regexp: /(?!abc)/m,
+			expected: {
+				char: toCharSet(/[]/),
+				exact: true,
+				empty: true,
+				look: { char: toCharSet(/[^]/), exact: false, edge: true },
+			},
+		},
+
+		{
+			regexp: /(?=$)/m,
+			expected: {
+				char: toCharSet(/[]/),
+				exact: true,
+				empty: true,
+				look: { char: toCharSet(/[\r\n\u2028\u2029]/), exact: true, edge: true },
+			},
+		},
+		{
+			regexp: /(?!$)/m,
+			expected: {
+				char: toCharSet(/[]/),
+				exact: true,
+				empty: true,
+				// This is technically correct because of `exact: false` but we should do better.
+				look: { char: toCharSet(/[^]/), exact: false, edge: true },
+			},
+		},
+
 		{ regexp: /(?!a)[ab]/, expected: { char: toCharSet(/[b]/), exact: true, empty: false } },
 		{ regexp: /(?![])[ab]/, expected: { char: toCharSet(/[ab]/), exact: true, empty: false } },
 		{ regexp: /(?!a?b)[ab]/, expected: { char: toCharSet(/[ab]/), exact: false, empty: false } },

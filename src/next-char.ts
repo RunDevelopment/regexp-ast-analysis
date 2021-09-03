@@ -213,13 +213,13 @@ export function getFirstConsumedChar(
 	return copyFirstConsumedChar(result);
 }
 function getFirstConsumedCharAlternativesImpl(
-	element: readonly Alternative[],
+	alternatives: readonly Alternative[],
 	direction: MatchingDirection,
 	flags: ReadonlyFlags,
 	options: ImplOptions
 ): Readonly<FirstConsumedChar> {
 	return firstConsumedCharUnion(
-		element.map(e => getFirstConsumedCharImpl(e, direction, flags, options)),
+		alternatives.map(e => getFirstConsumedCharImpl(e, direction, flags, options)),
 		flags
 	);
 }
@@ -294,7 +294,18 @@ function getFirstConsumedCharAssertionImpl(
 		case "lookbehind":
 			if (getMatchingDirectionFromAssertionKind(element.kind) === direction) {
 				if (element.negate) {
-					// we can only meaningfully analyse negative lookarounds of the form `(?![a])`
+					// A little note about negative:
+					//
+					// Negation is hard because it throws the idea of exactness on its heads. The interface defines
+					// exactness in a way that means: "we only guarantee that the returned characters are a superset of
+					// the actual (=correct) characters." Negation is incompatible with that definition of exactness
+					// because negating a _superset_ means that we can only guarantee a _subset_. So we can only do
+					// _exact_ negation. This is a big limitation.
+					//
+					// So what negations can be done _exactly_?
+					// Single-character negations, e.g. `(?!a)` or `(?!a|b|\d)`. That's it. All other negated assertions
+					// are not doable _in general_.
+
 					if (hasSomeDescendant(element, d => d !== element && d.type === "Assertion")) {
 						return misdirectedAssertion();
 					}
