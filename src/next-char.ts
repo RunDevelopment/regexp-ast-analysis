@@ -58,15 +58,15 @@ export interface FirstLookChar {
 	 * We can usually only guarantee a super set because lookaround in the pattern may narrow down the actual character
 	 * set.
 	 */
-	char: CharSet;
+	readonly char: CharSet;
 	/**
 	 * If `true`, then the first character can be the start/end of the string.
 	 */
-	edge: boolean;
+	readonly edge: boolean;
 	/**
 	 * If `true`, then `char` is guaranteed to be exactly the first character and not just a super set of it.
 	 */
-	exact: boolean;
+	readonly exact: boolean;
 }
 /**
  * The first character consumed by some element.
@@ -88,15 +88,15 @@ export interface FirstFullyConsumedChar {
 	 * We can usually only guarantee a super set because lookaround in the pattern may narrow down the actual character
 	 * set.
 	 */
-	char: CharSet;
+	readonly char: CharSet;
 	/**
 	 * If `true`, then the first character also includes the empty word.
 	 */
-	empty: false;
+	readonly empty: false;
 	/**
 	 * If `true`, then `char` is guaranteed to be exactly the first character and not just a super set of it.
 	 */
-	exact: boolean;
+	readonly exact: boolean;
 }
 /**
  * This is equivalent to a regex fragment `[char]|(?=[look.char])` or `[char]|(?=[look.char]|$)` depending on
@@ -109,25 +109,25 @@ export interface FirstPartiallyConsumedChar {
 	 * We can usually only guarantee a super set because lookaround in the pattern may narrow down the actual character
 	 * set.
 	 */
-	char: CharSet;
+	readonly char: CharSet;
 	/**
 	 * If `true`, then the first character also includes the empty word.
 	 */
-	empty: true;
+	readonly empty: true;
 	/**
 	 * If `true`, then `char` is guaranteed to be exactly the first character and not just a super set of it.
 	 */
-	exact: boolean;
+	readonly exact: boolean;
 	/**
 	 * A set of characters that may come after the consumed character
 	 */
-	look: FirstLookChar;
+	readonly look: FirstLookChar;
 }
 
 class ImplOptions {
 	private readonly _currentWordBoundaries: WordBoundaryAssertion[] = [];
-	private readonly _ltrCache: WeakMap<Element | Alternative, Readonly<FirstConsumedChar>>;
-	private readonly _rtlCache: WeakMap<Element | Alternative, Readonly<FirstConsumedChar>>;
+	private readonly _ltrCache: WeakMap<Element | Alternative, FirstConsumedChar>;
+	private readonly _rtlCache: WeakMap<Element | Alternative, FirstConsumedChar>;
 
 	constructor(flags: ReadonlyFlags) {
 		// We need a cache to avoid an exponential worst case regarding boundary assertions.
@@ -152,32 +152,19 @@ class ImplOptions {
 		this._currentWordBoundaries.pop();
 	}
 
-	getCached(element: Element | Alternative, dir: MatchingDirection): Readonly<FirstConsumedChar> | undefined {
+	getCached(element: Element | Alternative, dir: MatchingDirection): FirstConsumedChar | undefined {
 		if (dir === "ltr") {
 			return this._ltrCache.get(element);
 		} else {
 			return this._rtlCache.get(element);
 		}
 	}
-	setCached(element: Element | Alternative, dir: MatchingDirection, result: Readonly<FirstConsumedChar>): void {
+	setCached(element: Element | Alternative, dir: MatchingDirection, result: FirstConsumedChar): void {
 		if (dir === "ltr") {
 			this._ltrCache.set(element, result);
 		} else {
 			this._rtlCache.set(element, result);
 		}
-	}
-}
-
-function copyFirstConsumedChar(toCopy: Readonly<FirstConsumedChar>): FirstConsumedChar {
-	if (toCopy.empty) {
-		return {
-			char: toCopy.char,
-			empty: true,
-			exact: toCopy.exact,
-			look: { ...toCopy.look },
-		};
-	} else {
-		return { ...toCopy };
 	}
 }
 
@@ -203,21 +190,18 @@ export function getFirstConsumedChar(
 ): FirstConsumedChar {
 	const options = new ImplOptions(flags);
 
-	let result;
 	if (isReadonlyArray(element)) {
-		result = getFirstConsumedCharAlternativesImpl(element, direction, flags, options);
+		return getFirstConsumedCharAlternativesImpl(element, direction, flags, options);
 	} else {
-		result = getFirstConsumedCharImpl(element, direction, flags, options);
+		return getFirstConsumedCharImpl(element, direction, flags, options);
 	}
-
-	return copyFirstConsumedChar(result);
 }
 function getFirstConsumedCharAlternativesImpl(
 	alternatives: readonly Alternative[],
 	direction: MatchingDirection,
 	flags: ReadonlyFlags,
 	options: ImplOptions
-): Readonly<FirstConsumedChar> {
+): FirstConsumedChar {
 	return firstConsumedCharUnion(
 		alternatives.map(e => getFirstConsumedCharImpl(e, direction, flags, options)),
 		flags
@@ -228,7 +212,7 @@ function getFirstConsumedCharImpl(
 	direction: MatchingDirection,
 	flags: ReadonlyFlags,
 	options: ImplOptions
-): Readonly<FirstConsumedChar> {
+): FirstConsumedChar {
 	let result = options.getCached(element, direction);
 	if (result === undefined) {
 		result = getFirstConsumedCharUncachedImpl(element, direction, flags, options);
@@ -241,7 +225,7 @@ function getFirstConsumedCharAssertionImpl(
 	direction: MatchingDirection,
 	flags: ReadonlyFlags,
 	options: ImplOptions
-): Readonly<FirstConsumedChar> {
+): FirstConsumedChar {
 	switch (element.kind) {
 		case "word":
 			if (options.isCurrentWordBoundary(element)) {
@@ -385,7 +369,7 @@ function getFirstConsumedCharUncachedImpl(
 	direction: MatchingDirection,
 	flags: ReadonlyFlags,
 	options: ImplOptions
-): Readonly<FirstConsumedChar> {
+): FirstConsumedChar {
 	switch (element.type) {
 		case "Assertion":
 			return getFirstConsumedCharAssertionImpl(element, direction, flags, options);
@@ -416,7 +400,7 @@ function getFirstConsumedCharUncachedImpl(
 			}
 
 			return firstConsumedCharConcat(
-				(function* (): Iterable<Readonly<FirstConsumedChar>> {
+				(function* (): Iterable<FirstConsumedChar> {
 					for (const e of elements) {
 						yield getFirstConsumedCharImpl(e, direction, flags, options);
 					}
@@ -516,7 +500,7 @@ class CharUnion {
 		return new CharUnion(CharSet.empty(maximum));
 	}
 }
-function firstConsumedCharUnion(iter: Iterable<Readonly<FirstConsumedChar>>, flags: ReadonlyFlags): FirstConsumedChar {
+function firstConsumedCharUnion(iter: Iterable<FirstConsumedChar>, flags: ReadonlyFlags): FirstConsumedChar {
 	const union = CharUnion.fromFlags(flags);
 	const looks: FirstLookChar[] = [];
 
@@ -565,7 +549,7 @@ function firstConsumedCharUnion(iter: Iterable<Readonly<FirstConsumedChar>>, fla
 		return { char: union.char, exact: union.exact, empty: false };
 	}
 }
-function firstConsumedCharConcat(iter: Iterable<Readonly<FirstConsumedChar>>, flags: ReadonlyFlags): FirstConsumedChar {
+function firstConsumedCharConcat(iter: Iterable<FirstConsumedChar>, flags: ReadonlyFlags): FirstConsumedChar {
 	const union = CharUnion.fromFlags(flags);
 	let look = firstLookCharTriviallyAccepting(flags);
 
@@ -671,7 +655,7 @@ function getFirstConsumedCharAfterImpl(
 	flags: ReadonlyFlags,
 	options: ImplOptions
 ): FirstConsumedChar {
-	type State = Readonly<FirstConsumedChar>;
+	type State = FirstConsumedChar;
 	const result = followPaths<State>(
 		afterThis,
 		"next",
