@@ -28,6 +28,9 @@ describe(RAA.getFirstConsumedChar.name, function () {
 	test([
 		{ regexp: /a/, expected: { char: toCharSet(/a/), exact: true, empty: false } },
 		{ regexp: /a/i, expected: { char: toCharSet(/a/i), exact: true, empty: false } },
+		{ regexp: /[a-z]/i, expected: { char: toCharSet(/[A-Z]/i), exact: true, empty: false } },
+		{ regexp: /[\0-\uFFFF]/, expected: { char: toCharSet(/[^]/), exact: true, empty: false } },
+		{ regexp: /[\0-\u{10FFFF}]/u, expected: { char: toCharSet(/[^]/u), exact: true, empty: false } },
 
 		{ regexp: /abc/, expected: { char: toCharSet(/a/), exact: true, empty: false } },
 		{ regexp: /abc/, direction: "ltr", expected: { char: toCharSet(/a/), exact: true, empty: false } },
@@ -483,6 +486,24 @@ describe(RAA.getFirstConsumedCharAfter.name, function () {
 			regexp: /a(?=(?<afterThis>)b)/,
 			direction: "rtl",
 			expected: { char: toCharSet(/[a]/), exact: true, empty: false },
+		},
+
+		{
+			regexp: /(a)(?<afterThis>)\1/,
+			expected: { char: toCharSet(/[a]/), exact: true, empty: false },
+		},
+		{
+			regexp: /(a|b)(?<afterThis>)\1/,
+			expected: { char: toCharSet(/[ab]/), exact: false, empty: false },
+		},
+		{
+			regexp: /(a|b)|(?<afterThis>)\1/,
+			expected: {
+				char: toCharSet(/[]/),
+				exact: true,
+				empty: true,
+				look: { char: toCharSet(/[^]/), exact: true, edge: true },
+			},
 		},
 	]);
 
