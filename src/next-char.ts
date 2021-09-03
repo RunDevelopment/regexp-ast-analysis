@@ -130,6 +130,34 @@ export interface FirstPartiallyConsumedChar {
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace FirstConsumedChar {
 	/**
+	 * Returns a {@link FirstConsumedChar} that is equivalent to the empty concatenation.
+	 *
+	 * @param flags
+	 * @returns
+	 */
+	export function emptyConcat(flags: ReadonlyFlags): FirstPartiallyConsumedChar {
+		return {
+			char: Chars.empty(flags),
+			exact: true,
+			empty: true,
+			look: { char: Chars.all(flags), exact: true, edge: true },
+		};
+	}
+	/**
+	 * Returns a {@link FirstConsumedChar} that is equivalent to the empty union (or empty set).
+	 *
+	 * @param flags
+	 * @returns
+	 */
+	export function emptyUnion(flags: ReadonlyFlags): FirstFullyConsumedChar {
+		return {
+			char: Chars.empty(flags),
+			exact: true,
+			empty: false,
+		};
+	}
+
+	/**
 	 * Converts the given {@link FirstConsumedChar} to a {@link FirstLookChar}.
 	 *
 	 * This is conceptually equivalent to wrapping the given consumed character into a lookaround.
@@ -303,6 +331,20 @@ export namespace FirstConsumedChar {
 			}
 		}
 		return { char: union.char, exact: union.exact, empty: true, look };
+	}
+
+	/**
+	 * Makes the given consumed character optional.
+	 *
+	 * This is semantically equivalent to `a|(?=b|$)` -> `a?`.
+	 */
+	export function makeOptional(consumed: FirstConsumedChar): FirstPartiallyConsumedChar {
+		return {
+			char: consumed.char,
+			exact: consumed.exact,
+			empty: true,
+			look: { char: CharSet.all(consumed.char.maximum), exact: true, edge: true },
+		};
 	}
 }
 
@@ -542,7 +584,7 @@ function getFirstConsumedCharAssertionImpl(
 			exact: true,
 		});
 	}
-	function emptyWord(look?: FirstLookChar): FirstPartiallyConsumedChar {
+	function emptyWord(look: FirstLookChar): FirstPartiallyConsumedChar {
 		return firstConsumedCharEmptyWord(flags, look);
 	}
 }
@@ -563,12 +605,12 @@ function getFirstConsumedCharUncachedImpl(
 
 		case "Quantifier": {
 			if (element.max === 0) {
-				return emptyWord();
+				return FirstConsumedChar.emptyConcat(flags);
 			}
 
 			const firstChar = getFirstConsumedCharImpl(element.element, direction, flags, options);
 			if (element.min === 0) {
-				return FirstConsumedChar.unionAll([emptyWord(), firstChar], flags);
+				return FirstConsumedChar.makeOptional(firstChar);
 			} else {
 				return firstChar;
 			}
@@ -597,7 +639,7 @@ function getFirstConsumedCharUncachedImpl(
 
 		case "Backreference": {
 			if (isEmptyBackreference(element)) {
-				return emptyWord();
+				return FirstConsumedChar.emptyConcat(flags);
 			}
 			let resolvedChar = getFirstConsumedCharImpl(element.resolved, direction, flags, options);
 
@@ -613,16 +655,12 @@ function getFirstConsumedCharUncachedImpl(
 			} else {
 				// there is at least one path through which the backreference will (possibly) be replaced with the
 				// empty string
-				return FirstConsumedChar.unionAll([resolvedChar, emptyWord()], flags);
+				return FirstConsumedChar.makeOptional(resolvedChar);
 			}
 		}
 
 		default:
 			throw assertNever(element);
-	}
-
-	function emptyWord(look?: FirstLookChar): FirstPartiallyConsumedChar {
-		return firstConsumedCharEmptyWord(flags, look);
 	}
 }
 
@@ -642,12 +680,12 @@ function firstLookCharEdgeAccepting(flags: ReadonlyFlags): FirstLookChar {
  * Returns first-consumed-char that is equivalent to consuming nothing (the empty word) followed by a trivially
  * accepting lookaround.
  */
-function firstConsumedCharEmptyWord(flags: ReadonlyFlags, look?: FirstLookChar): FirstPartiallyConsumedChar {
+function firstConsumedCharEmptyWord(flags: ReadonlyFlags, look: FirstLookChar): FirstPartiallyConsumedChar {
 	return {
 		char: Chars.empty(flags),
 		empty: true,
 		exact: true,
-		look: look ?? firstLookCharTriviallyAccepting(flags),
+		look,
 	};
 }
 
@@ -668,7 +706,7 @@ function getFirstConsumedCharAfterImpl(
 	const result = followPaths<State>(
 		afterThis,
 		"next",
-		firstConsumedCharEmptyWord(flags),
+		FirstConsumedChar.emptyConcat(flags),
 		{
 			join(states): State {
 				return FirstConsumedChar.unionAll(states, flags);
@@ -747,7 +785,7 @@ function getFirstConsumedCharAfterWithContributorsImpl(
 	const result = followPaths<State>(
 		afterThis,
 		"next",
-		{ char: firstConsumedCharEmptyWord(flags), contributors: [] },
+		{ char: FirstConsumedChar.emptyConcat(flags), contributors: [] },
 		{
 			join(states): State {
 				const contributors = new Set<Element>();
