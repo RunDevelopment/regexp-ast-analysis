@@ -72,15 +72,16 @@ export interface FirstLookChar {
 /**
  * The first character consumed by some element.
  *
- * The first character can either be fully consumed or partially consumed. A fully consumed character means that all
- * input strings accepted by the element must start with this character. A partially consumed character means that the
- * element might not consumed characters.
+ * The first character can either be fully consumed or partially consumed.
  *
  * @see {@link getFirstConsumedChar}
+ * @see {@link FirstConsumedChars}
  */
 export type FirstConsumedChar = FirstFullyConsumedChar | FirstPartiallyConsumedChar;
 /**
  * This is equivalent to a regex fragment `[char]`.
+ *
+ * @see {@link FirstConsumedChar}
  */
 export interface FirstFullyConsumedChar {
 	/**
@@ -102,6 +103,8 @@ export interface FirstFullyConsumedChar {
 /**
  * This is equivalent to a regex fragment `[char]|(?=[look.char])` or `[char]|(?=[look.char]|$)` depending on
  * `look.edge`.
+ *
+ * @see {@link FirstConsumedChar}
  */
 export interface FirstPartiallyConsumedChar {
 	/**
