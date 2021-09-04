@@ -92,11 +92,11 @@
 					</a>
 					<p>There are a few important values:</p>
 					<ul>
-						<li>Accept all: The instance <code>{ char: all, edge: true }</code> (<code>edge</code> doesn&#39;t matter) is guaranteed to be equivalent to an
+						<li>Accept all: The instance <code>{ char: all, exact: true, edge: true }</code> is guaranteed to be equivalent to an
 						assertion that accepts all input strings (<code>(?=[\s\S]|$)</code>).</li>
-						<li>Reject all: The instance <code>{ char: empty, edge: false }</code> (<code>edge</code> doesn&#39;t matter) is guaranteed to be equivalent to
+						<li>Reject all: The instance <code>{ char: empty, edge: false }</code> (<code>exact</code> doesn&#39;t matter) is guaranteed to be equivalent to
 						an assertion that rejects all input strings (<code>(?=[])</code>).</li>
-						<li>Edge assertion: The instance <code>{ char: empty, edge: true }</code> (<code>edge</code> doesn&#39;t matter) is guaranteed to be equivalent
+						<li>Edge assertion: The instance <code>{ char: empty, edge: true }</code> (<code>exact</code> doesn&#39;t matter) is guaranteed to be equivalent
 						to an edge assertion (either <code>^</code> or <code>$</code>).</li>
 					</ul>
 				</div>
