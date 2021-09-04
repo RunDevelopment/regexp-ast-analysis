@@ -10,7 +10,7 @@ import { ReadonlyFlags } from "./flags";
  *
  * ```js
  * const flags: ReadonlyFlags = getFlags();
- * const cache = createCache(flags);
+ * const cache = toCache(flags);
  *
  * toCharSet(element, flags); // uncached
  * toCharSet(element, cache); // cached
@@ -18,7 +18,7 @@ import { ReadonlyFlags } from "./flags";
  *
  * Whether the cache is actually utilized depends on the implementation of the function.
  *
- * To create a new cache, use the {@link createCache} function.
+ * To get a cache for some flags, use the {@link toCache} function.
  *
  * ### Assumption
  *
@@ -35,8 +35,12 @@ import { ReadonlyFlags } from "./flags";
  * They will not cause memory leaks.
  *
  * This means that caches may out-live the nodes they cache information for.
+ *
+ * @see {@link toCache}
+ * @see {@link createCache}
  */
 export interface Cache extends Required<ReadonlyFlags> {
+	/** @internal */
 	readonly __cache?: never;
 }
 
