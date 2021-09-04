@@ -50,6 +50,8 @@ import { CacheInstance } from "./cache";
  *   an assertion that rejects all input strings (`(?=[])`).
  * - Edge assertion: The instance `{ char: empty, edge: true }` (`exact` doesn't matter) is guaranteed to be equivalent
  *   to an edge assertion (either `^` or `$`).
+ *
+ * @see {@link FirstLookChars}
  */
 export interface FirstLookChar {
 	/**
@@ -67,6 +69,64 @@ export interface FirstLookChar {
 	 * If `true`, then `char` is guaranteed to be exactly the first character and not just a super set of it.
 	 */
 	readonly exact: boolean;
+}
+/**
+ * This namespace contains methods for working with {@link FirstLookChar}s.
+ */
+// eslint-disable-next-line @typescript-eslint/no-namespace
+export namespace FirstLookChars {
+	/**
+	 * Returns a {@link FirstLookChar} that is equivalent to a trivially accepting lookaround.
+	 *
+	 * The returned look is semantically equivalent to `(?=)` == `(?=[^]|$)` or `(?<=)` == `(?<=[^]|^)`.
+	 */
+	export function all(flags: ReadonlyFlags): FirstLookChar {
+		return {
+			char: Chars.all(flags),
+			exact: true,
+			edge: true,
+		};
+	}
+	/**
+	 * Returns a {@link FirstLookChar} that is equivalent to an assertion that only accepts the start/end of the input
+	 * string.
+	 *
+	 * The returned look is semantically equivalent to `$` == `(?=[]|$)` or `^` == `(?<=[]|^)`.
+	 */
+	export function edge(flags: ReadonlyFlags): FirstLookChar {
+		return {
+			char: Chars.empty(flags),
+			exact: true,
+			edge: true,
+		};
+	}
+
+	/**
+	 * Converts the given {@link FirstLookChar} to a {@link FirstConsumedChar}.
+	 *
+	 * This is semantically equivalent to `(?=b|$)` -> `[]|(?=b|$)`.
+	 *
+	 * Note: This operation will typically return a {@link FirstPartiallyConsumedChar}. It will only return a
+	 * {@link FirstFullyConsumedChar} if the given `char` is empty and `edge: false`. This is because
+	 * `(?=[])` -> `[]|(?=[])` == `[]`.
+	 */
+	export function toConsumed(look: FirstLookChar): FirstConsumedChar {
+		if (!look.edge && look.char.isEmpty) {
+			// the given look trivially rejects everything
+			return {
+				char: CharSet.empty(look.char.maximum),
+				exact: true,
+				empty: false,
+			};
+		} else {
+			return {
+				char: CharSet.empty(look.char.maximum),
+				exact: true,
+				empty: true,
+				look,
+			};
+		}
+	}
 }
 
 /**
@@ -140,7 +200,7 @@ export namespace FirstConsumedChars {
 			char: Chars.empty(flags),
 			exact: true,
 			empty: true,
-			look: { char: Chars.all(flags), exact: true, edge: true },
+			look: FirstLookChars.all(flags),
 		};
 	}
 	/**
@@ -259,7 +319,7 @@ export namespace FirstConsumedChars {
 	 */
 	export function concat(chars: Iterable<FirstConsumedChar>, flags: ReadonlyFlags): FirstConsumedChar {
 		const union = CharUnion.fromFlags(flags);
-		let look = firstLookCharTriviallyAccepting(flags);
+		let look = FirstLookChars.all(flags);
 
 		for (const item of chars) {
 			union.add(intersectInexact(item, look));
@@ -527,7 +587,7 @@ function getFirstConsumedCharAssertionImpl(
 						// E.g. `(?![a][b])` == `(?=$|[^a]|[a][^b])`
 						return misdirectedAssertion();
 					} else {
-						return emptyWord({ char: firstChar.char.negate(), edge: true, exact: true });
+						return FirstLookChars.toConsumed({ char: firstChar.char.negate(), edge: true, exact: true });
 					}
 				} else {
 					const firstChar = getFirstConsumedCharAlternativesImpl(
@@ -536,7 +596,7 @@ function getFirstConsumedCharAssertionImpl(
 						flags,
 						options
 					);
-					return emptyWord(FirstConsumedChars.toLook(firstChar));
+					return FirstLookChars.toConsumed(FirstConsumedChars.toLook(firstChar));
 				}
 			} else {
 				return misdirectedAssertion();
@@ -548,8 +608,8 @@ function getFirstConsumedCharAssertionImpl(
 	/**
 	 * The result for an assertion that (partly) assert for the wrong matching direction.
 	 */
-	function misdirectedAssertion(): FirstPartiallyConsumedChar {
-		return emptyWord({
+	function misdirectedAssertion(): FirstConsumedChar {
+		return FirstLookChars.toConsumed({
 			char: Chars.all(flags),
 			edge: true,
 			// This is the important part.
@@ -557,27 +617,24 @@ function getFirstConsumedCharAssertionImpl(
 			exact: false,
 		});
 	}
-	function edgeAssertion(): FirstPartiallyConsumedChar {
-		return emptyWord(firstLookCharEdgeAccepting(flags));
+	function edgeAssertion(): FirstConsumedChar {
+		return FirstLookChars.toConsumed(FirstLookChars.edge(flags));
 	}
-	function lineAssertion(): FirstPartiallyConsumedChar {
-		return emptyWord({
+	function lineAssertion(): FirstConsumedChar {
+		return FirstLookChars.toConsumed({
 			char: Chars.lineTerminator(flags),
 			edge: true,
 			exact: true,
 		});
 	}
-	function wordAssertion(negate: boolean): FirstPartiallyConsumedChar {
+	function wordAssertion(negate: boolean): FirstConsumedChar {
 		const word = Chars.word(flags);
 
-		return emptyWord({
+		return FirstLookChars.toConsumed({
 			char: negate ? word.negate() : word,
 			edge: negate,
 			exact: true,
 		});
-	}
-	function emptyWord(look: FirstLookChar): FirstPartiallyConsumedChar {
-		return firstConsumedCharEmptyWord(flags, look);
 	}
 }
 function getFirstConsumedCharUncachedImpl(
@@ -654,31 +711,6 @@ function getFirstConsumedCharUncachedImpl(
 		default:
 			throw assertNever(element);
 	}
-}
-
-/**
- * Returns first-look-char that is equivalent to a trivially-accepting lookaround.
- */
-function firstLookCharTriviallyAccepting(flags: ReadonlyFlags): FirstLookChar {
-	return { char: Chars.all(flags), edge: true, exact: true };
-}
-/**
- * Returns first-look-char that is equivalent to `/$/`.
- */
-function firstLookCharEdgeAccepting(flags: ReadonlyFlags): FirstLookChar {
-	return { char: Chars.empty(flags), edge: true, exact: true };
-}
-/**
- * Returns first-consumed-char that is equivalent to consuming nothing (the empty word) followed by a trivially
- * accepting lookaround.
- */
-function firstConsumedCharEmptyWord(flags: ReadonlyFlags, look: FirstLookChar): FirstPartiallyConsumedChar {
-	return {
-		char: Chars.empty(flags),
-		empty: true,
-		exact: true,
-		look,
-	};
 }
 
 export function getFirstConsumedCharAfter(
