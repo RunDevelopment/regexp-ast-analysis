@@ -71,13 +71,13 @@
 					<p>A cache implements the <a href="readonlyflags.html">ReadonlyFlags</a> interface. All functions that take a <a href="readonlyflags.html">ReadonlyFlags</a> objects can
 					be given a cache instead to utilize the cache. Example:</p>
 					<pre><code class="language-js"><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">flags</span><span style="color: #000000">: </span><span style="color: #267F99">ReadonlyFlags</span><span style="color: #000000"> = </span><span style="color: #795E26">getFlags</span><span style="color: #000000">();</span>
-<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">cache</span><span style="color: #000000"> = </span><span style="color: #795E26">createCache</span><span style="color: #000000">(</span><span style="color: #001080">flags</span><span style="color: #000000">);</span>
+<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">cache</span><span style="color: #000000"> = </span><span style="color: #795E26">toCache</span><span style="color: #000000">(</span><span style="color: #001080">flags</span><span style="color: #000000">);</span>
 
 <span style="color: #795E26">toCharSet</span><span style="color: #000000">(</span><span style="color: #001080">element</span><span style="color: #000000">, </span><span style="color: #001080">flags</span><span style="color: #000000">); </span><span style="color: #008000">// uncached</span>
 <span style="color: #795E26">toCharSet</span><span style="color: #000000">(</span><span style="color: #001080">element</span><span style="color: #000000">, </span><span style="color: #001080">cache</span><span style="color: #000000">); </span><span style="color: #008000">// cached</span>
 </code></pre>
 					<p>Whether the cache is actually utilized depends on the implementation of the function.</p>
-					<p>To create a new cache, use the <a href="../modules.html#createcache">createCache</a> function.</p>
+					<p>To get a cache for some flags, use the <a href="../modules.html#tocache">toCache</a> function.</p>
 					<a href="#assumption" id="assumption" style="color: inherit; text-decoration: none;">
 						<h3>Assumption</h3>
 					</a>
@@ -92,6 +92,14 @@
 						<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakMap"><code>WeakMap</code></a>s internally.
 					They will not cause memory leaks.</p>
 					<p>This means that caches may out-live the nodes they cache information for.</p>
+					<dl class="tsd-comment-tags">
+						<dt>see</dt>
+						<dd><p><a href="../modules.html#tocache">toCache</a></p>
+						</dd>
+						<dt>see</dt>
+						<dd><p><a href="../modules.html#createcache">createCache</a></p>
+						</dd>
+					</dl>
 				</div>
 			</section>
 			<section class="tsd-panel tsd-hierarchy">
@@ -135,6 +143,12 @@
 					<div class="tsd-signature tsd-kind-icon">__cache<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span></div>
 					<aside class="tsd-sources">
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<dl class="tsd-comment-tags">
+							<dt>internal</dt>
+							<dd></dd>
+						</dl>
+					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
 					<a name="dotall" class="tsd-anchor"></a>
