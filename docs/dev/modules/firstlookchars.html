@@ -1,0 +1,221 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>FirstLookChars | regexp-ast-analysis - v0.2.4</title>
+	<meta name="description" content="Documentation for regexp-ast-analysis - v0.2.4">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="../assets/css/main.css">
+	<script async src="../assets/js/search.js" id="search-script"></script>
+</head>
+<body>
+<header>
+	<div class="tsd-page-toolbar">
+		<div class="container">
+			<div class="table-wrap">
+				<div class="table-cell" id="tsd-search" data-index="../assets/js/search.json" data-base="..">
+					<div class="field">
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+						<input id="tsd-search-field" type="text" />
+					</div>
+					<ul class="results">
+						<li class="state loading">Preparing search index...</li>
+						<li class="state failure">The search index is not available</li>
+					</ul>
+					<a href="../index.html" class="title">regexp-ast-analysis - v0.2.4</a>
+				</div>
+				<div class="table-cell" id="tsd-widgets">
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tsd-page-title">
+		<div class="container">
+			<ul class="tsd-breadcrumb">
+				<li>
+					<a href="../modules.html">regexp-ast-analysis - v0.2.4</a>
+				</li>
+				<li>
+					<a href="firstlookchars.html">FirstLookChars</a>
+				</li>
+			</ul>
+			<h1>Namespace FirstLookChars</h1>
+		</div>
+	</div>
+</header>
+<div class="container container-main">
+	<div class="row">
+		<div class="col-8 col-content">
+			<section class="tsd-panel tsd-comment">
+				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<p>This namespace contains methods for working with <a href="../interfaces/firstlookchar.html">FirstLookChar</a>s.</p>
+					</div>
+				</div>
+			</section>
+			<section class="tsd-panel-group tsd-index-group">
+				<h2>Index</h2>
+				<section class="tsd-panel tsd-index-panel">
+					<div class="tsd-index-content">
+						<section class="tsd-index-section ">
+							<h3>Functions</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-function tsd-parent-kind-namespace"><a href="firstlookchars.html#all" class="tsd-kind-icon">all</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-namespace"><a href="firstlookchars.html#edge" class="tsd-kind-icon">edge</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-namespace"><a href="firstlookchars.html#toconsumed" class="tsd-kind-icon">to<wbr>Consumed</a></li>
+							</ul>
+						</section>
+					</div>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Functions</h2>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-namespace">
+					<a name="all" class="tsd-anchor"></a>
+					<h3>all</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-namespace">
+						<li class="tsd-signature tsd-kind-icon">all<span class="tsd-signature-symbol">(</span>flags<span class="tsd-signature-symbol">: </span><a href="../interfaces/readonlyflags.html" class="tsd-signature-type" data-tsd-kind="Interface">ReadonlyFlags</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/firstlookchar.html" class="tsd-signature-type" data-tsd-kind="Interface">FirstLookChar</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Returns a <a href="../interfaces/firstlookchar.html">FirstLookChar</a> that is equivalent to a trivially accepting lookaround.</p>
+								</div>
+								<p>The returned look is semantically equivalent to <code>(?=)</code> == <code>(?=[^]|$)</code> or <code>(?&lt;=)</code> == <code>(?&lt;=[^]|^)</code>.</p>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>flags: <a href="../interfaces/readonlyflags.html" class="tsd-signature-type" data-tsd-kind="Interface">ReadonlyFlags</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="../interfaces/firstlookchar.html" class="tsd-signature-type" data-tsd-kind="Interface">FirstLookChar</a></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-namespace">
+					<a name="edge" class="tsd-anchor"></a>
+					<h3>edge</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-namespace">
+						<li class="tsd-signature tsd-kind-icon">edge<span class="tsd-signature-symbol">(</span>flags<span class="tsd-signature-symbol">: </span><a href="../interfaces/readonlyflags.html" class="tsd-signature-type" data-tsd-kind="Interface">ReadonlyFlags</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/firstlookchar.html" class="tsd-signature-type" data-tsd-kind="Interface">FirstLookChar</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Returns a <a href="../interfaces/firstlookchar.html">FirstLookChar</a> that is equivalent to an assertion that only accepts the start/end of the input
+									string.</p>
+								</div>
+								<p>The returned look is semantically equivalent to <code>$</code> == <code>(?=[]|$)</code> or <code>^</code> == <code>(?&lt;=[]|^)</code>.</p>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>flags: <a href="../interfaces/readonlyflags.html" class="tsd-signature-type" data-tsd-kind="Interface">ReadonlyFlags</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="../interfaces/firstlookchar.html" class="tsd-signature-type" data-tsd-kind="Interface">FirstLookChar</a></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-namespace">
+					<a name="toconsumed" class="tsd-anchor"></a>
+					<h3>to<wbr>Consumed</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-namespace">
+						<li class="tsd-signature tsd-kind-icon">to<wbr>Consumed<span class="tsd-signature-symbol">(</span>look<span class="tsd-signature-symbol">: </span><a href="../interfaces/firstlookchar.html" class="tsd-signature-type" data-tsd-kind="Interface">FirstLookChar</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../modules.html#firstconsumedchar" class="tsd-signature-type" data-tsd-kind="Type alias">FirstConsumedChar</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Converts the given <a href="../interfaces/firstlookchar.html">FirstLookChar</a> to a <a href="../modules.html#firstconsumedchar">FirstConsumedChar</a>.</p>
+								</div>
+								<p>This is semantically equivalent to <code>(?=b|$)</code> -&gt; <code>[]|(?=b|$)</code>.</p>
+								<p>Note: This operation will typically return a <a href="../interfaces/firstpartiallyconsumedchar.html">FirstPartiallyConsumedChar</a>. It will only return a
+									<a href="../interfaces/firstfullyconsumedchar.html">FirstFullyConsumedChar</a> if the given <code>char</code> is empty and <code>edge: false</code>. This is because
+								<code>(?=[])</code> -&gt; <code>[]|(?=[])</code> == <code>[]</code>.</p>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>look: <a href="../interfaces/firstlookchar.html" class="tsd-signature-type" data-tsd-kind="Interface">FirstLookChar</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="../modules.html#firstconsumedchar" class="tsd-signature-type" data-tsd-kind="Type alias">FirstConsumedChar</a></h4>
+						</li>
+					</ul>
+				</section>
+			</section>
+		</div>
+		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+			<nav class="tsd-navigation primary">
+				<ul>
+					<li class=" ">
+						<a href="../modules.html">Exports</a>
+					</li>
+					<li class=" tsd-kind-namespace">
+						<a href="chars.html">Chars</a>
+					</li>
+					<li class=" tsd-kind-namespace">
+						<a href="firstconsumedchars.html">First<wbr>Consumed<wbr>Chars</a>
+					</li>
+					<li class="current tsd-kind-namespace">
+						<a href="firstlookchars.html">First<wbr>Look<wbr>Chars</a>
+					</li>
+				</ul>
+			</nav>
+			<nav class="tsd-navigation secondary menu-sticky">
+				<ul class="before-current">
+					<li class=" tsd-kind-function tsd-parent-kind-namespace">
+						<a href="firstlookchars.html#all" class="tsd-kind-icon">all</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-namespace">
+						<a href="firstlookchars.html#edge" class="tsd-kind-icon">edge</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-namespace">
+						<a href="firstlookchars.html#toconsumed" class="tsd-kind-icon">to<wbr>Consumed</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</div>
+</div>
+<footer>
+	<div class="container">
+		<h2>Legend</h2>
+		<div class="tsd-legend-group">
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-interface"><span class="tsd-kind-icon">Method</span></li>
+			</ul>
+		</div>
+	</div>
+</footer>
+<div class="overlay"></div>
+<script src="../assets/js/main.js"></script>
+</body>
+</html>

@@ -64,6 +64,7 @@
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-namespace"><a href="modules/chars.html" class="tsd-kind-icon">Chars</a></li>
 								<li class="tsd-kind-namespace"><a href="modules/firstconsumedchars.html" class="tsd-kind-icon">First<wbr>Consumed<wbr>Chars</a></li>
+								<li class="tsd-kind-namespace"><a href="modules/firstlookchars.html" class="tsd-kind-icon">First<wbr>Look<wbr>Chars</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
@@ -119,6 +120,7 @@
 								<li class="tsd-kind-function"><a href="modules.html#matchesallcharacters" class="tsd-kind-icon">matches<wbr>All<wbr>Characters</a></li>
 								<li class="tsd-kind-function"><a href="modules.html#matchesnocharacters" class="tsd-kind-icon">matches<wbr>NoCharacters</a></li>
 								<li class="tsd-kind-function"><a href="modules.html#structurallyequal" class="tsd-kind-icon">structurally<wbr>Equal</a></li>
+								<li class="tsd-kind-function"><a href="modules.html#tocache" class="tsd-kind-icon">to<wbr>Cache</a></li>
 								<li class="tsd-kind-function"><a href="modules.html#tocharset" class="tsd-kind-icon">to<wbr>Char<wbr>Set</a></li>
 							</ul>
 						</section>
@@ -283,7 +285,17 @@
 								<div class="lead">
 									<p>This will create a new cache instance for the given flags.</p>
 								</div>
+								<p>This operation will always create a new cache. If you want to transparently reuse cache instances, use
+								<a href="modules.html#tocache">toCache</a> instead.</p>
 								<p>See <a href="interfaces/cache.html">Cache</a> from more information about using caches.</p>
+								<dl class="tsd-comment-tags">
+									<dt>see</dt>
+									<dd><p><a href="interfaces/cache.html">Cache</a></p>
+									</dd>
+									<dt>see</dt>
+									<dd><p><a href="modules.html#tocache">toCache</a></p>
+									</dd>
+								</dl>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
@@ -1351,6 +1363,42 @@ function Next(element, state):
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-function">
+					<a name="tocache" class="tsd-anchor"></a>
+					<h3>to<wbr>Cache</h3>
+					<ul class="tsd-signatures tsd-kind-function">
+						<li class="tsd-signature tsd-kind-icon">to<wbr>Cache<span class="tsd-signature-symbol">(</span>flags<span class="tsd-signature-symbol">: </span><a href="interfaces/readonlyflags.html" class="tsd-signature-type" data-tsd-kind="Interface">ReadonlyFlags</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="interfaces/cache.html" class="tsd-signature-type" data-tsd-kind="Interface">Cache</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Returns a cache instance for the given flags.</p>
+								</div>
+								<p>If the given flags are a cache instance, the cache instance will be returned. Otherwise a new cache instance will
+								be created using <a href="modules.html#createcache">createCache</a>.</p>
+								<p>See <a href="interfaces/cache.html">Cache</a> from more information about using caches.</p>
+								<dl class="tsd-comment-tags">
+									<dt>see</dt>
+									<dd><p><a href="interfaces/cache.html">Cache</a></p>
+									</dd>
+									<dt>see</dt>
+									<dd><p><a href="modules.html#createcache">createCache</a></p>
+									</dd>
+								</dl>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>flags: <a href="interfaces/readonlyflags.html" class="tsd-signature-type" data-tsd-kind="Interface">ReadonlyFlags</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="interfaces/cache.html" class="tsd-signature-type" data-tsd-kind="Interface">Cache</a></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function">
 					<a name="tocharset" class="tsd-anchor"></a>
 					<h3>to<wbr>Char<wbr>Set</h3>
 					<ul class="tsd-signatures tsd-kind-function">
@@ -1393,6 +1441,9 @@ function Next(element, state):
 					</li>
 					<li class=" tsd-kind-namespace">
 						<a href="modules/firstconsumedchars.html">First<wbr>Consumed<wbr>Chars</a>
+					</li>
+					<li class=" tsd-kind-namespace">
+						<a href="modules/firstlookchars.html">First<wbr>Look<wbr>Chars</a>
 					</li>
 				</ul>
 			</nav>
@@ -1517,6 +1568,9 @@ function Next(element, state):
 					</li>
 					<li class=" tsd-kind-function">
 						<a href="modules.html#structurallyequal" class="tsd-kind-icon">structurally<wbr>Equal</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="modules.html#tocache" class="tsd-kind-icon">to<wbr>Cache</a>
 					</li>
 					<li class=" tsd-kind-function">
 						<a href="modules.html#tocharset" class="tsd-kind-icon">to<wbr>Char<wbr>Set</a>

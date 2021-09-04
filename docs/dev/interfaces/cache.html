@@ -84,7 +84,7 @@
 					<p>Caches assume that the regexpp AST of cached nodes is immutable. If this assumption is broken, then the cache may
 					return old or incorrect results.</p>
 					<p>The AST may be changed before the cache first sees a node of the AST and after the cached last sees a node of the
-					AST. Changes are allowed as long as the AST appears unchanged for the cache.</p>
+					AST. Changes are allowed as long as the AST appears to be immutable from the perspective of the cache.</p>
 					<a href="#memory" id="memory" style="color: inherit; text-decoration: none;">
 						<h3>Memory</h3>
 					</a>
