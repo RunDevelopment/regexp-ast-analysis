@@ -1,5 +1,32 @@
 # Changelog
 
+## 0.3.0 (2021-09-04)
+
+### Breaking
+
+- The `FirstLookChar`, `FirstFullyConsumedChar`, and `FirstPartiallyConsumedChar` interfaces are now immutable.
+
+### Added
+
+- Added transparent caching for all functions taking flags.
+- Added `FirstConsumedChars` and `FirstLookChars` namespaces. They contain methods for working with `FirstLookChar`s and `FirstConsumedChar`s.
+- Added `FollowOperations.continueOutside` to improve analysis inside lookaround assertions.
+- Added `FollowEndReason` type.
+- `followPaths` now supports alternatives as the start element.
+- The `getFirst{Consumed,}Char*` functions now supports alternatives as the after-this element.
+
+### Improved
+
+- The `getFirst{Consumed,}Char*` functions can now look outside of lookarounds to return better results.
+- Improved how the `exact` property of `FirstConsumedChar`s is determined. `getFirstConsumedChar` will now return better results.
+- Improved documentation.
+- Lots of internal refactoring and improvements.
+
+### Fixed
+
+- Fixed that `getFirstConsumedChar` sometimes returned partially consumed chars with trivially rejecting looks instead of a fully consumed char.
+
+
 ## 0.2.4 (2021-08-12)
 
 ### Fixed
