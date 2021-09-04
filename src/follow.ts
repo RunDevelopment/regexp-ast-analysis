@@ -3,6 +3,21 @@ import { getMatchingDirectionFromAssertionKind, getMatchingDirection, MatchingDi
 import { assertNever } from "./util";
 
 /**
+ * The reason a path ends.
+ *
+ * Paths generally end because:
+ *
+ * 1. the {@link FollowOperations} do not wish to continue or
+ * 2. because paths cannot be followed further because of the structure of the regex.
+ *
+ * This type describes the reasons for the second option.
+ *
+ * @see {@link FollowOperations}
+ * @see {@link FollowOperations.endPath}
+ */
+export type FollowEndReason = "pattern" | "assertion";
+
+/**
  * A set of operations that determine how state is propagated and changed.
  *
  * @see {@link followPaths}
@@ -64,8 +79,9 @@ export interface FollowOperations<S> {
 	 * in that direction.
 	 *
 	 * @default x => x
+	 * @see {@link FollowEndReason}
 	 */
-	endPath?: (state: S, direction: MatchingDirection, reason: "pattern" | "assertion") => S;
+	endPath?: (state: S, direction: MatchingDirection, reason: FollowEndReason) => S;
 
 	/**
 	 * Whether the current path should go into the given element (return `true`) or whether it should be skipped
@@ -313,7 +329,7 @@ export function followPaths<S>(
 			}
 		}
 	}
-	type NextElement = false | Element | "pattern" | "assertion" | [Quantifier, NextElement];
+	type NextElement = false | Element | FollowEndReason | [Quantifier, NextElement];
 	function getNextElement(element: Element, state: S, direction: MatchingDirection): NextElement {
 		const parent = element.parent;
 		if (parent.type === "CharacterClass" || parent.type === "CharacterClassRange") {
@@ -366,7 +382,7 @@ export function followPaths<S>(
 		const assertionDirection = getMatchingDirectionFromAssertionKind(assertion.kind);
 		return assertionDirection !== direction && operations.continueOutside(assertion, state, direction);
 	}
-	function endPath(state: S, direction: MatchingDirection, reason: "assertion" | "pattern"): S {
+	function endPath(state: S, direction: MatchingDirection, reason: FollowEndReason): S {
 		if (operations.endPath) {
 			return operations.endPath(state, direction, reason);
 		}
