@@ -44,11 +44,11 @@ import { CacheInstance } from "./cache";
  *
  * There are a few important values:
  *
- * - Accept all: The instance `{ char: all, edge: true }` (`edge` doesn't matter) is guaranteed to be equivalent to an
+ * - Accept all: The instance `{ char: all, exact: true, edge: true }` is guaranteed to be equivalent to an
  *   assertion that accepts all input strings (`(?=[\s\S]|$)`).
- * - Reject all: The instance `{ char: empty, edge: false }` (`edge` doesn't matter) is guaranteed to be equivalent to
+ * - Reject all: The instance `{ char: empty, edge: false }` (`exact` doesn't matter) is guaranteed to be equivalent to
  *   an assertion that rejects all input strings (`(?=[])`).
- * - Edge assertion: The instance `{ char: empty, edge: true }` (`edge` doesn't matter) is guaranteed to be equivalent
+ * - Edge assertion: The instance `{ char: empty, edge: true }` (`exact` doesn't matter) is guaranteed to be equivalent
  *   to an edge assertion (either `^` or `$`).
  */
 export interface FirstLookChar {
@@ -102,7 +102,7 @@ export interface FirstFullyConsumedChar {
 }
 /**
  * This is equivalent to a regex fragment `[char]|(?=[look.char])` or `[char]|(?=[look.char]|$)` depending on
- * `look.edge`.
+ * {@link FirstLookChar.edge}.
  *
  * @see {@link FirstConsumedChar}
  */
