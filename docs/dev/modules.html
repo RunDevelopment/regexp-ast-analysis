@@ -87,6 +87,7 @@
 								<li class="tsd-kind-type-alias tsd-has-type-parameter"><a href="modules.html#closestancestor" class="tsd-kind-icon">Closest<wbr>Ancestor</a></li>
 								<li class="tsd-kind-type-alias tsd-has-type-parameter"><a href="modules.html#descendant" class="tsd-kind-icon">Descendant</a></li>
 								<li class="tsd-kind-type-alias"><a href="modules.html#firstconsumedchar" class="tsd-kind-icon">First<wbr>Consumed<wbr>Char</a></li>
+								<li class="tsd-kind-type-alias"><a href="modules.html#followendreason" class="tsd-kind-icon">Follow<wbr>End<wbr>Reason</a></li>
 								<li class="tsd-kind-type-alias"><a href="modules.html#matchingdirection" class="tsd-kind-icon">Matching<wbr>Direction</a></li>
 								<li class="tsd-kind-type-alias"><a href="modules.html#tocharsetelement" class="tsd-kind-icon">To<wbr>Char<wbr>Set<wbr>Element</a></li>
 							</ul>
@@ -218,6 +219,32 @@
 							</dd>
 							<dt>see</dt>
 							<dd><p><a href="modules/firstconsumedchars.html">FirstConsumedChars</a></p>
+							</dd>
+						</dl>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-type-alias">
+					<a name="followendreason" class="tsd-anchor"></a>
+					<h3>Follow<wbr>End<wbr>Reason</h3>
+					<div class="tsd-signature tsd-kind-icon">Follow<wbr>End<wbr>Reason<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">&quot;pattern&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;assertion&quot;</span></div>
+					<aside class="tsd-sources">
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>The reason a path ends.</p>
+						</div>
+						<p>Paths generally end because:</p>
+						<ol>
+							<li>the <a href="interfaces/followoperations.html">FollowOperations</a> do not wish to continue or</li>
+							<li>because paths cannot be followed further because of the structure of the regex.</li>
+						</ol>
+						<p>This type describes the reasons for the second option.</p>
+						<dl class="tsd-comment-tags">
+							<dt>see</dt>
+							<dd><p><a href="interfaces/followoperations.html">FollowOperations</a></p>
+							</dd>
+							<dt>see</dt>
+							<dd><p><a href="interfaces/followoperations.html#endpath">FollowOperations.endPath</a></p>
 							</dd>
 						</dl>
 					</div>
@@ -1484,6 +1511,9 @@ function Next(element, state):
 					</li>
 					<li class=" tsd-kind-type-alias">
 						<a href="modules.html#firstconsumedchar" class="tsd-kind-icon">First<wbr>Consumed<wbr>Char</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="modules.html#followendreason" class="tsd-kind-icon">Follow<wbr>End<wbr>Reason</a>
 					</li>
 					<li class=" tsd-kind-type-alias">
 						<a href="modules.html#matchingdirection" class="tsd-kind-icon">Matching<wbr>Direction</a>

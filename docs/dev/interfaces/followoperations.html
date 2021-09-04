@@ -275,10 +275,12 @@
 						<div class="lead">
 							<p>Whether the current path should continue outside the given lookaround assertion.</p>
 						</div>
-						<p>Paths that leave an assertion may be followed if the current direction is the opposite of the matching direction
-							of the lookaround assertion. This allows operations to see more. E.g. in <code>a(?!b)</code>, the <code>a</code> can be reached from
-						<code>b</code> if the given direction for <code>b</code> is right-to-left.</p>
-						<p>This function is only called iff <code>getMatchingDirectionFromAssertionKind(element.kind) !== direction</code>.</p>
+						<p>Paths that leave a lookaround assertions (= go outside of it) generally can&#39;t be followed. However, for some
+						operations it makes sense to do it anyway.</p>
+						<p>It usually makes sense to follow paths outside of assertions if
+							<code>getMatchingDirectionFromAssertionKind(element.kind) !== direction</code>. This condition ensure that lookbehinds only
+							follow paths going out to the right (e.g. <code>(?&lt;=a)-&gt;b</code>) and lookaheads only follow paths going out to the left
+						(e.g. <code>b&lt;-(?=a)</code>).</p>
 						<p>If this function returns <code>false</code>, <a href="followoperations.html#endpath">FollowOperations.endPath</a> is guaranteed to be called next.
 							If this function returns <code>true</code>, <a href="followoperations.html#continueafter">FollowOperations.continueAfter</a> is guaranteed to be called next for the
 						lookaround assertion.</p>
@@ -321,7 +323,7 @@
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="endpath" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagOptional">Optional</span> end<wbr>Path</h3>
-					<div class="tsd-signature tsd-kind-icon">end<wbr>Path<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">(</span>state<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">S</span>, direction<span class="tsd-signature-symbol">: </span><a href="../modules.html#matchingdirection" class="tsd-signature-type" data-tsd-kind="Type alias">MatchingDirection</a>, reason<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">&quot;pattern&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;assertion&quot;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">S</span></div>
+					<div class="tsd-signature tsd-kind-icon">end<wbr>Path<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">(</span>state<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">S</span>, direction<span class="tsd-signature-symbol">: </span><a href="../modules.html#matchingdirection" class="tsd-signature-type" data-tsd-kind="Type alias">MatchingDirection</a>, reason<span class="tsd-signature-symbol">: </span><a href="../modules.html#followendreason" class="tsd-signature-type" data-tsd-kind="Type alias">FollowEndReason</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">S</span></div>
 					<aside class="tsd-sources">
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -334,6 +336,9 @@
 							<dt>default</dt>
 							<dd><p>x =&gt; x</p>
 							</dd>
+							<dt>see</dt>
+							<dd><p><a href="../modules.html#followendreason">FollowEndReason</a></p>
+							</dd>
 						</dl>
 					</div>
 					<div class="tsd-type-declaration">
@@ -341,7 +346,7 @@
 						<ul class="tsd-parameters">
 							<li class="tsd-parameter-signature">
 								<ul class="tsd-signatures tsd-kind-type-literal tsd-parent-kind-interface">
-									<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>state<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">S</span>, direction<span class="tsd-signature-symbol">: </span><a href="../modules.html#matchingdirection" class="tsd-signature-type" data-tsd-kind="Type alias">MatchingDirection</a>, reason<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">&quot;pattern&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;assertion&quot;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">S</span></li>
+									<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>state<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">S</span>, direction<span class="tsd-signature-symbol">: </span><a href="../modules.html#matchingdirection" class="tsd-signature-type" data-tsd-kind="Type alias">MatchingDirection</a>, reason<span class="tsd-signature-symbol">: </span><a href="../modules.html#followendreason" class="tsd-signature-type" data-tsd-kind="Type alias">FollowEndReason</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">S</span></li>
 								</ul>
 								<ul class="tsd-descriptions">
 									<li class="tsd-description">
@@ -354,7 +359,7 @@
 												<h5>direction: <a href="../modules.html#matchingdirection" class="tsd-signature-type" data-tsd-kind="Type alias">MatchingDirection</a></h5>
 											</li>
 											<li>
-												<h5>reason: <span class="tsd-signature-type">&quot;pattern&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;assertion&quot;</span></h5>
+												<h5>reason: <a href="../modules.html#followendreason" class="tsd-signature-type" data-tsd-kind="Type alias">FollowEndReason</a></h5>
 											</li>
 										</ul>
 										<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">S</span></h4>
