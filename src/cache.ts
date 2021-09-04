@@ -26,7 +26,7 @@ import { ReadonlyFlags } from "./flags";
  * return old or incorrect results.
  *
  * The AST may be changed before the cache first sees a node of the AST and after the cached last sees a node of the
- * AST. Changes are allowed as long as the AST appears unchanged for the cache.
+ * AST. Changes are allowed as long as the AST appears to be immutable from the perspective of the cache.
  *
  * ### Memory
  *
@@ -43,10 +43,35 @@ export interface Cache extends Required<ReadonlyFlags> {
 /**
  * This will create a new cache instance for the given flags.
  *
+ * This operation will always create a new cache. If you want to transparently reuse cache instances, use
+ * {@link toCache} instead.
+ *
  * See {@link Cache} from more information about using caches.
+ *
+ * @see {@link Cache}
+ * @see {@link toCache}
  */
 export function createCache(flags: ReadonlyFlags): Cache {
 	return new CacheInstance(flags);
+}
+
+/**
+ * Returns a cache instance for the given flags.
+ *
+ * If the given flags are a cache instance, the cache instance will be returned. Otherwise a new cache instance will
+ * be created using {@link createCache}.
+ *
+ * See {@link Cache} from more information about using caches.
+ *
+ * @see {@link Cache}
+ * @see {@link createCache}
+ */
+export function toCache(flags: ReadonlyFlags): Cache {
+	if (flags instanceof CacheInstance) {
+		return flags;
+	} else {
+		return createCache(flags);
+	}
 }
 
 /** @internal */

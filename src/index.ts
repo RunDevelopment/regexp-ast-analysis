@@ -1,5 +1,5 @@
 export * from "./basic";
-export { Cache, createCache } from "./cache";
+export { Cache, createCache, toCache } from "./cache";
 export * from "./to-char-set";
 export * from "./chars";
 export * from "./equal";
