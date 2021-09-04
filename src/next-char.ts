@@ -12,7 +12,7 @@ import {
 import { toCharSet } from "./to-char-set";
 import { followPaths } from "./follow";
 import { ReadonlyFlags } from "./flags";
-import { assertNever, CharUnion, isReadonlyArray } from "./util";
+import { assertNever, CharUnion, intersectInexact, isReadonlyArray, unionInexact } from "./util";
 import { Chars } from "./chars";
 import { CacheInstance } from "./cache";
 
@@ -170,9 +170,7 @@ export namespace FirstConsumedChars {
 			//   (2) (?=a|(?=b|$))
 			//       (?=a|b|$)
 			//       (?=[ab]|$)
-			const union = CharUnion.fromMaximum(consumed.char.maximum);
-			union.add(consumed.char, consumed.exact);
-			union.add(consumed.look.char, consumed.look.exact);
+			const union = unionInexact(consumed, consumed.look);
 
 			return {
 				char: union.char,
@@ -200,7 +198,7 @@ export namespace FirstConsumedChars {
 		const looks: FirstLookChar[] = [];
 
 		for (const itemChar of chars) {
-			union.add(itemChar.char, itemChar.exact);
+			union.add(itemChar);
 			if (itemChar.empty) {
 				looks.push(itemChar.look);
 			}
@@ -240,7 +238,7 @@ export namespace FirstConsumedChars {
 			const lookUnion = CharUnion.fromFlags(flags);
 			let edge = false;
 			for (const look of looks) {
-				lookUnion.add(look.char, look.exact);
+				lookUnion.add(look);
 				edge = edge || look.edge;
 			}
 			return {
@@ -264,7 +262,7 @@ export namespace FirstConsumedChars {
 		let look = firstLookCharTriviallyAccepting(flags);
 
 		for (const item of chars) {
-			union.add(item.char.intersect(look.char), look.exact && item.exact);
+			union.add(intersectInexact(item, look));
 
 			if (item.empty) {
 				// This is the hard case. We need to convert the expression
@@ -308,10 +306,10 @@ export namespace FirstConsumedChars {
 				//
 				// As we can see, the look char is always `D` and the edge is only accepted if it's accepted by both.
 
-				const charIntersection = look.char.intersect(item.look.char);
+				const lookIntersection = intersectInexact(look, item.look);
 				look = {
-					char: charIntersection,
-					exact: (look.exact && item.look.exact) || charIntersection.isEmpty,
+					char: lookIntersection.char,
+					exact: lookIntersection.exact,
 					edge: look.edge && item.look.edge,
 				};
 			} else {

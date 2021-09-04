@@ -8,7 +8,12 @@ export function assertNever(value: never, message?: string): never {
 
 export const isReadonlyArray: (value: unknown) => value is readonly unknown[] = Array.isArray;
 
-export class CharUnion {
+export interface InexactCharSet {
+	readonly char: CharSet;
+	readonly exact: boolean;
+}
+
+export class CharUnion implements InexactCharSet {
 	private _exactChars: CharSet;
 	private _inexactChars: CharSet;
 
@@ -25,11 +30,11 @@ export class CharUnion {
 		this._inexactChars = empty;
 	}
 
-	add(char: CharSet, exact: boolean): void {
-		if (exact) {
-			this._exactChars = this._exactChars.union(char);
+	add(char: InexactCharSet): void {
+		if (char.exact) {
+			this._exactChars = this._exactChars.union(char.char);
 		} else {
-			this._inexactChars = this._inexactChars.union(char);
+			this._inexactChars = this._inexactChars.union(char.char);
 		}
 	}
 
@@ -39,4 +44,31 @@ export class CharUnion {
 	static fromMaximum(maximum: number): CharUnion {
 		return new CharUnion(CharSet.empty(maximum));
 	}
+}
+
+export function unionInexact(left: InexactCharSet, right: InexactCharSet): InexactCharSet {
+	const char = left.char.union(right.char);
+
+	let exact;
+	if (left.exact) {
+		if (right.exact) {
+			exact = true;
+		} else {
+			exact = left.char.isSupersetOf(right.char);
+		}
+	} else {
+		if (right.exact) {
+			exact = right.char.isSupersetOf(left.char);
+		} else {
+			exact = false;
+		}
+	}
+
+	return { char, exact };
+}
+export function intersectInexact(left: InexactCharSet, right: InexactCharSet): InexactCharSet {
+	const char = left.char.intersect(right.char);
+	const exact = (left.exact && right.exact) || char.isEmpty;
+
+	return { char, exact };
 }
