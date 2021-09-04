@@ -745,8 +745,8 @@ function getFirstConsumedCharAfterImpl(
 			continueAfter(_, state): boolean {
 				return state.empty;
 			},
-			continueOutside(): boolean {
-				return true;
+			continueOutside(element, _, direction): boolean {
+				return getMatchingDirectionFromAssertionKind(element.kind) !== direction;
 			},
 		},
 		direction
@@ -838,8 +838,8 @@ function getFirstConsumedCharAfterWithContributorsImpl(
 			continueAfter(_, state): boolean {
 				return state.char.empty;
 			},
-			continueOutside(): boolean {
-				return true;
+			continueOutside(element, _, direction): boolean {
+				return getMatchingDirectionFromAssertionKind(element.kind) !== direction;
 			},
 		},
 		direction

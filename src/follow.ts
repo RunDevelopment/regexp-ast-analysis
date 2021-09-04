@@ -112,11 +112,13 @@ export interface FollowOperations<S> {
 	/**
 	 * Whether the current path should continue outside the given lookaround assertion.
 	 *
-	 * Paths that leave an assertion may be followed if the current direction is the opposite of the matching direction
-	 * of the lookaround assertion. This allows operations to see more. E.g. in `a(?!b)`, the `a` can be reached from
-	 * `b` if the given direction for `b` is right-to-left.
+	 * Paths that leave a lookaround assertions (= go outside of it) generally can't be followed. However, for some
+	 * operations it makes sense to do it anyway.
 	 *
-	 * This function is only called iff `getMatchingDirectionFromAssertionKind(element.kind) !== direction`.
+	 * It usually makes sense to follow paths outside of assertions if
+	 * `getMatchingDirectionFromAssertionKind(element.kind) !== direction`. This condition ensure that lookbehinds only
+	 * follow paths going out to the right (e.g. `(?<=a)->b`) and lookaheads only follow paths going out to the left
+	 * (e.g. `b<-(?=a)`).
 	 *
 	 * If this function returns `false`, {@link FollowOperations.endPath} is guaranteed to be called next.
 	 * If this function returns `true`, {@link FollowOperations.continueAfter} is guaranteed to be called next for the
@@ -375,12 +377,10 @@ export function followPaths<S>(
 		}
 	}
 	function continueOutside(assertion: LookaroundAssertion, state: S, direction: MatchingDirection): boolean {
-		if (!operations.continueOutside) {
-			return false;
+		if (operations.continueOutside) {
+			return operations.continueOutside(assertion, state, direction);
 		}
-
-		const assertionDirection = getMatchingDirectionFromAssertionKind(assertion.kind);
-		return assertionDirection !== direction && operations.continueOutside(assertion, state, direction);
+		return false;
 	}
 	function endPath(state: S, direction: MatchingDirection, reason: FollowEndReason): S {
 		if (operations.endPath) {
