@@ -312,10 +312,16 @@ export namespace FirstConsumedChars {
 					exact: lookIntersection.exact,
 					edge: look.edge && item.look.edge,
 				};
+
+				if (!look.edge && look.char.isEmpty) {
+					// The look trivially rejects everything
+					return { char: union.char, exact: union.exact, empty: false };
+				}
 			} else {
 				return { char: union.char, exact: union.exact, empty: false };
 			}
 		}
+
 		return { char: union.char, exact: union.exact, empty: true, look };
 	}
 

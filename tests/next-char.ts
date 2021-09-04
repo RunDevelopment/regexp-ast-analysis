@@ -257,6 +257,17 @@ describe(RAA.getFirstConsumedChar.name, function () {
 				look: { char: toCharSet(/[^]/), exact: false, edge: true },
 			},
 		},
+
+		{
+			// This is interesting because the `(?=b)` and `(?=c)` contradict which causes `a` to be the first char
+			regexp: /(?:a|(?=b))(?=c)/,
+			expected: { char: toCharSet(/[a]/), exact: true, empty: false },
+		},
+		{
+			// Same as above
+			regexp: /(?:a|(?=b))(?!b)/,
+			expected: { char: toCharSet(/[a]/), exact: true, empty: false },
+		},
 	]);
 
 	function test(cases: TestCase[]): void {
