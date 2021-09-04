@@ -3,8 +3,8 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>regexp-ast-analysis - v0.2.4</title>
-	<meta name="description" content="Documentation for regexp-ast-analysis - v0.2.4">
+	<title>regexp-ast-analysis - v0.3.0</title>
+	<meta name="description" content="Documentation for regexp-ast-analysis - v0.3.0">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="assets/css/main.css">
 	<script async src="assets/js/search.js" id="search-script"></script>
@@ -23,7 +23,7 @@
 						<li class="state loading">Preparing search index...</li>
 						<li class="state failure">The search index is not available</li>
 					</ul>
-					<a href="index.html" class="title">regexp-ast-analysis - v0.2.4</a>
+					<a href="index.html" class="title">regexp-ast-analysis - v0.3.0</a>
 				</div>
 				<div class="table-cell" id="tsd-widgets">
 					<div id="tsd-filter">
@@ -48,7 +48,7 @@
 	</div>
 	<div class="tsd-page-title">
 		<div class="container">
-			<h1>regexp-ast-analysis - v0.2.4</h1>
+			<h1>regexp-ast-analysis - v0.3.0</h1>
 		</div>
 	</div>
 </header>
@@ -63,11 +63,14 @@
 							<h3>Namespaces</h3>
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-namespace"><a href="modules/chars.html" class="tsd-kind-icon">Chars</a></li>
+								<li class="tsd-kind-namespace"><a href="modules/firstconsumedchars.html" class="tsd-kind-icon">First<wbr>Consumed<wbr>Chars</a></li>
+								<li class="tsd-kind-namespace"><a href="modules/firstlookchars.html" class="tsd-kind-icon">First<wbr>Look<wbr>Chars</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Interfaces</h3>
 							<ul class="tsd-index-list">
+								<li class="tsd-kind-interface"><a href="interfaces/cache.html" class="tsd-kind-icon">Cache</a></li>
 								<li class="tsd-kind-interface"><a href="interfaces/firstfullyconsumedchar.html" class="tsd-kind-icon">First<wbr>Fully<wbr>Consumed<wbr>Char</a></li>
 								<li class="tsd-kind-interface"><a href="interfaces/firstlookchar.html" class="tsd-kind-icon">First<wbr>Look<wbr>Char</a></li>
 								<li class="tsd-kind-interface"><a href="interfaces/firstpartiallyconsumedchar.html" class="tsd-kind-icon">First<wbr>Partially<wbr>Consumed<wbr>Char</a></li>
@@ -84,6 +87,7 @@
 								<li class="tsd-kind-type-alias tsd-has-type-parameter"><a href="modules.html#closestancestor" class="tsd-kind-icon">Closest<wbr>Ancestor</a></li>
 								<li class="tsd-kind-type-alias tsd-has-type-parameter"><a href="modules.html#descendant" class="tsd-kind-icon">Descendant</a></li>
 								<li class="tsd-kind-type-alias"><a href="modules.html#firstconsumedchar" class="tsd-kind-icon">First<wbr>Consumed<wbr>Char</a></li>
+								<li class="tsd-kind-type-alias"><a href="modules.html#followendreason" class="tsd-kind-icon">Follow<wbr>End<wbr>Reason</a></li>
 								<li class="tsd-kind-type-alias"><a href="modules.html#matchingdirection" class="tsd-kind-icon">Matching<wbr>Direction</a></li>
 								<li class="tsd-kind-type-alias"><a href="modules.html#tocharsetelement" class="tsd-kind-icon">To<wbr>Char<wbr>Set<wbr>Element</a></li>
 							</ul>
@@ -91,6 +95,7 @@
 						<section class="tsd-index-section ">
 							<h3>Functions</h3>
 							<ul class="tsd-index-list">
+								<li class="tsd-kind-function"><a href="modules.html#createcache" class="tsd-kind-icon">create<wbr>Cache</a></li>
 								<li class="tsd-kind-function tsd-has-type-parameter"><a href="modules.html#followpaths" class="tsd-kind-icon">follow<wbr>Paths</a></li>
 								<li class="tsd-kind-function"><a href="modules.html#getcapturinggroupnumber" class="tsd-kind-icon">get<wbr>Capturing<wbr>Group<wbr>Number</a></li>
 								<li class="tsd-kind-function tsd-has-type-parameter"><a href="modules.html#getclosestancestor" class="tsd-kind-icon">get<wbr>Closest<wbr>Ancestor</a></li>
@@ -116,6 +121,7 @@
 								<li class="tsd-kind-function"><a href="modules.html#matchesallcharacters" class="tsd-kind-icon">matches<wbr>All<wbr>Characters</a></li>
 								<li class="tsd-kind-function"><a href="modules.html#matchesnocharacters" class="tsd-kind-icon">matches<wbr>NoCharacters</a></li>
 								<li class="tsd-kind-function"><a href="modules.html#structurallyequal" class="tsd-kind-icon">structurally<wbr>Equal</a></li>
+								<li class="tsd-kind-function"><a href="modules.html#tocache" class="tsd-kind-icon">to<wbr>Cache</a></li>
 								<li class="tsd-kind-function"><a href="modules.html#tocharset" class="tsd-kind-icon">to<wbr>Char<wbr>Set</a></li>
 							</ul>
 						</section>
@@ -206,12 +212,39 @@
 						<div class="lead">
 							<p>The first character consumed by some element.</p>
 						</div>
-						<p>The first character can either be fully consumed or partially consumed. A fully consumed character means that all
-							input strings accepted by the element must start with this character. A partially consumed character means that the
-						element might not consumed characters.</p>
+						<p>The first character can either be fully consumed or partially consumed.</p>
 						<dl class="tsd-comment-tags">
 							<dt>see</dt>
 							<dd><p><a href="modules.html#getfirstconsumedchar">getFirstConsumedChar</a></p>
+							</dd>
+							<dt>see</dt>
+							<dd><p><a href="modules/firstconsumedchars.html">FirstConsumedChars</a></p>
+							</dd>
+						</dl>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-type-alias">
+					<a name="followendreason" class="tsd-anchor"></a>
+					<h3>Follow<wbr>End<wbr>Reason</h3>
+					<div class="tsd-signature tsd-kind-icon">Follow<wbr>End<wbr>Reason<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">&quot;pattern&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;assertion&quot;</span></div>
+					<aside class="tsd-sources">
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>The reason a path ends.</p>
+						</div>
+						<p>Paths generally end because:</p>
+						<ol>
+							<li>the <a href="interfaces/followoperations.html">FollowOperations</a> do not wish to continue or</li>
+							<li>because paths cannot be followed further because of the structure of the regex.</li>
+						</ol>
+						<p>This type describes the reasons for the second option.</p>
+						<dl class="tsd-comment-tags">
+							<dt>see</dt>
+							<dd><p><a href="interfaces/followoperations.html">FollowOperations</a></p>
+							</dd>
+							<dt>see</dt>
+							<dd><p><a href="interfaces/followoperations.html#endpath">FollowOperations.endPath</a></p>
 							</dd>
 						</dl>
 					</div>
@@ -265,11 +298,47 @@
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Functions</h2>
+				<section class="tsd-panel tsd-member tsd-kind-function">
+					<a name="createcache" class="tsd-anchor"></a>
+					<h3>create<wbr>Cache</h3>
+					<ul class="tsd-signatures tsd-kind-function">
+						<li class="tsd-signature tsd-kind-icon">create<wbr>Cache<span class="tsd-signature-symbol">(</span>flags<span class="tsd-signature-symbol">: </span><a href="interfaces/readonlyflags.html" class="tsd-signature-type" data-tsd-kind="Interface">ReadonlyFlags</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="interfaces/cache.html" class="tsd-signature-type" data-tsd-kind="Interface">Cache</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>This will create a new cache instance for the given flags.</p>
+								</div>
+								<p>This operation will always create a new cache. If you want to transparently reuse cache instances, use
+								<a href="modules.html#tocache">toCache</a> instead.</p>
+								<p>See <a href="interfaces/cache.html">Cache</a> from more information about using caches.</p>
+								<dl class="tsd-comment-tags">
+									<dt>see</dt>
+									<dd><p><a href="interfaces/cache.html">Cache</a></p>
+									</dd>
+									<dt>see</dt>
+									<dd><p><a href="modules.html#tocache">toCache</a></p>
+									</dd>
+								</dl>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>flags: <a href="interfaces/readonlyflags.html" class="tsd-signature-type" data-tsd-kind="Interface">ReadonlyFlags</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="interfaces/cache.html" class="tsd-signature-type" data-tsd-kind="Interface">Cache</a></h4>
+						</li>
+					</ul>
+				</section>
 				<section class="tsd-panel tsd-member tsd-kind-function tsd-has-type-parameter">
 					<a name="followpaths" class="tsd-anchor"></a>
 					<h3>follow<wbr>Paths</h3>
 					<ul class="tsd-signatures tsd-kind-function tsd-has-type-parameter">
-						<li class="tsd-signature tsd-kind-icon">follow<wbr>Paths&lt;S&gt;<span class="tsd-signature-symbol">(</span>start<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Element</span>, startMode<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">&quot;enter&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;next&quot;</span>, initialState<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">S</span>, operations<span class="tsd-signature-symbol">: </span><a href="interfaces/followoperations.html" class="tsd-signature-type" data-tsd-kind="Interface">FollowOperations</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">S</span><span class="tsd-signature-symbol">&gt;</span>, direction<span class="tsd-signature-symbol">?: </span><a href="modules.html#matchingdirection" class="tsd-signature-type" data-tsd-kind="Type alias">MatchingDirection</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">S</span></li>
+						<li class="tsd-signature tsd-kind-icon">follow<wbr>Paths&lt;S&gt;<span class="tsd-signature-symbol">(</span>start<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Element</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Alternative</span>, startMode<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">&quot;enter&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;next&quot;</span>, initialState<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">S</span>, operations<span class="tsd-signature-symbol">: </span><a href="interfaces/followoperations.html" class="tsd-signature-type" data-tsd-kind="Interface">FollowOperations</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">S</span><span class="tsd-signature-symbol">&gt;</span>, direction<span class="tsd-signature-symbol">?: </span><a href="modules.html#matchingdirection" class="tsd-signature-type" data-tsd-kind="Type alias">MatchingDirection</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">S</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
@@ -369,7 +438,7 @@ function Next(element, state):
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>start: <span class="tsd-signature-type">Element</span></h5>
+									<h5>start: <span class="tsd-signature-type">Element</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Alternative</span></h5>
 								</li>
 								<li>
 									<h5>startMode: <span class="tsd-signature-type">&quot;enter&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;next&quot;</span></h5>
@@ -503,7 +572,7 @@ function Next(element, state):
 					<a name="getfirstcharafter" class="tsd-anchor"></a>
 					<h3>get<wbr>First<wbr>Char<wbr>After</h3>
 					<ul class="tsd-signatures tsd-kind-function">
-						<li class="tsd-signature tsd-kind-icon">get<wbr>First<wbr>Char<wbr>After<span class="tsd-signature-symbol">(</span>afterThis<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Element</span>, direction<span class="tsd-signature-symbol">: </span><a href="modules.html#matchingdirection" class="tsd-signature-type" data-tsd-kind="Type alias">MatchingDirection</a>, flags<span class="tsd-signature-symbol">: </span><a href="interfaces/readonlyflags.html" class="tsd-signature-type" data-tsd-kind="Interface">ReadonlyFlags</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="interfaces/firstlookchar.html" class="tsd-signature-type" data-tsd-kind="Interface">FirstLookChar</a></li>
+						<li class="tsd-signature tsd-kind-icon">get<wbr>First<wbr>Char<wbr>After<span class="tsd-signature-symbol">(</span>afterThis<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Element</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Alternative</span>, direction<span class="tsd-signature-symbol">: </span><a href="modules.html#matchingdirection" class="tsd-signature-type" data-tsd-kind="Type alias">MatchingDirection</a>, flags<span class="tsd-signature-symbol">: </span><a href="interfaces/readonlyflags.html" class="tsd-signature-type" data-tsd-kind="Interface">ReadonlyFlags</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="interfaces/firstlookchar.html" class="tsd-signature-type" data-tsd-kind="Interface">FirstLookChar</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
@@ -519,7 +588,7 @@ function Next(element, state):
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>afterThis: <span class="tsd-signature-type">Element</span></h5>
+									<h5>afterThis: <span class="tsd-signature-type">Element</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Alternative</span></h5>
 								</li>
 								<li>
 									<h5>direction: <a href="modules.html#matchingdirection" class="tsd-signature-type" data-tsd-kind="Type alias">MatchingDirection</a></h5>
@@ -536,7 +605,7 @@ function Next(element, state):
 					<a name="getfirstcharafterwithcontributors" class="tsd-anchor"></a>
 					<h3>get<wbr>First<wbr>Char<wbr>After<wbr>With<wbr>Contributors</h3>
 					<ul class="tsd-signatures tsd-kind-function">
-						<li class="tsd-signature tsd-kind-icon">get<wbr>First<wbr>Char<wbr>After<wbr>With<wbr>Contributors<span class="tsd-signature-symbol">(</span>afterThis<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Element</span>, direction<span class="tsd-signature-symbol">: </span><a href="modules.html#matchingdirection" class="tsd-signature-type" data-tsd-kind="Type alias">MatchingDirection</a>, flags<span class="tsd-signature-symbol">: </span><a href="interfaces/readonlyflags.html" class="tsd-signature-type" data-tsd-kind="Interface">ReadonlyFlags</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="interfaces/withcontributors.html" class="tsd-signature-type" data-tsd-kind="Interface">WithContributors</a><span class="tsd-signature-symbol">&lt;</span><a href="interfaces/firstlookchar.html" class="tsd-signature-type" data-tsd-kind="Interface">FirstLookChar</a><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">get<wbr>First<wbr>Char<wbr>After<wbr>With<wbr>Contributors<span class="tsd-signature-symbol">(</span>afterThis<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Element</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Alternative</span>, direction<span class="tsd-signature-symbol">: </span><a href="modules.html#matchingdirection" class="tsd-signature-type" data-tsd-kind="Type alias">MatchingDirection</a>, flags<span class="tsd-signature-symbol">: </span><a href="interfaces/readonlyflags.html" class="tsd-signature-type" data-tsd-kind="Interface">ReadonlyFlags</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="interfaces/withcontributors.html" class="tsd-signature-type" data-tsd-kind="Interface">WithContributors</a><span class="tsd-signature-symbol">&lt;</span><a href="interfaces/firstlookchar.html" class="tsd-signature-type" data-tsd-kind="Interface">FirstLookChar</a><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
@@ -551,7 +620,7 @@ function Next(element, state):
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>afterThis: <span class="tsd-signature-type">Element</span></h5>
+									<h5>afterThis: <span class="tsd-signature-type">Element</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Alternative</span></h5>
 								</li>
 								<li>
 									<h5>direction: <a href="modules.html#matchingdirection" class="tsd-signature-type" data-tsd-kind="Type alias">MatchingDirection</a></h5>
@@ -609,7 +678,7 @@ function Next(element, state):
 					<a name="getfirstconsumedcharafter" class="tsd-anchor"></a>
 					<h3>get<wbr>First<wbr>Consumed<wbr>Char<wbr>After</h3>
 					<ul class="tsd-signatures tsd-kind-function">
-						<li class="tsd-signature tsd-kind-icon">get<wbr>First<wbr>Consumed<wbr>Char<wbr>After<span class="tsd-signature-symbol">(</span>afterThis<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Element</span>, direction<span class="tsd-signature-symbol">: </span><a href="modules.html#matchingdirection" class="tsd-signature-type" data-tsd-kind="Type alias">MatchingDirection</a>, flags<span class="tsd-signature-symbol">: </span><a href="interfaces/readonlyflags.html" class="tsd-signature-type" data-tsd-kind="Interface">ReadonlyFlags</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="modules.html#firstconsumedchar" class="tsd-signature-type" data-tsd-kind="Type alias">FirstConsumedChar</a></li>
+						<li class="tsd-signature tsd-kind-icon">get<wbr>First<wbr>Consumed<wbr>Char<wbr>After<span class="tsd-signature-symbol">(</span>afterThis<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Element</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Alternative</span>, direction<span class="tsd-signature-symbol">: </span><a href="modules.html#matchingdirection" class="tsd-signature-type" data-tsd-kind="Type alias">MatchingDirection</a>, flags<span class="tsd-signature-symbol">: </span><a href="interfaces/readonlyflags.html" class="tsd-signature-type" data-tsd-kind="Interface">ReadonlyFlags</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="modules.html#firstconsumedchar" class="tsd-signature-type" data-tsd-kind="Type alias">FirstConsumedChar</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
@@ -618,7 +687,7 @@ function Next(element, state):
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>afterThis: <span class="tsd-signature-type">Element</span></h5>
+									<h5>afterThis: <span class="tsd-signature-type">Element</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Alternative</span></h5>
 								</li>
 								<li>
 									<h5>direction: <a href="modules.html#matchingdirection" class="tsd-signature-type" data-tsd-kind="Type alias">MatchingDirection</a></h5>
@@ -635,7 +704,7 @@ function Next(element, state):
 					<a name="getfirstconsumedcharafterwithcontributors" class="tsd-anchor"></a>
 					<h3>get<wbr>First<wbr>Consumed<wbr>Char<wbr>After<wbr>With<wbr>Contributors</h3>
 					<ul class="tsd-signatures tsd-kind-function">
-						<li class="tsd-signature tsd-kind-icon">get<wbr>First<wbr>Consumed<wbr>Char<wbr>After<wbr>With<wbr>Contributors<span class="tsd-signature-symbol">(</span>afterThis<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Element</span>, direction<span class="tsd-signature-symbol">: </span><a href="modules.html#matchingdirection" class="tsd-signature-type" data-tsd-kind="Type alias">MatchingDirection</a>, flags<span class="tsd-signature-symbol">: </span><a href="interfaces/readonlyflags.html" class="tsd-signature-type" data-tsd-kind="Interface">ReadonlyFlags</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="interfaces/withcontributors.html" class="tsd-signature-type" data-tsd-kind="Interface">WithContributors</a><span class="tsd-signature-symbol">&lt;</span><a href="modules.html#firstconsumedchar" class="tsd-signature-type" data-tsd-kind="Type alias">FirstConsumedChar</a><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">get<wbr>First<wbr>Consumed<wbr>Char<wbr>After<wbr>With<wbr>Contributors<span class="tsd-signature-symbol">(</span>afterThis<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Element</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Alternative</span>, direction<span class="tsd-signature-symbol">: </span><a href="modules.html#matchingdirection" class="tsd-signature-type" data-tsd-kind="Type alias">MatchingDirection</a>, flags<span class="tsd-signature-symbol">: </span><a href="interfaces/readonlyflags.html" class="tsd-signature-type" data-tsd-kind="Interface">ReadonlyFlags</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="interfaces/withcontributors.html" class="tsd-signature-type" data-tsd-kind="Interface">WithContributors</a><span class="tsd-signature-symbol">&lt;</span><a href="modules.html#firstconsumedchar" class="tsd-signature-type" data-tsd-kind="Type alias">FirstConsumedChar</a><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
@@ -650,7 +719,7 @@ function Next(element, state):
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>afterThis: <span class="tsd-signature-type">Element</span></h5>
+									<h5>afterThis: <span class="tsd-signature-type">Element</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Alternative</span></h5>
 								</li>
 								<li>
 									<h5>direction: <a href="modules.html#matchingdirection" class="tsd-signature-type" data-tsd-kind="Type alias">MatchingDirection</a></h5>
@@ -1321,6 +1390,42 @@ function Next(element, state):
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-function">
+					<a name="tocache" class="tsd-anchor"></a>
+					<h3>to<wbr>Cache</h3>
+					<ul class="tsd-signatures tsd-kind-function">
+						<li class="tsd-signature tsd-kind-icon">to<wbr>Cache<span class="tsd-signature-symbol">(</span>flags<span class="tsd-signature-symbol">: </span><a href="interfaces/readonlyflags.html" class="tsd-signature-type" data-tsd-kind="Interface">ReadonlyFlags</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="interfaces/cache.html" class="tsd-signature-type" data-tsd-kind="Interface">Cache</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Returns a cache instance for the given flags.</p>
+								</div>
+								<p>If the given flags are a cache instance, the cache instance will be returned. Otherwise a new cache instance will
+								be created using <a href="modules.html#createcache">createCache</a>.</p>
+								<p>See <a href="interfaces/cache.html">Cache</a> from more information about using caches.</p>
+								<dl class="tsd-comment-tags">
+									<dt>see</dt>
+									<dd><p><a href="interfaces/cache.html">Cache</a></p>
+									</dd>
+									<dt>see</dt>
+									<dd><p><a href="modules.html#createcache">createCache</a></p>
+									</dd>
+								</dl>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>flags: <a href="interfaces/readonlyflags.html" class="tsd-signature-type" data-tsd-kind="Interface">ReadonlyFlags</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="interfaces/cache.html" class="tsd-signature-type" data-tsd-kind="Interface">Cache</a></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function">
 					<a name="tocharset" class="tsd-anchor"></a>
 					<h3>to<wbr>Char<wbr>Set</h3>
 					<ul class="tsd-signatures tsd-kind-function">
@@ -1361,10 +1466,19 @@ function Next(element, state):
 					<li class=" tsd-kind-namespace">
 						<a href="modules/chars.html">Chars</a>
 					</li>
+					<li class=" tsd-kind-namespace">
+						<a href="modules/firstconsumedchars.html">First<wbr>Consumed<wbr>Chars</a>
+					</li>
+					<li class=" tsd-kind-namespace">
+						<a href="modules/firstlookchars.html">First<wbr>Look<wbr>Chars</a>
+					</li>
 				</ul>
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/cache.html" class="tsd-kind-icon">Cache</a>
+					</li>
 					<li class=" tsd-kind-interface">
 						<a href="interfaces/firstfullyconsumedchar.html" class="tsd-kind-icon">First<wbr>Fully<wbr>Consumed<wbr>Char</a>
 					</li>
@@ -1399,10 +1513,16 @@ function Next(element, state):
 						<a href="modules.html#firstconsumedchar" class="tsd-kind-icon">First<wbr>Consumed<wbr>Char</a>
 					</li>
 					<li class=" tsd-kind-type-alias">
+						<a href="modules.html#followendreason" class="tsd-kind-icon">Follow<wbr>End<wbr>Reason</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
 						<a href="modules.html#matchingdirection" class="tsd-kind-icon">Matching<wbr>Direction</a>
 					</li>
 					<li class=" tsd-kind-type-alias">
 						<a href="modules.html#tocharsetelement" class="tsd-kind-icon">To<wbr>Char<wbr>Set<wbr>Element</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="modules.html#createcache" class="tsd-kind-icon">create<wbr>Cache</a>
 					</li>
 					<li class=" tsd-kind-function tsd-has-type-parameter">
 						<a href="modules.html#followpaths" class="tsd-kind-icon">follow<wbr>Paths</a>
@@ -1478,6 +1598,9 @@ function Next(element, state):
 					</li>
 					<li class=" tsd-kind-function">
 						<a href="modules.html#structurallyequal" class="tsd-kind-icon">structurally<wbr>Equal</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="modules.html#tocache" class="tsd-kind-icon">to<wbr>Cache</a>
 					</li>
 					<li class=" tsd-kind-function">
 						<a href="modules.html#tocharset" class="tsd-kind-icon">to<wbr>Char<wbr>Set</a>
