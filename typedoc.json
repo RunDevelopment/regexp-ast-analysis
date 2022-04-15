@@ -9,5 +9,9 @@
 
   "includeVersion": true,
   "disableSources": true,
-  "hideGenerator": true
+  "hideGenerator": true,
+
+  "validation": {
+    "invalidLink": true
+  }
 }
