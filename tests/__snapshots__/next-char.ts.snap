@@ -1,0 +1,827 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`getFirstCharAfter /(?<afterThis>)a/ (ltr) 1`] = `
+Object {
+  "char": CharSet (65535) [61],
+  "edge": false,
+  "exact": true,
+}
+`;
+
+exports[`getFirstCharAfter /(?<afterThis>)a/i (ltr) 1`] = `
+Object {
+  "char": CharSet (65535) [41, 61],
+  "edge": false,
+  "exact": true,
+}
+`;
+
+exports[`getFirstConsumedChar /$/ (ltr) 1`] = `
+Object {
+  "char": CharSet (65535) [],
+  "empty": true,
+  "exact": true,
+  "look": Object {
+    "char": CharSet (65535) [],
+    "edge": true,
+    "exact": true,
+  },
+}
+`;
+
+exports[`getFirstConsumedChar /$/ (rtl) 1`] = `
+Object {
+  "char": CharSet (65535) [],
+  "empty": true,
+  "exact": true,
+  "look": Object {
+    "char": CharSet (65535) [0..ffff],
+    "edge": true,
+    "exact": false,
+  },
+}
+`;
+
+exports[`getFirstConsumedChar /$/m (ltr) 1`] = `
+Object {
+  "char": CharSet (65535) [],
+  "empty": true,
+  "exact": true,
+  "look": Object {
+    "char": CharSet (65535) [a, d, 2028..2029],
+    "edge": true,
+    "exact": true,
+  },
+}
+`;
+
+exports[`getFirstConsumedChar /(?!$)/m (ltr) 1`] = `
+Object {
+  "char": CharSet (65535) [],
+  "empty": true,
+  "exact": true,
+  "look": Object {
+    "char": CharSet (65535) [0..ffff],
+    "edge": true,
+    "exact": false,
+  },
+}
+`;
+
+exports[`getFirstConsumedChar /(?![])[ab]/ (ltr) 1`] = `
+Object {
+  "char": CharSet (65535) [61..62],
+  "empty": false,
+  "exact": true,
+}
+`;
+
+exports[`getFirstConsumedChar /(?!a)/m (ltr) 1`] = `
+Object {
+  "char": CharSet (65535) [],
+  "empty": true,
+  "exact": true,
+  "look": Object {
+    "char": CharSet (65535) [0..60, 62..ffff],
+    "edge": true,
+    "exact": true,
+  },
+}
+`;
+
+exports[`getFirstConsumedChar /(?!a)[ab]/ (ltr) 1`] = `
+Object {
+  "char": CharSet (65535) [62],
+  "empty": false,
+  "exact": true,
+}
+`;
+
+exports[`getFirstConsumedChar /(?!a)|b|(?=n)/ (ltr) 1`] = `
+Object {
+  "char": CharSet (65535) [62],
+  "empty": true,
+  "exact": true,
+  "look": Object {
+    "char": CharSet (65535) [0..60, 62..ffff],
+    "edge": true,
+    "exact": true,
+  },
+}
+`;
+
+exports[`getFirstConsumedChar /(?!a?)[ab]/ (ltr) 1`] = `
+Object {
+  "char": CharSet (65535) [],
+  "empty": false,
+  "exact": true,
+}
+`;
+
+exports[`getFirstConsumedChar /(?!a?b)[ab]/ (ltr) 1`] = `
+Object {
+  "char": CharSet (65535) [61..62],
+  "empty": false,
+  "exact": false,
+}
+`;
+
+exports[`getFirstConsumedChar /(?!abba)[ab]/ (ltr) 1`] = `
+Object {
+  "char": CharSet (65535) [61..62],
+  "empty": false,
+  "exact": false,
+}
+`;
+
+exports[`getFirstConsumedChar /(?!abc)/m (ltr) 1`] = `
+Object {
+  "char": CharSet (65535) [],
+  "empty": true,
+  "exact": true,
+  "look": Object {
+    "char": CharSet (65535) [0..ffff],
+    "edge": true,
+    "exact": false,
+  },
+}
+`;
+
+exports[`getFirstConsumedChar /(?:(a)|b)\\1/ (rtl) 1`] = `
+Object {
+  "char": CharSet (65535) [61..62],
+  "empty": false,
+  "exact": true,
+}
+`;
+
+exports[`getFirstConsumedChar /(?:)/ (ltr) 1`] = `
+Object {
+  "char": CharSet (65535) [],
+  "empty": true,
+  "exact": true,
+  "look": Object {
+    "char": CharSet (65535) [0..ffff],
+    "edge": true,
+    "exact": true,
+  },
+}
+`;
+
+exports[`getFirstConsumedChar /(?:a+){0,4}/ (ltr) 1`] = `
+Object {
+  "char": CharSet (65535) [61],
+  "empty": true,
+  "exact": true,
+  "look": Object {
+    "char": CharSet (65535) [0..ffff],
+    "edge": true,
+    "exact": true,
+  },
+}
+`;
+
+exports[`getFirstConsumedChar /(?:a|(?=b))(?!b)/ (ltr) 1`] = `
+Object {
+  "char": CharSet (65535) [61],
+  "empty": false,
+  "exact": true,
+}
+`;
+
+exports[`getFirstConsumedChar /(?:a|(?=b))(?=c)/ (ltr) 1`] = `
+Object {
+  "char": CharSet (65535) [61],
+  "empty": false,
+  "exact": true,
+}
+`;
+
+exports[`getFirstConsumedChar /(?<!a)[ab]/ (ltr) 1`] = `
+Object {
+  "char": CharSet (65535) [61..62],
+  "empty": false,
+  "exact": false,
+}
+`;
+
+exports[`getFirstConsumedChar /(?<!a)|b|(?=n)/ (ltr) 1`] = `
+Object {
+  "char": CharSet (65535) [62],
+  "empty": true,
+  "exact": true,
+  "look": Object {
+    "char": CharSet (65535) [0..ffff],
+    "edge": true,
+    "exact": false,
+  },
+}
+`;
+
+exports[`getFirstConsumedChar /(?<=a)[ab]/ (ltr) 1`] = `
+Object {
+  "char": CharSet (65535) [61..62],
+  "empty": false,
+  "exact": false,
+}
+`;
+
+exports[`getFirstConsumedChar /(?=$)/m (ltr) 1`] = `
+Object {
+  "char": CharSet (65535) [],
+  "empty": true,
+  "exact": true,
+  "look": Object {
+    "char": CharSet (65535) [a, d, 2028..2029],
+    "edge": true,
+    "exact": true,
+  },
+}
+`;
+
+exports[`getFirstConsumedChar /(?=a)/m (ltr) 1`] = `
+Object {
+  "char": CharSet (65535) [],
+  "empty": true,
+  "exact": true,
+  "look": Object {
+    "char": CharSet (65535) [61],
+    "edge": false,
+    "exact": true,
+  },
+}
+`;
+
+exports[`getFirstConsumedChar /(?=a)[ab]/ (ltr) 1`] = `
+Object {
+  "char": CharSet (65535) [61],
+  "empty": false,
+  "exact": true,
+}
+`;
+
+exports[`getFirstConsumedChar /(?=a?)[ab]/ (ltr) 1`] = `
+Object {
+  "char": CharSet (65535) [61..62],
+  "empty": false,
+  "exact": true,
+}
+`;
+
+exports[`getFirstConsumedChar /(?=abc)/m (ltr) 1`] = `
+Object {
+  "char": CharSet (65535) [],
+  "empty": true,
+  "exact": true,
+  "look": Object {
+    "char": CharSet (65535) [61],
+    "edge": false,
+    "exact": true,
+  },
+}
+`;
+
+exports[`getFirstConsumedChar /(a)\\1/ (ltr) 1`] = `
+Object {
+  "char": CharSet (65535) [61],
+  "empty": false,
+  "exact": true,
+}
+`;
+
+exports[`getFirstConsumedChar /(a)\\1/ (rtl) 1`] = `
+Object {
+  "char": CharSet (65535) [61],
+  "empty": false,
+  "exact": true,
+}
+`;
+
+exports[`getFirstConsumedChar /(a)b\\1/ (ltr) 1`] = `
+Object {
+  "char": CharSet (65535) [61],
+  "empty": false,
+  "exact": true,
+}
+`;
+
+exports[`getFirstConsumedChar /[\\0-\\u{10FFFF}]/u (ltr) 1`] = `
+Object {
+  "char": CharSet (1114111) [0..10ffff],
+  "empty": false,
+  "exact": true,
+}
+`;
+
+exports[`getFirstConsumedChar /[\\0-\\uFFFF]/ (ltr) 1`] = `
+Object {
+  "char": CharSet (65535) [0..ffff],
+  "empty": false,
+  "exact": true,
+}
+`;
+
+exports[`getFirstConsumedChar /[a-z]/i (ltr) 1`] = `
+Object {
+  "char": CharSet (65535) [41..5a, 61..7a],
+  "empty": false,
+  "exact": true,
+}
+`;
+
+exports[`getFirstConsumedChar /\\1(a)/ (ltr) 1`] = `
+Object {
+  "char": CharSet (65535) [61],
+  "empty": false,
+  "exact": true,
+}
+`;
+
+exports[`getFirstConsumedChar /\\1a|a(b)/ (ltr) 1`] = `
+Object {
+  "char": CharSet (65535) [61],
+  "empty": false,
+  "exact": true,
+}
+`;
+
+exports[`getFirstConsumedChar /\\B/ (ltr) 1`] = `
+Object {
+  "char": CharSet (65535) [],
+  "empty": true,
+  "exact": true,
+  "look": Object {
+    "char": CharSet (65535) [0..ffff],
+    "edge": true,
+    "exact": false,
+  },
+}
+`;
+
+exports[`getFirstConsumedChar /\\b/ (ltr) 1`] = `
+Object {
+  "char": CharSet (65535) [],
+  "empty": true,
+  "exact": true,
+  "look": Object {
+    "char": CharSet (65535) [0..ffff],
+    "edge": true,
+    "exact": false,
+  },
+}
+`;
+
+exports[`getFirstConsumedChar /\\b[ab]/ (ltr) 1`] = `
+Object {
+  "char": CharSet (65535) [61..62],
+  "empty": false,
+  "exact": false,
+}
+`;
+
+exports[`getFirstConsumedChar /\\b[ab]|[ab]/ (ltr) 1`] = `
+Object {
+  "char": CharSet (65535) [61..62],
+  "empty": false,
+  "exact": true,
+}
+`;
+
+exports[`getFirstConsumedChar /\\b[ab]|a|b/ (ltr) 1`] = `
+Object {
+  "char": CharSet (65535) [61..62],
+  "empty": false,
+  "exact": true,
+}
+`;
+
+exports[`getFirstConsumedChar /^/ (ltr) 1`] = `
+Object {
+  "char": CharSet (65535) [],
+  "empty": true,
+  "exact": true,
+  "look": Object {
+    "char": CharSet (65535) [0..ffff],
+    "edge": true,
+    "exact": false,
+  },
+}
+`;
+
+exports[`getFirstConsumedChar /^/ (rtl) 1`] = `
+Object {
+  "char": CharSet (65535) [],
+  "empty": true,
+  "exact": true,
+  "look": Object {
+    "char": CharSet (65535) [],
+    "edge": true,
+    "exact": true,
+  },
+}
+`;
+
+exports[`getFirstConsumedChar /^/m (ltr) 1`] = `
+Object {
+  "char": CharSet (65535) [],
+  "empty": true,
+  "exact": true,
+  "look": Object {
+    "char": CharSet (65535) [0..ffff],
+    "edge": true,
+    "exact": false,
+  },
+}
+`;
+
+exports[`getFirstConsumedChar /^\\B/ (ltr) 1`] = `
+Object {
+  "char": CharSet (65535) [],
+  "empty": true,
+  "exact": true,
+  "look": Object {
+    "char": CharSet (65535) [0..2f, 3a..40, 5b..5e, 60, 7b..ffff],
+    "edge": true,
+    "exact": false,
+  },
+}
+`;
+
+exports[`getFirstConsumedChar /^\\b/ (ltr) 1`] = `
+Object {
+  "char": CharSet (65535) [],
+  "empty": true,
+  "exact": true,
+  "look": Object {
+    "char": CharSet (65535) [30..39, 41..5a, 5f, 61..7a],
+    "edge": false,
+    "exact": false,
+  },
+}
+`;
+
+exports[`getFirstConsumedChar /|a/ (ltr) 1`] = `
+Object {
+  "char": CharSet (65535) [61],
+  "empty": true,
+  "exact": true,
+  "look": Object {
+    "char": CharSet (65535) [0..ffff],
+    "edge": true,
+    "exact": true,
+  },
+}
+`;
+
+exports[`getFirstConsumedChar /a*/ (ltr) 1`] = `
+Object {
+  "char": CharSet (65535) [61],
+  "empty": true,
+  "exact": true,
+  "look": Object {
+    "char": CharSet (65535) [0..ffff],
+    "edge": true,
+    "exact": true,
+  },
+}
+`;
+
+exports[`getFirstConsumedChar /a+|(|)/ (ltr) 1`] = `
+Object {
+  "char": CharSet (65535) [61],
+  "empty": true,
+  "exact": true,
+  "look": Object {
+    "char": CharSet (65535) [0..ffff],
+    "edge": true,
+    "exact": true,
+  },
+}
+`;
+
+exports[`getFirstConsumedChar /a/ (ltr) 1`] = `
+Object {
+  "char": CharSet (65535) [61],
+  "empty": false,
+  "exact": true,
+}
+`;
+
+exports[`getFirstConsumedChar /a/i (ltr) 1`] = `
+Object {
+  "char": CharSet (65535) [41, 61],
+  "empty": false,
+  "exact": true,
+}
+`;
+
+exports[`getFirstConsumedChar /a?/ (ltr) 1`] = `
+Object {
+  "char": CharSet (65535) [61],
+  "empty": true,
+  "exact": true,
+  "look": Object {
+    "char": CharSet (65535) [0..ffff],
+    "edge": true,
+    "exact": true,
+  },
+}
+`;
+
+exports[`getFirstConsumedChar /a??/ (ltr) 1`] = `
+Object {
+  "char": CharSet (65535) [61],
+  "empty": true,
+  "exact": true,
+  "look": Object {
+    "char": CharSet (65535) [0..ffff],
+    "edge": true,
+    "exact": true,
+  },
+}
+`;
+
+exports[`getFirstConsumedChar /a?b{0}/ (ltr) 1`] = `
+Object {
+  "char": CharSet (65535) [61],
+  "empty": true,
+  "exact": true,
+  "look": Object {
+    "char": CharSet (65535) [0..ffff],
+    "edge": true,
+    "exact": true,
+  },
+}
+`;
+
+exports[`getFirstConsumedChar /a|/ (ltr) 1`] = `
+Object {
+  "char": CharSet (65535) [61],
+  "empty": true,
+  "exact": true,
+  "look": Object {
+    "char": CharSet (65535) [0..ffff],
+    "edge": true,
+    "exact": true,
+  },
+}
+`;
+
+exports[`getFirstConsumedChar /abc/ (ltr) 1`] = `
+Object {
+  "char": CharSet (65535) [61],
+  "empty": false,
+  "exact": true,
+}
+`;
+
+exports[`getFirstConsumedChar /abc/ (ltr) 2`] = `
+Object {
+  "char": CharSet (65535) [61],
+  "empty": false,
+  "exact": true,
+}
+`;
+
+exports[`getFirstConsumedChar /abc/ (rtl) 1`] = `
+Object {
+  "char": CharSet (65535) [63],
+  "empty": false,
+  "exact": true,
+}
+`;
+
+exports[`getFirstConsumedCharAfter /(?:a(?:b(?<afterThis>)){2}){2}z/ (ltr) 1`] = `
+Object {
+  "char": CharSet (65535) [61..62, 7a],
+  "empty": false,
+  "exact": true,
+}
+`;
+
+exports[`getFirstConsumedCharAfter /(?:a|b(?<afterThis>))\\b/ (ltr) 1`] = `
+Object {
+  "char": CharSet (65535) [],
+  "empty": true,
+  "exact": true,
+  "look": Object {
+    "char": CharSet (65535) [0..2f, 3a..40, 5b..5e, 60, 7b..ffff],
+    "edge": true,
+    "exact": true,
+  },
+}
+`;
+
+exports[`getFirstConsumedCharAfter /(?:a|b)(?<afterThis>)\\b/ (ltr) 1`] = `
+Object {
+  "char": CharSet (65535) [],
+  "empty": true,
+  "exact": true,
+  "look": Object {
+    "char": CharSet (65535) [0..2f, 3a..40, 5b..5e, 60, 7b..ffff],
+    "edge": true,
+    "exact": true,
+  },
+}
+`;
+
+exports[`getFirstConsumedCharAfter /(?<afterThis>)(?:a?|b)cd/ (ltr) 1`] = `
+Object {
+  "char": CharSet (65535) [61..63],
+  "empty": false,
+  "exact": true,
+}
+`;
+
+exports[`getFirstConsumedCharAfter /(?<afterThis>)/ (ltr) 1`] = `
+Object {
+  "char": CharSet (65535) [],
+  "empty": true,
+  "exact": true,
+  "look": Object {
+    "char": CharSet (65535) [0..ffff],
+    "edge": true,
+    "exact": true,
+  },
+}
+`;
+
+exports[`getFirstConsumedCharAfter /(?<afterThis>)a/ (ltr) 1`] = `
+Object {
+  "char": CharSet (65535) [61],
+  "empty": false,
+  "exact": true,
+}
+`;
+
+exports[`getFirstConsumedCharAfter /(?<afterThis>)a/i (ltr) 1`] = `
+Object {
+  "char": CharSet (65535) [41, 61],
+  "empty": false,
+  "exact": true,
+}
+`;
+
+exports[`getFirstConsumedCharAfter /(?<afterThis>a|b)\\b/ (ltr) 1`] = `
+Object {
+  "char": CharSet (65535) [],
+  "empty": true,
+  "exact": true,
+  "look": Object {
+    "char": CharSet (65535) [0..2f, 3a..40, 5b..5e, 60, 7b..ffff],
+    "edge": true,
+    "exact": true,
+  },
+}
+`;
+
+exports[`getFirstConsumedCharAfter /(?=(?<afterThis>))/ (ltr) 1`] = `
+Object {
+  "char": CharSet (65535) [],
+  "empty": true,
+  "exact": true,
+  "look": Object {
+    "char": CharSet (65535) [0..ffff],
+    "edge": true,
+    "exact": true,
+  },
+}
+`;
+
+exports[`getFirstConsumedCharAfter /(a(b(c(d(e(f(g(h(i(j(k(l(m(n(o(p(q(r(s(t(u(v(w(x(y(?<afterThis>)){2}){2}){2}){2}){2}){2}){2}){2}){2}){2}){2}){2}){2}){2}){2}){2}){2}){2}){2}){2}){2}){2}){2}){2}){2}z/ (ltr) 1`] = `
+Object {
+  "char": CharSet (65535) [61..7a],
+  "empty": false,
+  "exact": true,
+}
+`;
+
+exports[`getFirstConsumedCharAfter /(a)(?<afterThis>)\\1/ (ltr) 1`] = `
+Object {
+  "char": CharSet (65535) [61],
+  "empty": false,
+  "exact": true,
+}
+`;
+
+exports[`getFirstConsumedCharAfter /(a|b)(?<afterThis>)\\1/ (ltr) 1`] = `
+Object {
+  "char": CharSet (65535) [61..62],
+  "empty": false,
+  "exact": false,
+}
+`;
+
+exports[`getFirstConsumedCharAfter /(a|b)|(?<afterThis>)\\1/ (ltr) 1`] = `
+Object {
+  "char": CharSet (65535) [],
+  "empty": true,
+  "exact": true,
+  "look": Object {
+    "char": CharSet (65535) [0..ffff],
+    "edge": true,
+    "exact": true,
+  },
+}
+`;
+
+exports[`getFirstConsumedCharAfter /(abc(?<afterThis>)){0,1}e/ (ltr) 1`] = `
+Object {
+  "char": CharSet (65535) [65],
+  "empty": false,
+  "exact": true,
+}
+`;
+
+exports[`getFirstConsumedCharAfter /(abc(?<afterThis>)){0,2}e/ (ltr) 1`] = `
+Object {
+  "char": CharSet (65535) [61, 65],
+  "empty": false,
+  "exact": true,
+}
+`;
+
+exports[`getFirstConsumedCharAfter /;(?<afterThis>)\\B[\\d.]+/ (ltr) 1`] = `
+Object {
+  "char": CharSet (65535) [2e],
+  "empty": false,
+  "exact": true,
+}
+`;
+
+exports[`getFirstConsumedCharAfter /;(?<afterThis>)\\B\\B\\B[\\d.]+/ (ltr) 1`] = `
+Object {
+  "char": CharSet (65535) [2e],
+  "empty": false,
+  "exact": true,
+}
+`;
+
+exports[`getFirstConsumedCharAfter /;(?<afterThis>)\\b[\\d.]+/ (ltr) 1`] = `
+Object {
+  "char": CharSet (65535) [30..39],
+  "empty": false,
+  "exact": true,
+}
+`;
+
+exports[`getFirstConsumedCharAfter /;(?<afterThis>)\\b\\b\\b\\b\\b\\b[\\d.]+/ (ltr) 1`] = `
+Object {
+  "char": CharSet (65535) [30..39],
+  "empty": false,
+  "exact": true,
+}
+`;
+
+exports[`getFirstConsumedCharAfter /^(?<afterThis>)\\b/ (ltr) 1`] = `
+Object {
+  "char": CharSet (65535) [],
+  "empty": true,
+  "exact": true,
+  "look": Object {
+    "char": CharSet (65535) [30..39, 41..5a, 5f, 61..7a],
+    "edge": false,
+    "exact": true,
+  },
+}
+`;
+
+exports[`getFirstConsumedCharAfter /a(?<afterThis>)bc/ (ltr) 1`] = `
+Object {
+  "char": CharSet (65535) [62],
+  "empty": false,
+  "exact": true,
+}
+`;
+
+exports[`getFirstConsumedCharAfter /a(?<afterThis>)bc/ (ltr) 2`] = `
+Object {
+  "char": CharSet (65535) [62],
+  "empty": false,
+  "exact": true,
+}
+`;
+
+exports[`getFirstConsumedCharAfter /a(?<afterThis>)bc/ (rtl) 1`] = `
+Object {
+  "char": CharSet (65535) [61],
+  "empty": false,
+  "exact": true,
+}
+`;
+
+exports[`getFirstConsumedCharAfter /a(?=(?<afterThis>)b)/ (ltr) 1`] = `
+Object {
+  "char": CharSet (65535) [62],
+  "empty": false,
+  "exact": true,
+}
+`;
+
+exports[`getFirstConsumedCharAfter /a(?=(?<afterThis>)b)/ (rtl) 1`] = `
+Object {
+  "char": CharSet (65535) [61],
+  "empty": false,
+  "exact": true,
+}
+`;
