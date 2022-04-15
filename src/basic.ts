@@ -17,6 +17,7 @@ import {
 	Backreference,
 	CharacterSet,
 	EdgeAssertion,
+	WordBoundaryAssertion,
 } from "regexpp/ast";
 import { assertNever, isReadonlyArray } from "./util";
 
@@ -716,6 +717,38 @@ export function isStrictBackreference(backreference: Backreference): boolean {
 	}
 
 	return findBackreference(group);
+}
+
+/**
+ * Given a node type `N`, this will map to whether a node of type `N` can contain a capturing group.
+ */
+export type ContainsCapturingGroup<N extends Node> = N extends
+	| CharacterClassElement
+	| CharacterClass
+	| CharacterSet
+	| Backreference
+	| EdgeAssertion
+	| WordBoundaryAssertion
+	| Flags
+	? false
+	: N extends CapturingGroup
+	? true
+	: boolean;
+
+/**
+ * Returns whether the given node contains or is a capturing group.
+ *
+ * This function is guaranteed to behave in the same way as:
+ *
+ * ```js
+ * hasSomeDescendant(node, d => d.type === "CapturingGroup")
+ * ```
+ */
+export function containsCapturingGroup<N extends Node>(node: N): ContainsCapturingGroup<N> {
+	return hasSomeDescendant(node, isCapturingGroup) as ContainsCapturingGroup<N>;
+}
+function isCapturingGroup(node: Node): node is CapturingGroup {
+	return node.type === "CapturingGroup";
 }
 
 /**
