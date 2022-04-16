@@ -22,6 +22,13 @@ export function assertSameParent(alternatives: Iterable<Alternative>): void {
 
 export const isReadonlyArray: (value: unknown) => value is readonly unknown[] = Array.isArray;
 
+export function asReadonlySet<T>(iter: Iterable<T>): ReadonlySet<T> {
+	if (iter instanceof Set) {
+		return iter;
+	}
+	return new Set(iter);
+}
+
 export interface InexactCharSet {
 	readonly char: CharSet;
 	readonly exact: boolean;

@@ -1,0 +1,471 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`canReorder /(?:script|source)_foo|sample/ 1`] = `
+Object {
+  "(?:script|source)": Object {
+    "script|source": Object {
+      "dir:ltr     ignoreCG:false": true,
+      "dir:ltr     ignoreCG:true ": true,
+      "dir:rtl     ignoreCG:false": true,
+      "dir:rtl     ignoreCG:true ": true,
+      "dir:unknown ignoreCG:false": true,
+      "dir:unknown ignoreCG:true ": true,
+    },
+  },
+  "(?:script|source)_foo|sample": Object {
+    "(?:script|source)_foo|sample": Object {
+      "dir:ltr     ignoreCG:false": true,
+      "dir:ltr     ignoreCG:true ": true,
+      "dir:rtl     ignoreCG:false": true,
+      "dir:rtl     ignoreCG:true ": true,
+      "dir:unknown ignoreCG:false": true,
+      "dir:unknown ignoreCG:true ": true,
+    },
+  },
+}
+`;
+
+exports[`canReorder /(int|integer)\\b/ 1`] = `
+Object {
+  "(int|integer)": Object {
+    "int|integer": Object {
+      "dir:ltr     ignoreCG:false": true,
+      "dir:ltr     ignoreCG:true ": true,
+      "dir:rtl     ignoreCG:false": true,
+      "dir:rtl     ignoreCG:true ": true,
+      "dir:unknown ignoreCG:false": true,
+      "dir:unknown ignoreCG:true ": true,
+    },
+  },
+}
+`;
+
+exports[`canReorder />>=?|<<=?|->|--|\\+\\+|&&|\\|\\||[?:~]|<=>|[-+*/%&|^!=<>]=?|\\b(?:and|and_eq|bitand|bitor|not|not_eq|or|or_eq|xor|xor_eq)\\b/ 1`] = `
+Object {
+  "(?:and|and_eq|bitand|bitor|not|not_eq|or|or_eq|xor|xor_eq)": Object {
+    "and|and_eq|bitand|bitor|not|not_eq|or|or_eq|xor|xor_eq": Object {
+      "dir:ltr     ignoreCG:false": true,
+      "dir:ltr     ignoreCG:true ": true,
+      "dir:rtl     ignoreCG:false": true,
+      "dir:rtl     ignoreCG:true ": true,
+      "dir:unknown ignoreCG:false": true,
+      "dir:unknown ignoreCG:true ": true,
+    },
+  },
+  ">>=?|<<=?|->|--|\\\\+\\\\+|&&|\\\\|\\\\||[?:~]|<=>|[-+*/%&|^!=<>]=?|\\\\b(?:and|and_eq|bitand|bitor|not|not_eq|or|or_eq|xor|xor_eq)\\\\b": Object {
+    ">>=?|<<=?|->|--|\\\\+\\\\+|&&|\\\\|\\\\||[?:~]|<=>|[-+*/%&|^!=<>]=?|\\\\b(?:and|and_eq|bitand|bitor|not|not_eq|or|or_eq|xor|xor_eq)\\\\b": Object {
+      "dir:ltr     ignoreCG:false": false,
+      "dir:ltr     ignoreCG:true ": false,
+      "dir:rtl     ignoreCG:false": false,
+      "dir:rtl     ignoreCG:true ": false,
+      "dir:unknown ignoreCG:false": false,
+      "dir:unknown ignoreCG:true ": false,
+    },
+  },
+}
+`;
+
+exports[`canReorder /\\b(a|b|aa|\\w|\\d)\\b/ 1`] = `
+Object {
+  "(a|b|aa|\\\\w|\\\\d)": Object {
+    "a|b|aa|\\\\w|\\\\d": Object {
+      "dir:ltr     ignoreCG:false": true,
+      "dir:ltr     ignoreCG:true ": true,
+      "dir:rtl     ignoreCG:false": true,
+      "dir:rtl     ignoreCG:true ": true,
+      "dir:unknown ignoreCG:false": true,
+      "dir:unknown ignoreCG:true ": true,
+    },
+  },
+}
+`;
+
+exports[`canReorder /\\bcircle|ellipse|closest|farthest|contain|cover\\b/ 1`] = `
+Object {
+  "\\\\bcircle|ellipse|closest|farthest|contain|cover\\\\b": Object {
+    "\\\\bcircle|ellipse|closest|farthest|contain|cover\\\\b": Object {
+      "dir:ltr     ignoreCG:false": true,
+      "dir:ltr     ignoreCG:true ": true,
+      "dir:rtl     ignoreCG:false": true,
+      "dir:rtl     ignoreCG:true ": true,
+      "dir:unknown ignoreCG:false": true,
+      "dir:unknown ignoreCG:true ": true,
+    },
+  },
+}
+`;
+
+exports[`canReorder /\\p{L}|[a-z]|\\d+/iu 1`] = `
+Object {
+  "\\\\p{L}|[a-z]|\\\\d+": Object {
+    "\\\\p{L}|[a-z]|\\\\d+": Object {
+      "dir:ltr     ignoreCG:false": true,
+      "dir:ltr     ignoreCG:true ": true,
+      "dir:rtl     ignoreCG:false": true,
+      "dir:rtl     ignoreCG:true ": true,
+      "dir:unknown ignoreCG:false": true,
+      "dir:unknown ignoreCG:true ": true,
+    },
+  },
+}
+`;
+
+exports[`canReorder /\\p{L}|[a-z]|\\d+/u 1`] = `
+Object {
+  "\\\\p{L}|[a-z]|\\\\d+": Object {
+    "\\\\p{L}|[a-z]|\\\\d+": Object {
+      "dir:ltr     ignoreCG:false": true,
+      "dir:ltr     ignoreCG:true ": true,
+      "dir:rtl     ignoreCG:false": true,
+      "dir:rtl     ignoreCG:true ": true,
+      "dir:unknown ignoreCG:false": true,
+      "dir:unknown ignoreCG:true ": true,
+    },
+  },
+}
+`;
+
+exports[`canReorder /0|(1)|2|(3)/ 1`] = `
+Object {
+  "0|(1)|2|(3)": Object {
+    "0|(1)|2|(3)": Object {
+      "dir:ltr     ignoreCG:false": false,
+      "dir:ltr     ignoreCG:true ": true,
+      "dir:rtl     ignoreCG:false": false,
+      "dir:rtl     ignoreCG:true ": true,
+      "dir:unknown ignoreCG:false": false,
+      "dir:unknown ignoreCG:true ": true,
+    },
+  },
+}
+`;
+
+exports[`canReorder /0|(1)|2|3/ 1`] = `
+Object {
+  "0|(1)|2|3": Object {
+    "0|(1)|2|3": Object {
+      "dir:ltr     ignoreCG:false": true,
+      "dir:ltr     ignoreCG:true ": true,
+      "dir:rtl     ignoreCG:false": true,
+      "dir:rtl     ignoreCG:true ": true,
+      "dir:unknown ignoreCG:false": true,
+      "dir:unknown ignoreCG:true ": true,
+    },
+  },
+}
+`;
+
+exports[`canReorder /0|0|1|1|2|3|44/ 1`] = `
+Object {
+  "0|0|1|1|2|3|44": Object {
+    "0|0|1|1|2|3|44": Object {
+      "dir:ltr     ignoreCG:false": true,
+      "dir:ltr     ignoreCG:true ": true,
+      "dir:rtl     ignoreCG:false": true,
+      "dir:rtl     ignoreCG:true ": true,
+      "dir:unknown ignoreCG:false": true,
+      "dir:unknown ignoreCG:true ": true,
+    },
+  },
+}
+`;
+
+exports[`canReorder /0|1|2|3/ 1`] = `
+Object {
+  "0|1|2|3": Object {
+    "0|1|2|3": Object {
+      "dir:ltr     ignoreCG:false": true,
+      "dir:ltr     ignoreCG:true ": true,
+      "dir:rtl     ignoreCG:false": true,
+      "dir:rtl     ignoreCG:true ": true,
+      "dir:unknown ignoreCG:false": true,
+      "dir:unknown ignoreCG:true ": true,
+    },
+  },
+}
+`;
+
+exports[`canReorder /a.*b|b.*b|b.*a/ 1`] = `
+Object {
+  "a.*b|b.*b|b.*a": Object {
+    "a.*b|b.*b|b.*a": Object {
+      "dir:ltr     ignoreCG:false": false,
+      "dir:ltr     ignoreCG:true ": false,
+      "dir:rtl     ignoreCG:false": false,
+      "dir:rtl     ignoreCG:true ": false,
+      "dir:unknown ignoreCG:false": false,
+      "dir:unknown ignoreCG:true ": false,
+    },
+  },
+}
+`;
+
+exports[`canReorder /a.*b|b.*b|c.*a/ 1`] = `
+Object {
+  "a.*b|b.*b|c.*a": Object {
+    "a.*b|b.*b|c.*a": Object {
+      "dir:ltr     ignoreCG:false": true,
+      "dir:ltr     ignoreCG:true ": true,
+      "dir:rtl     ignoreCG:false": false,
+      "dir:rtl     ignoreCG:true ": false,
+      "dir:unknown ignoreCG:false": false,
+      "dir:unknown ignoreCG:true ": false,
+    },
+  },
+}
+`;
+
+exports[`canReorder /a{20}|b{20}|[^]{20}/ 1`] = `
+Object {
+  "a{20}|b{20}|[^]{20}": Object {
+    "a{20}|b{20}|[^]{20}": Object {
+      "dir:ltr     ignoreCG:false": true,
+      "dir:ltr     ignoreCG:true ": true,
+      "dir:rtl     ignoreCG:false": true,
+      "dir:rtl     ignoreCG:true ": true,
+      "dir:unknown ignoreCG:false": true,
+      "dir:unknown ignoreCG:true ": true,
+    },
+  },
+}
+`;
+
+exports[`canReorder /a{20}c|b{20}a|[^]{19}b/ 1`] = `
+Object {
+  "a{20}c|b{20}a|[^]{19}b": Object {
+    "a{20}c|b{20}a|[^]{19}b": Object {
+      "dir:ltr     ignoreCG:false": false,
+      "dir:ltr     ignoreCG:true ": false,
+      "dir:rtl     ignoreCG:false": true,
+      "dir:rtl     ignoreCG:true ": true,
+      "dir:unknown ignoreCG:false": false,
+      "dir:unknown ignoreCG:true ": false,
+    },
+  },
+}
+`;
+
+exports[`canReorder /a{20}c|b{20}a|[^]{19}b\\b/ 1`] = `
+Object {
+  "a{20}c|b{20}a|[^]{19}b\\\\b": Object {
+    "a{20}c|b{20}a|[^]{19}b\\\\b": Object {
+      "dir:ltr     ignoreCG:false": true,
+      "dir:ltr     ignoreCG:true ": true,
+      "dir:rtl     ignoreCG:false": true,
+      "dir:rtl     ignoreCG:true ": true,
+      "dir:unknown ignoreCG:false": true,
+      "dir:unknown ignoreCG:true ": true,
+    },
+  },
+}
+`;
+
+exports[`canReorder /a{20}c|b{20}a|[^]{20}b/ 1`] = `
+Object {
+  "a{20}c|b{20}a|[^]{20}b": Object {
+    "a{20}c|b{20}a|[^]{20}b": Object {
+      "dir:ltr     ignoreCG:false": true,
+      "dir:ltr     ignoreCG:true ": true,
+      "dir:rtl     ignoreCG:false": true,
+      "dir:rtl     ignoreCG:true ": true,
+      "dir:unknown ignoreCG:false": true,
+      "dir:unknown ignoreCG:true ": true,
+    },
+  },
+}
+`;
+
+exports[`canReorder /a|aa|aaa|b|bb|bbb/ 1`] = `
+Object {
+  "a|aa|aaa|b|bb|bbb": Object {
+    "a|aa|aaa|b|bb|bbb": Object {
+      "dir:ltr     ignoreCG:false": false,
+      "dir:ltr     ignoreCG:true ": false,
+      "dir:rtl     ignoreCG:false": false,
+      "dir:rtl     ignoreCG:true ": false,
+      "dir:unknown ignoreCG:false": false,
+      "dir:unknown ignoreCG:true ": false,
+    },
+  },
+}
+`;
+
+exports[`canReorder /a|b|c|d/ 1`] = `
+Object {
+  "a|b|c|d": Object {
+    "a|b|c|d": Object {
+      "dir:ltr     ignoreCG:false": true,
+      "dir:ltr     ignoreCG:true ": true,
+      "dir:rtl     ignoreCG:false": true,
+      "dir:rtl     ignoreCG:true ": true,
+      "dir:unknown ignoreCG:false": true,
+      "dir:unknown ignoreCG:true ": true,
+    },
+  },
+}
+`;
+
+exports[`canReorder /a|b|c|d|[a-c]/ 1`] = `
+Object {
+  "a|b|c|d|[a-c]": Object {
+    "a|b|c|d|[a-c]": Object {
+      "dir:ltr     ignoreCG:false": true,
+      "dir:ltr     ignoreCG:true ": true,
+      "dir:rtl     ignoreCG:false": true,
+      "dir:rtl     ignoreCG:true ": true,
+      "dir:unknown ignoreCG:false": true,
+      "dir:unknown ignoreCG:true ": true,
+    },
+  },
+}
+`;
+
+exports[`canReorder /aa\\d+|ba\\d+/ 1`] = `
+Object {
+  "aa\\\\d+|ba\\\\d+": Object {
+    "aa\\\\d+|ba\\\\d+": Object {
+      "dir:ltr     ignoreCG:false": true,
+      "dir:ltr     ignoreCG:true ": true,
+      "dir:rtl     ignoreCG:false": false,
+      "dir:rtl     ignoreCG:true ": false,
+      "dir:unknown ignoreCG:false": false,
+      "dir:unknown ignoreCG:true ": false,
+    },
+  },
+}
+`;
+
+exports[`canReorder /aaaaaaaaaaaaaaaaaaaa|bbbbbbbbbbbbbbbbbbbb|[^][^][^][^][^][^][^][^][^][^][^][^][^][^][^][^][^][^][^][^]/ 1`] = `
+Object {
+  "aaaaaaaaaaaaaaaaaaaa|bbbbbbbbbbbbbbbbbbbb|[^][^][^][^][^][^][^][^][^][^][^][^][^][^][^][^][^][^][^][^]": Object {
+    "aaaaaaaaaaaaaaaaaaaa|bbbbbbbbbbbbbbbbbbbb|[^][^][^][^][^][^][^][^][^][^][^][^][^][^][^][^][^][^][^][^]": Object {
+      "dir:ltr     ignoreCG:false": true,
+      "dir:ltr     ignoreCG:true ": true,
+      "dir:rtl     ignoreCG:false": true,
+      "dir:rtl     ignoreCG:true ": true,
+      "dir:unknown ignoreCG:false": true,
+      "dir:unknown ignoreCG:true ": true,
+    },
+  },
+}
+`;
+
+exports[`canReorder /ab|bc|ca/ 1`] = `
+Object {
+  "ab|bc|ca": Object {
+    "ab|bc|ca": Object {
+      "dir:ltr     ignoreCG:false": true,
+      "dir:ltr     ignoreCG:true ": true,
+      "dir:rtl     ignoreCG:false": true,
+      "dir:rtl     ignoreCG:true ": true,
+      "dir:unknown ignoreCG:false": true,
+      "dir:unknown ignoreCG:true ": true,
+    },
+  },
+}
+`;
+
+exports[`canReorder /abc|a/ 1`] = `
+Object {
+  "abc|a": Object {
+    "abc|a": Object {
+      "dir:ltr     ignoreCG:false": false,
+      "dir:ltr     ignoreCG:true ": false,
+      "dir:rtl     ignoreCG:false": true,
+      "dir:rtl     ignoreCG:true ": true,
+      "dir:unknown ignoreCG:false": false,
+      "dir:unknown ignoreCG:true ": false,
+    },
+  },
+}
+`;
+
+exports[`canReorder /abc|a\\b/ 1`] = `
+Object {
+  "abc|a\\\\b": Object {
+    "abc|a\\\\b": Object {
+      "dir:ltr     ignoreCG:false": true,
+      "dir:ltr     ignoreCG:true ": true,
+      "dir:rtl     ignoreCG:false": true,
+      "dir:rtl     ignoreCG:true ": true,
+      "dir:unknown ignoreCG:false": true,
+      "dir:unknown ignoreCG:true ": true,
+    },
+  },
+}
+`;
+
+exports[`canReorder /anchor_1_x|anchor_1_y|anchor_2_x|anchor_2_y|reaction_force_x|reaction_force_y|reaction_torque|motor_speed|angle\\b|motor_torque|max_motor_torque|translation|speed|motor_force|max_motor_force|length_1|length_2|damping_ratio|frequency|lower_angle_limit|upper_angle_limit|angle_limits|max_length|max_torque|max_force/ 1`] = `
+Object {
+  "anchor_1_x|anchor_1_y|anchor_2_x|anchor_2_y|reaction_force_x|reaction_force_y|reaction_torque|motor_speed|angle\\\\b|motor_torque|max_motor_torque|translation|speed|motor_force|max_motor_force|length_1|length_2|damping_ratio|frequency|lower_angle_limit|upper_angle_limit|angle_limits|max_length|max_torque|max_force": Object {
+    "anchor_1_x|anchor_1_y|anchor_2_x|anchor_2_y|reaction_force_x|reaction_force_y|reaction_torque|motor_speed|angle\\\\b|motor_torque|max_motor_torque|translation|speed|motor_force|max_motor_force|length_1|length_2|damping_ratio|frequency|lower_angle_limit|upper_angle_limit|angle_limits|max_length|max_torque|max_force": Object {
+      "dir:ltr     ignoreCG:false": true,
+      "dir:ltr     ignoreCG:true ": true,
+      "dir:rtl     ignoreCG:false": false,
+      "dir:rtl     ignoreCG:true ": false,
+      "dir:unknown ignoreCG:false": false,
+      "dir:unknown ignoreCG:true ": false,
+    },
+  },
+}
+`;
+
+exports[`canReorder /anchor_1_x|anchor_1_y|anchor_2_x|anchor_2_y|reaction_force_x|reaction_force_y|reaction_torque|motor_speed|angle|motor_torque|max_motor_torque|translation|speed|motor_force|max_motor_force|length_1|length_2|damping_ratio|frequency|lower_angle_limit|upper_angle_limit|angle_limits|max_length|max_torque|max_force/ 1`] = `
+Object {
+  "anchor_1_x|anchor_1_y|anchor_2_x|anchor_2_y|reaction_force_x|reaction_force_y|reaction_torque|motor_speed|angle|motor_torque|max_motor_torque|translation|speed|motor_force|max_motor_force|length_1|length_2|damping_ratio|frequency|lower_angle_limit|upper_angle_limit|angle_limits|max_length|max_torque|max_force": Object {
+    "anchor_1_x|anchor_1_y|anchor_2_x|anchor_2_y|reaction_force_x|reaction_force_y|reaction_torque|motor_speed|angle|motor_torque|max_motor_torque|translation|speed|motor_force|max_motor_force|length_1|length_2|damping_ratio|frequency|lower_angle_limit|upper_angle_limit|angle_limits|max_length|max_torque|max_force": Object {
+      "dir:ltr     ignoreCG:false": false,
+      "dir:ltr     ignoreCG:true ": false,
+      "dir:rtl     ignoreCG:false": false,
+      "dir:rtl     ignoreCG:true ": false,
+      "dir:unknown ignoreCG:false": false,
+      "dir:unknown ignoreCG:true ": false,
+    },
+  },
+}
+`;
+
+exports[`canReorder /device_ios_(?:ipad|ipad_retina|iphone|iphone5|iphone6|iphone6plus|iphone_retina|unknown)\\b/ 1`] = `
+Object {
+  "(?:ipad|ipad_retina|iphone|iphone5|iphone6|iphone6plus|iphone_retina|unknown)": Object {
+    "ipad|ipad_retina|iphone|iphone5|iphone6|iphone6plus|iphone_retina|unknown": Object {
+      "dir:ltr     ignoreCG:false": true,
+      "dir:ltr     ignoreCG:true ": true,
+      "dir:rtl     ignoreCG:false": true,
+      "dir:rtl     ignoreCG:true ": true,
+      "dir:unknown ignoreCG:false": true,
+      "dir:unknown ignoreCG:true ": true,
+    },
+  },
+}
+`;
+
+exports[`canReorder /foo|bar/ 1`] = `
+Object {
+  "foo|bar": Object {
+    "foo|bar": Object {
+      "dir:ltr     ignoreCG:false": true,
+      "dir:ltr     ignoreCG:true ": true,
+      "dir:rtl     ignoreCG:false": true,
+      "dir:rtl     ignoreCG:true ": true,
+      "dir:unknown ignoreCG:false": true,
+      "dir:unknown ignoreCG:true ": true,
+    },
+  },
+}
+`;
+
+exports[`canReorder /int|integer/ 1`] = `
+Object {
+  "int|integer": Object {
+    "int|integer": Object {
+      "dir:ltr     ignoreCG:false": false,
+      "dir:ltr     ignoreCG:true ": false,
+      "dir:rtl     ignoreCG:false": true,
+      "dir:rtl     ignoreCG:true ": true,
+      "dir:unknown ignoreCG:false": false,
+      "dir:unknown ignoreCG:true ": false,
+    },
+  },
+}
+`;
