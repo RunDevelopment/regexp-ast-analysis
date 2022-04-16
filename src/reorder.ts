@@ -69,25 +69,25 @@ export interface CanReorderOptions {
  * `U \ (T ∪ M)`. Permutations that change the position of those alternatives
  * are **not** guaranteed to be valid.
  *
- * Example: `/0|1|2|A|3|4|B|C|5|6/` with `T = A|B|C`, `U = 0|1|2|3|4|5|6`, and
+ * Example: `/0|1|2|👀|3|4|💯|👋|5|6/` with `T = 👀|💯|👋`, `U = 0|1|2|3|4|5|6`, and
  * `M = 3|4`.
  *
  * This function will return `true` and the following are **guaranteed** to be
  * valid permutations:
  *
- * - `/0|1|2|A|3|4|B|C|5|6/` (unchanged)
- * - `/0|1|2|3|A|4|B|C|5|6/`
- * - `/0|1|2|3|4|A|B|C|5|6/`
- * - `/0|1|2|A|B|3|4|C|5|6/`
- * - `/0|1|2|A|B|C|3|4|5|6/`
- * - `/0|1|2|C|B|A|3|4|5|6/`
- * - `/0|1|2|C|3|4|B|A|5|6/`
+ * - `/0|1|2|👀|3|4|💯|👋|5|6/` (unchanged)
+ * - `/0|1|2|3|👀|4|💯|👋|5|6/`
+ * - `/0|1|2|3|4|👀|💯|👋|5|6/`
+ * - `/0|1|2|👀|💯|3|4|👋|5|6/`
+ * - `/0|1|2|👀|💯|👋|3|4|5|6/`
+ * - `/0|1|2|👋|💯|👀|3|4|5|6/`
+ * - `/0|1|2|👋|3|4|💯|👀|5|6/`
  *
  * The following are **not guaranteed** to be valid permutations:
  *
- * - `/0|1|2|A|4|3|B|C|5|6/` (`3` and `4` were swapped)
- * - `/A|0|1|2|3|4|B|C|5|6/` (the position of `0` was changed)
- * - `/0|1|2|A|3|4|C|5|6|B/` (the position of `6` was changed)
+ * - `/0|1|2|👀|4|3|💯|👋|5|6/` (`3` and `4` were swapped)
+ * - `/👀|0|1|2|3|4|💯|👋|5|6/` (the position of `0` was changed)
+ * - `/0|1|2|👀|3|4|👋|5|6|💯/` (the position of `6` was changed)
  */
 export function canReorder(
 	alternatives: Iterable<Alternative>,
