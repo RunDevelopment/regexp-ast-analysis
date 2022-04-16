@@ -52,8 +52,6 @@ export function getDeterminismEqClasses(
 ): readonly (readonly Alternative[])[] {
 	assertSameParent(alternatives);
 
-	// TODO: cache
-
 	if (dir === "unknown") {
 		return getDirectionIndependentDeterminismEqClasses(alternatives, flags);
 	}
