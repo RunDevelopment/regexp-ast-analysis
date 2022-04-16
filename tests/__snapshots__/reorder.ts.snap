@@ -1,5 +1,65 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`canReorder /(?:\\d*\\.\\d+|\\d+\\.\\d*)_/ 1`] = `
+Object {
+  "(?:\\\\d*\\\\.\\\\d+|\\\\d+\\\\.\\\\d*)": Object {
+    "\\\\d*\\\\.\\\\d+|\\\\d+\\\\.\\\\d*": Object {
+      "dir:ltr     ignoreCG:false": true,
+      "dir:ltr     ignoreCG:true ": true,
+      "dir:rtl     ignoreCG:false": false,
+      "dir:rtl     ignoreCG:true ": false,
+      "dir:unknown ignoreCG:false": false,
+      "dir:unknown ignoreCG:true ": false,
+    },
+  },
+}
+`;
+
+exports[`canReorder /(?:\\p{Lu}\\p{L}*|[A-Z]\\w*)/u 1`] = `
+Object {
+  "(?:\\\\p{Lu}\\\\p{L}*|[A-Z]\\\\w*)": Object {
+    "\\\\p{Lu}\\\\p{L}*|[A-Z]\\\\w*": Object {
+      "dir:ltr     ignoreCG:false": false,
+      "dir:ltr     ignoreCG:true ": false,
+      "dir:rtl     ignoreCG:false": false,
+      "dir:rtl     ignoreCG:true ": false,
+      "dir:unknown ignoreCG:false": false,
+      "dir:unknown ignoreCG:true ": false,
+    },
+  },
+}
+`;
+
+exports[`canReorder /(?:\\p{Lu}\\p{L}*|[A-Z]\\w*):/u 1`] = `
+Object {
+  "(?:\\\\p{Lu}\\\\p{L}*|[A-Z]\\\\w*)": Object {
+    "\\\\p{Lu}\\\\p{L}*|[A-Z]\\\\w*": Object {
+      "dir:ltr     ignoreCG:false": true,
+      "dir:ltr     ignoreCG:true ": true,
+      "dir:rtl     ignoreCG:false": false,
+      "dir:rtl     ignoreCG:true ": false,
+      "dir:unknown ignoreCG:false": false,
+      "dir:unknown ignoreCG:true ": false,
+    },
+  },
+}
+`;
+
+exports[`canReorder /(?:\\w+|\\d+)\\b/ 1`] = `
+Object {
+  "(?:\\\\w+|\\\\d+)": Object {
+    "\\\\w+|\\\\d+": Object {
+      "dir:ltr     ignoreCG:false": true,
+      "dir:ltr     ignoreCG:true ": true,
+      "dir:rtl     ignoreCG:false": false,
+      "dir:rtl     ignoreCG:true ": false,
+      "dir:unknown ignoreCG:false": false,
+      "dir:unknown ignoreCG:true ": false,
+    },
+  },
+}
+`;
+
 exports[`canReorder /(?:a+b|a+c|a+d)\\b/ 1`] = `
 Object {
   "(?:a+b|a+c|a+d)": Object {
@@ -15,6 +75,21 @@ Object {
 }
 `;
 
+exports[`canReorder /(?:ac?|\\wb?)a/ 1`] = `
+Object {
+  "(?:ac?|\\\\wb?)": Object {
+    "ac?|\\\\wb?": Object {
+      "dir:ltr     ignoreCG:false": false,
+      "dir:ltr     ignoreCG:true ": false,
+      "dir:rtl     ignoreCG:false": false,
+      "dir:rtl     ignoreCG:true ": false,
+      "dir:unknown ignoreCG:false": false,
+      "dir:unknown ignoreCG:true ": false,
+    },
+  },
+}
+`;
+
 exports[`canReorder /(?:js|jso?n?)$/ 1`] = `
 Object {
   "(?:js|jso?n?)": Object {
@@ -25,6 +100,36 @@ Object {
       "dir:rtl     ignoreCG:true ": false,
       "dir:unknown ignoreCG:false": false,
       "dir:unknown ignoreCG:true ": false,
+    },
+  },
+}
+`;
+
+exports[`canReorder /(?:js|json)$/ 1`] = `
+Object {
+  "(?:js|json)": Object {
+    "js|json": Object {
+      "dir:ltr     ignoreCG:false": true,
+      "dir:ltr     ignoreCG:true ": true,
+      "dir:rtl     ignoreCG:false": true,
+      "dir:rtl     ignoreCG:true ": true,
+      "dir:unknown ignoreCG:false": true,
+      "dir:unknown ignoreCG:true ": true,
+    },
+  },
+}
+`;
+
+exports[`canReorder /(?:js|json)abc/ 1`] = `
+Object {
+  "(?:js|json)": Object {
+    "js|json": Object {
+      "dir:ltr     ignoreCG:false": true,
+      "dir:ltr     ignoreCG:true ": true,
+      "dir:rtl     ignoreCG:false": true,
+      "dir:rtl     ignoreCG:true ": true,
+      "dir:unknown ignoreCG:false": true,
+      "dir:unknown ignoreCG:true ": true,
     },
   },
 }
@@ -100,6 +205,21 @@ Object {
 }
 `;
 
+exports[`canReorder /<("[^"]*"|'[^']*'|[^'">])*>/ 1`] = `
+Object {
+  "(\\"[^\\"]*\\"|'[^']*'|[^'\\">])": Object {
+    "\\"[^\\"]*\\"|'[^']*'|[^'\\">]": Object {
+      "dir:ltr     ignoreCG:false": true,
+      "dir:ltr     ignoreCG:true ": true,
+      "dir:rtl     ignoreCG:false": true,
+      "dir:rtl     ignoreCG:true ": true,
+      "dir:unknown ignoreCG:false": true,
+      "dir:unknown ignoreCG:true ": true,
+    },
+  },
+}
+`;
+
 exports[`canReorder />>=?|<<=?|->|--|\\+\\+|&&|\\|\\||[?:~]|<=>|[-+*/%&|^!=<>]=?|\\b(?:and|and_eq|bitand|bitor|not|not_eq|or|or_eq|xor|xor_eq)\\b/ 1`] = `
 Object {
   "(?:and|and_eq|bitand|bitor|not|not_eq|or|or_eq|xor|xor_eq)": Object {
@@ -155,6 +275,36 @@ Object {
 }
 `;
 
+exports[`canReorder /\\d*\\.\\d+_|\\d+\\.\\d*_/ 1`] = `
+Object {
+  "\\\\d*\\\\.\\\\d+_|\\\\d+\\\\.\\\\d*_": Object {
+    "\\\\d*\\\\.\\\\d+_|\\\\d+\\\\.\\\\d*_": Object {
+      "dir:ltr     ignoreCG:false": false,
+      "dir:ltr     ignoreCG:true ": false,
+      "dir:rtl     ignoreCG:false": false,
+      "dir:rtl     ignoreCG:true ": false,
+      "dir:unknown ignoreCG:false": false,
+      "dir:unknown ignoreCG:true ": false,
+    },
+  },
+}
+`;
+
+exports[`canReorder /\\d*\\.\\d+|\\d+\\.\\d*/ 1`] = `
+Object {
+  "\\\\d*\\\\.\\\\d+|\\\\d+\\\\.\\\\d*": Object {
+    "\\\\d*\\\\.\\\\d+|\\\\d+\\\\.\\\\d*": Object {
+      "dir:ltr     ignoreCG:false": false,
+      "dir:ltr     ignoreCG:true ": false,
+      "dir:rtl     ignoreCG:false": false,
+      "dir:rtl     ignoreCG:true ": false,
+      "dir:unknown ignoreCG:false": false,
+      "dir:unknown ignoreCG:true ": false,
+    },
+  },
+}
+`;
+
 exports[`canReorder /\\p{L}|[a-z]|\\d+/iu 1`] = `
 Object {
   "\\\\p{L}|[a-z]|\\\\d+": Object {
@@ -180,6 +330,36 @@ Object {
       "dir:rtl     ignoreCG:true ": true,
       "dir:unknown ignoreCG:false": true,
       "dir:unknown ignoreCG:true ": true,
+    },
+  },
+}
+`;
+
+exports[`canReorder /\\w|abc|123|_|[A-Z]|\\$| / 1`] = `
+Object {
+  "\\\\w|abc|123|_|[A-Z]|\\\\$| ": Object {
+    "\\\\w|abc|123|_|[A-Z]|\\\\$| ": Object {
+      "dir:ltr     ignoreCG:false": false,
+      "dir:ltr     ignoreCG:true ": false,
+      "dir:rtl     ignoreCG:false": false,
+      "dir:rtl     ignoreCG:true ": false,
+      "dir:unknown ignoreCG:false": false,
+      "dir:unknown ignoreCG:true ": false,
+    },
+  },
+}
+`;
+
+exports[`canReorder /\\w|abc|123|_|[A-Z]|\\$| / 2`] = `
+Object {
+  "\\\\w|abc|123|_|[A-Z]|\\\\$| ": Object {
+    "\\\\w|abc|123|_|[A-Z]|\\\\$| ": Object {
+      "dir:ltr     ignoreCG:false": false,
+      "dir:ltr     ignoreCG:true ": false,
+      "dir:rtl     ignoreCG:false": false,
+      "dir:rtl     ignoreCG:true ": false,
+      "dir:unknown ignoreCG:false": false,
+      "dir:unknown ignoreCG:true ": false,
     },
   },
 }
@@ -240,6 +420,36 @@ Object {
       "dir:rtl     ignoreCG:true ": true,
       "dir:unknown ignoreCG:false": true,
       "dir:unknown ignoreCG:true ": true,
+    },
+  },
+}
+`;
+
+exports[`canReorder /A+_|A*_/ 1`] = `
+Object {
+  "A+_|A*_": Object {
+    "A+_|A*_": Object {
+      "dir:ltr     ignoreCG:false": false,
+      "dir:ltr     ignoreCG:true ": false,
+      "dir:rtl     ignoreCG:false": false,
+      "dir:rtl     ignoreCG:true ": false,
+      "dir:unknown ignoreCG:false": false,
+      "dir:unknown ignoreCG:true ": false,
+    },
+  },
+}
+`;
+
+exports[`canReorder /FOO|foo(?:bar)?/i 1`] = `
+Object {
+  "FOO|foo(?:bar)?": Object {
+    "FOO|foo(?:bar)?": Object {
+      "dir:ltr     ignoreCG:false": false,
+      "dir:ltr     ignoreCG:true ": false,
+      "dir:rtl     ignoreCG:false": false,
+      "dir:rtl     ignoreCG:true ": false,
+      "dir:unknown ignoreCG:false": false,
+      "dir:unknown ignoreCG:true ": false,
     },
   },
 }
@@ -474,6 +684,36 @@ exports[`canReorder /anchor_1_x|anchor_1_y|anchor_2_x|anchor_2_y|reaction_force_
 Object {
   "anchor_1_x|anchor_1_y|anchor_2_x|anchor_2_y|reaction_force_x|reaction_force_y|reaction_torque|motor_speed|angle|motor_torque|max_motor_torque|translation|speed|motor_force|max_motor_force|length_1|length_2|damping_ratio|frequency|lower_angle_limit|upper_angle_limit|angle_limits|max_length|max_torque|max_force": Object {
     "anchor_1_x|anchor_1_y|anchor_2_x|anchor_2_y|reaction_force_x|reaction_force_y|reaction_torque|motor_speed|angle|motor_torque|max_motor_torque|translation|speed|motor_force|max_motor_force|length_1|length_2|damping_ratio|frequency|lower_angle_limit|upper_angle_limit|angle_limits|max_length|max_torque|max_force": Object {
+      "dir:ltr     ignoreCG:false": false,
+      "dir:ltr     ignoreCG:true ": false,
+      "dir:rtl     ignoreCG:false": false,
+      "dir:rtl     ignoreCG:true ": false,
+      "dir:unknown ignoreCG:false": false,
+      "dir:unknown ignoreCG:true ": false,
+    },
+  },
+}
+`;
+
+exports[`canReorder /b+(?:\\w+|[+-]?\\d+)/ 1`] = `
+Object {
+  "(?:\\\\w+|[+-]?\\\\d+)": Object {
+    "\\\\w+|[+-]?\\\\d+": Object {
+      "dir:ltr     ignoreCG:false": false,
+      "dir:ltr     ignoreCG:true ": false,
+      "dir:rtl     ignoreCG:false": false,
+      "dir:rtl     ignoreCG:true ": false,
+      "dir:unknown ignoreCG:false": false,
+      "dir:unknown ignoreCG:true ": false,
+    },
+  },
+}
+`;
+
+exports[`canReorder /c+|[a-f]/ 1`] = `
+Object {
+  "c+|[a-f]": Object {
+    "c+|[a-f]": Object {
       "dir:ltr     ignoreCG:false": false,
       "dir:ltr     ignoreCG:true ": false,
       "dir:rtl     ignoreCG:false": false,
