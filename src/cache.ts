@@ -93,6 +93,7 @@ export class CacheInstance implements Cache {
 	readonly getFirstConsumedCharLTR = new WeakMap<Element | Alternative, any>();
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	readonly getFirstConsumedCharRTL = new WeakMap<Element | Alternative, any>();
+	readonly getLongestPrefix = new Map<string, WeakMap<Alternative, readonly CharSet[]>>();
 
 	constructor(flags: ReadonlyFlags) {
 		this.dotAll = !!flags.dotAll;

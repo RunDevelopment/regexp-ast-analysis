@@ -1,0 +1,457 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`getLongestPrefix /(?:(a)|f)b(?<this>\\1)c/ ltr 1`] = `
+Object {
+  "{\\"includeAfter\\":false,\\"looseGroups\\":false}": /\\(\\?:\\)/,
+  "{\\"includeAfter\\":true,\\"looseGroups\\":false}": /\\[ac\\]/,
+}
+`;
+
+exports[`getLongestPrefix /(?:(a)|f)b(?<this>\\1)c/ rtl 1`] = `
+Object {
+  "{\\"includeAfter\\":false,\\"looseGroups\\":false}": /\\(\\?:\\)/,
+  "{\\"includeAfter\\":true,\\"looseGroups\\":false}": /\\[ab\\]/,
+}
+`;
+
+exports[`getLongestPrefix /(?<this>A(?!a)(?:(?!B)|(?!C)))\\w/ ltr 1`] = `
+Object {
+  "{\\"includeAfter\\":false,\\"looseGroups\\":false}": /A/,
+  "{\\"includeAfter\\":false,\\"looseGroups\\":true}": /A/,
+  "{\\"includeAfter\\":true,\\"looseGroups\\":false}": /A\\[\\\\dA-Z_b-z\\]/,
+  "{\\"includeAfter\\":true,\\"looseGroups\\":true}": /A\\[\\\\dA-Z_b-z\\]/,
+}
+`;
+
+exports[`getLongestPrefix /(?<this>A(?!a)(?:(?!B)|(?!C)))\\w/ rtl 1`] = `
+Object {
+  "{\\"includeAfter\\":false,\\"looseGroups\\":false}": /A/,
+  "{\\"includeAfter\\":false,\\"looseGroups\\":true}": /A/,
+  "{\\"includeAfter\\":true,\\"looseGroups\\":false}": /A\\[\\^\\]/,
+  "{\\"includeAfter\\":true,\\"looseGroups\\":true}": /A\\[\\^\\]/,
+}
+`;
+
+exports[`getLongestPrefix /(?<this>A)\\b/ ltr 1`] = `
+Object {
+  "{\\"includeAfter\\":false,\\"looseGroups\\":false}": /A/,
+  "{\\"includeAfter\\":true,\\"looseGroups\\":false}": /A\\\\W/,
+}
+`;
+
+exports[`getLongestPrefix /(?<this>A)\\b/ rtl 1`] = `
+Object {
+  "{\\"includeAfter\\":false,\\"looseGroups\\":false}": /A/,
+  "{\\"includeAfter\\":true,\\"looseGroups\\":false}": /A\\[\\^\\]/,
+}
+`;
+
+exports[`getLongestPrefix /(a)b(?<this>\\1)c/ ltr 1`] = `
+Object {
+  "{\\"includeAfter\\":false,\\"looseGroups\\":false}": /a/,
+  "{\\"includeAfter\\":true,\\"looseGroups\\":false}": /ac/,
+}
+`;
+
+exports[`getLongestPrefix /(a)b(?<this>\\1)c/ rtl 1`] = `
+Object {
+  "{\\"includeAfter\\":false,\\"looseGroups\\":false}": /a/,
+  "{\\"includeAfter\\":true,\\"looseGroups\\":false}": /ab/,
+}
+`;
+
+exports[`getLongestPrefix /(ab?)b(?<this>\\1)c/ ltr 1`] = `
+Object {
+  "{\\"includeAfter\\":false,\\"looseGroups\\":false}": /a/,
+  "{\\"includeAfter\\":true,\\"looseGroups\\":false}": /a/,
+}
+`;
+
+exports[`getLongestPrefix /(ab?)b(?<this>\\1)c/ rtl 1`] = `
+Object {
+  "{\\"includeAfter\\":false,\\"looseGroups\\":false}": /\\(\\?:\\)/,
+  "{\\"includeAfter\\":true,\\"looseGroups\\":false}": /\\(\\?:\\)/,
+}
+`;
+
+exports[`getLongestPrefix /(int|integer)/ ltr 1`] = `
+Object {
+  "{\\"includeAfter\\":false,\\"looseGroups\\":false}": /int/,
+  "{\\"includeAfter\\":false,\\"looseGroups\\":true}": /int/,
+  "{\\"includeAfter\\":true,\\"looseGroups\\":false}": /int\\[\\^\\]/,
+  "{\\"includeAfter\\":true,\\"looseGroups\\":true}": /int\\[\\^\\]/,
+}
+`;
+
+exports[`getLongestPrefix /(int|integer)/ rtl 1`] = `
+Object {
+  "{\\"includeAfter\\":false,\\"looseGroups\\":false}": /\\[rt\\]/,
+  "{\\"includeAfter\\":false,\\"looseGroups\\":true}": /\\[rt\\]\\[en\\]\\[gi\\]/,
+  "{\\"includeAfter\\":true,\\"looseGroups\\":false}": /\\[rt\\]\\[en\\]/,
+  "{\\"includeAfter\\":true,\\"looseGroups\\":true}": /\\[rt\\]\\[en\\]\\[gi\\]\\[\\^\\]/,
+}
+`;
+
+exports[`getLongestPrefix /=(food|foot)-/ ltr 1`] = `
+Object {
+  "{\\"includeAfter\\":false,\\"looseGroups\\":false}": /=foo\\[dt\\]-/,
+  "{\\"includeAfter\\":false,\\"looseGroups\\":true}": /=foo\\[dt\\]-/,
+  "{\\"includeAfter\\":true,\\"looseGroups\\":false}": /=foo\\[dt\\]-\\[\\^\\]/,
+  "{\\"includeAfter\\":true,\\"looseGroups\\":true}": /=foo\\[dt\\]-\\[\\^\\]/,
+}
+`;
+
+exports[`getLongestPrefix /=(food|foot)-/ rtl 1`] = `
+Object {
+  "{\\"includeAfter\\":false,\\"looseGroups\\":false}": /-\\[dt\\]oof=/,
+  "{\\"includeAfter\\":false,\\"looseGroups\\":true}": /-\\[dt\\]oof=/,
+  "{\\"includeAfter\\":true,\\"looseGroups\\":false}": /-\\[dt\\]oof=\\[\\^\\]/,
+  "{\\"includeAfter\\":true,\\"looseGroups\\":true}": /-\\[dt\\]oof=\\[\\^\\]/,
+}
+`;
+
+exports[`getLongestPrefix /=(script|source)/ ltr 1`] = `
+Object {
+  "{\\"includeAfter\\":false,\\"looseGroups\\":false}": /=s\\[co\\]/,
+  "{\\"includeAfter\\":false,\\"looseGroups\\":true}": /=s\\[co\\]\\[ru\\]\\[ir\\]\\[cp\\]\\[et\\]/,
+  "{\\"includeAfter\\":true,\\"looseGroups\\":false}": /=s\\[co\\]\\[ru\\]/,
+  "{\\"includeAfter\\":true,\\"looseGroups\\":true}": /=s\\[co\\]\\[ru\\]\\[ir\\]\\[cp\\]\\[et\\]\\[\\^\\]/,
+}
+`;
+
+exports[`getLongestPrefix /=(script|source)/ rtl 1`] = `
+Object {
+  "{\\"includeAfter\\":false,\\"looseGroups\\":false}": /\\[et\\]/,
+  "{\\"includeAfter\\":false,\\"looseGroups\\":true}": /\\[et\\]\\[cp\\]\\[ir\\]\\[ru\\]\\[co\\]s=/,
+  "{\\"includeAfter\\":true,\\"looseGroups\\":false}": /\\[et\\]\\[cp\\]/,
+  "{\\"includeAfter\\":true,\\"looseGroups\\":true}": /\\[et\\]\\[cp\\]\\[ir\\]\\[ru\\]\\[co\\]s=\\[\\^\\]/,
+}
+`;
+
+exports[`getLongestPrefix /^(?<this>A(?!a)(?!B))\\w/m ltr 1`] = `
+Object {
+  "{\\"includeAfter\\":false,\\"looseGroups\\":false}": /A/m,
+  "{\\"includeAfter\\":true,\\"looseGroups\\":false}": /A\\[\\\\dAC-Z_b-z\\]/m,
+}
+`;
+
+exports[`getLongestPrefix /^(?<this>A(?!a)(?!B))\\w/m rtl 1`] = `
+Object {
+  "{\\"includeAfter\\":false,\\"looseGroups\\":false}": /A/m,
+  "{\\"includeAfter\\":true,\\"looseGroups\\":false}": /A\\[\\\\n\\\\r\\\\u2028\\\\u2029\\]/m,
+}
+`;
+
+exports[`getLongestPrefix /^foo/ ltr 1`] = `
+Object {
+  "{\\"includeAfter\\":false,\\"looseGroups\\":false}": /foo/,
+  "{\\"includeAfter\\":true,\\"looseGroups\\":false}": /foo\\[\\^\\]/,
+}
+`;
+
+exports[`getLongestPrefix /^foo/ rtl 1`] = `
+Object {
+  "{\\"includeAfter\\":false,\\"looseGroups\\":false}": /oof/,
+  "{\\"includeAfter\\":true,\\"looseGroups\\":false}": /oof\\[\\]/,
+}
+`;
+
+exports[`getLongestPrefix /-(bets|bits)-/ ltr 1`] = `
+Object {
+  "{\\"includeAfter\\":false,\\"looseGroups\\":false}": /-b\\[ei\\]ts-/,
+  "{\\"includeAfter\\":false,\\"looseGroups\\":true}": /-b\\[ei\\]ts-/,
+  "{\\"includeAfter\\":true,\\"looseGroups\\":false}": /-b\\[ei\\]ts-\\[\\^\\]/,
+  "{\\"includeAfter\\":true,\\"looseGroups\\":true}": /-b\\[ei\\]ts-\\[\\^\\]/,
+}
+`;
+
+exports[`getLongestPrefix /-(bets|bits)-/ rtl 1`] = `
+Object {
+  "{\\"includeAfter\\":false,\\"looseGroups\\":false}": /-st\\[ei\\]b-/,
+  "{\\"includeAfter\\":false,\\"looseGroups\\":true}": /-st\\[ei\\]b-/,
+  "{\\"includeAfter\\":true,\\"looseGroups\\":false}": /-st\\[ei\\]b-\\[\\^\\]/,
+  "{\\"includeAfter\\":true,\\"looseGroups\\":true}": /-st\\[ei\\]b-\\[\\^\\]/,
+}
+`;
+
+exports[`getLongestPrefix /-(bets|bits|byte)-/ ltr 1`] = `
+Object {
+  "{\\"includeAfter\\":false,\\"looseGroups\\":false}": /-b\\[eiy\\]t/,
+  "{\\"includeAfter\\":false,\\"looseGroups\\":true}": /-b\\[eiy\\]t\\[es\\]-/,
+  "{\\"includeAfter\\":true,\\"looseGroups\\":false}": /-b\\[eiy\\]t\\[es\\]/,
+  "{\\"includeAfter\\":true,\\"looseGroups\\":true}": /-b\\[eiy\\]t\\[es\\]-\\[\\^\\]/,
+}
+`;
+
+exports[`getLongestPrefix /-(bets|bits|byte)-/ rtl 1`] = `
+Object {
+  "{\\"includeAfter\\":false,\\"looseGroups\\":false}": /-\\[es\\]t/,
+  "{\\"includeAfter\\":false,\\"looseGroups\\":true}": /-\\[es\\]t\\[eiy\\]b-/,
+  "{\\"includeAfter\\":true,\\"looseGroups\\":false}": /-\\[es\\]t\\[eiy\\]/,
+  "{\\"includeAfter\\":true,\\"looseGroups\\":true}": /-\\[es\\]t\\[eiy\\]b-\\[\\^\\]/,
+}
+`;
+
+exports[`getLongestPrefix /a(?!c)b/ ltr 1`] = `
+Object {
+  "{\\"includeAfter\\":false,\\"looseGroups\\":false}": /ab/,
+  "{\\"includeAfter\\":true,\\"looseGroups\\":false}": /ab\\[\\^\\]/,
+}
+`;
+
+exports[`getLongestPrefix /a(?!c)b/ rtl 1`] = `
+Object {
+  "{\\"includeAfter\\":false,\\"looseGroups\\":false}": /ba/,
+  "{\\"includeAfter\\":true,\\"looseGroups\\":false}": /ba\\[\\^\\]/,
+}
+`;
+
+exports[`getLongestPrefix /a(?<this>bc)d/ ltr 1`] = `
+Object {
+  "{\\"includeAfter\\":false,\\"looseGroups\\":false}": /bc/,
+  "{\\"includeAfter\\":true,\\"looseGroups\\":false}": /bcd/,
+}
+`;
+
+exports[`getLongestPrefix /a(?<this>bc)d/ rtl 1`] = `
+Object {
+  "{\\"includeAfter\\":false,\\"looseGroups\\":false}": /cb/,
+  "{\\"includeAfter\\":true,\\"looseGroups\\":false}": /cba/,
+}
+`;
+
+exports[`getLongestPrefix /a(b|c|d)z/ ltr 1`] = `
+Object {
+  "{\\"includeAfter\\":false,\\"looseGroups\\":false}": /a\\[bcd\\]z/,
+  "{\\"includeAfter\\":false,\\"looseGroups\\":true}": /a\\[bcd\\]z/,
+  "{\\"includeAfter\\":true,\\"looseGroups\\":false}": /a\\[bcd\\]z\\[\\^\\]/,
+  "{\\"includeAfter\\":true,\\"looseGroups\\":true}": /a\\[bcd\\]z\\[\\^\\]/,
+}
+`;
+
+exports[`getLongestPrefix /a(b|c|d)z/ rtl 1`] = `
+Object {
+  "{\\"includeAfter\\":false,\\"looseGroups\\":false}": /z\\[bcd\\]a/,
+  "{\\"includeAfter\\":false,\\"looseGroups\\":true}": /z\\[bcd\\]a/,
+  "{\\"includeAfter\\":true,\\"looseGroups\\":false}": /z\\[bcd\\]a\\[\\^\\]/,
+  "{\\"includeAfter\\":true,\\"looseGroups\\":true}": /z\\[bcd\\]a\\[\\^\\]/,
+}
+`;
+
+exports[`getLongestPrefix /a(b|c|de)z/ ltr 1`] = `
+Object {
+  "{\\"includeAfter\\":false,\\"looseGroups\\":false}": /a\\[bcd\\]/,
+  "{\\"includeAfter\\":false,\\"looseGroups\\":true}": /a\\[bcd\\]/,
+  "{\\"includeAfter\\":true,\\"looseGroups\\":false}": /a\\[bcd\\]\\[ez\\]/,
+  "{\\"includeAfter\\":true,\\"looseGroups\\":true}": /a\\[bcd\\]\\[ez\\]/,
+}
+`;
+
+exports[`getLongestPrefix /a(b|c|de)z/ rtl 1`] = `
+Object {
+  "{\\"includeAfter\\":false,\\"looseGroups\\":false}": /z\\[bce\\]/,
+  "{\\"includeAfter\\":false,\\"looseGroups\\":true}": /z\\[bce\\]/,
+  "{\\"includeAfter\\":true,\\"looseGroups\\":false}": /z\\[bce\\]\\[ad\\]/,
+  "{\\"includeAfter\\":true,\\"looseGroups\\":true}": /z\\[bce\\]\\[ad\\]/,
+}
+`;
+
+exports[`getLongestPrefix /a(foo|bar)z/ ltr 1`] = `
+Object {
+  "{\\"includeAfter\\":false,\\"looseGroups\\":false}": /a\\[bf\\]/,
+  "{\\"includeAfter\\":false,\\"looseGroups\\":true}": /a\\[bf\\]\\[ao\\]\\[or\\]z/,
+  "{\\"includeAfter\\":true,\\"looseGroups\\":false}": /a\\[bf\\]\\[ao\\]/,
+  "{\\"includeAfter\\":true,\\"looseGroups\\":true}": /a\\[bf\\]\\[ao\\]\\[or\\]z\\[\\^\\]/,
+}
+`;
+
+exports[`getLongestPrefix /a(foo|bar)z/ rtl 1`] = `
+Object {
+  "{\\"includeAfter\\":false,\\"looseGroups\\":false}": /z\\[or\\]/,
+  "{\\"includeAfter\\":false,\\"looseGroups\\":true}": /z\\[or\\]\\[ao\\]\\[bf\\]a/,
+  "{\\"includeAfter\\":true,\\"looseGroups\\":false}": /z\\[or\\]\\[ao\\]/,
+  "{\\"includeAfter\\":true,\\"looseGroups\\":true}": /z\\[or\\]\\[ao\\]\\[bf\\]a\\[\\^\\]/,
+}
+`;
+
+exports[`getLongestPrefix /a*/ ltr 1`] = `
+Object {
+  "{\\"includeAfter\\":false,\\"looseGroups\\":false}": /\\(\\?:\\)/,
+  "{\\"includeAfter\\":true,\\"looseGroups\\":false}": /\\[\\^\\]/,
+}
+`;
+
+exports[`getLongestPrefix /a*/ rtl 1`] = `
+Object {
+  "{\\"includeAfter\\":false,\\"looseGroups\\":false}": /\\(\\?:\\)/,
+  "{\\"includeAfter\\":true,\\"looseGroups\\":false}": /\\[\\^\\]/,
+}
+`;
+
+exports[`getLongestPrefix /a*b/ ltr 1`] = `
+Object {
+  "{\\"includeAfter\\":false,\\"looseGroups\\":false}": /\\(\\?:\\)/,
+  "{\\"includeAfter\\":true,\\"looseGroups\\":false}": /\\[ab\\]/,
+}
+`;
+
+exports[`getLongestPrefix /a*b/ rtl 1`] = `
+Object {
+  "{\\"includeAfter\\":false,\\"looseGroups\\":false}": /b/,
+  "{\\"includeAfter\\":true,\\"looseGroups\\":false}": /b\\[\\^\\]/,
+}
+`;
+
+exports[`getLongestPrefix /a+/ ltr 1`] = `
+Object {
+  "{\\"includeAfter\\":false,\\"looseGroups\\":false}": /a/,
+  "{\\"includeAfter\\":true,\\"looseGroups\\":false}": /a\\[\\^\\]/,
+}
+`;
+
+exports[`getLongestPrefix /a+/ rtl 1`] = `
+Object {
+  "{\\"includeAfter\\":false,\\"looseGroups\\":false}": /a/,
+  "{\\"includeAfter\\":true,\\"looseGroups\\":false}": /a\\[\\^\\]/,
+}
+`;
+
+exports[`getLongestPrefix /a+b/ ltr 1`] = `
+Object {
+  "{\\"includeAfter\\":false,\\"looseGroups\\":false}": /a/,
+  "{\\"includeAfter\\":true,\\"looseGroups\\":false}": /a\\[ab\\]/,
+}
+`;
+
+exports[`getLongestPrefix /a+b/ rtl 1`] = `
+Object {
+  "{\\"includeAfter\\":false,\\"looseGroups\\":false}": /ba/,
+  "{\\"includeAfter\\":true,\\"looseGroups\\":false}": /ba\\[\\^\\]/,
+}
+`;
+
+exports[`getLongestPrefix /a?/ ltr 1`] = `
+Object {
+  "{\\"includeAfter\\":false,\\"looseGroups\\":false}": /\\(\\?:\\)/,
+  "{\\"includeAfter\\":true,\\"looseGroups\\":false}": /\\[\\^\\]/,
+}
+`;
+
+exports[`getLongestPrefix /a?/ rtl 1`] = `
+Object {
+  "{\\"includeAfter\\":false,\\"looseGroups\\":false}": /\\(\\?:\\)/,
+  "{\\"includeAfter\\":true,\\"looseGroups\\":false}": /\\[\\^\\]/,
+}
+`;
+
+exports[`getLongestPrefix /a?b/ ltr 1`] = `
+Object {
+  "{\\"includeAfter\\":false,\\"looseGroups\\":false}": /\\(\\?:\\)/,
+  "{\\"includeAfter\\":true,\\"looseGroups\\":false}": /\\[ab\\]/,
+}
+`;
+
+exports[`getLongestPrefix /a?b/ rtl 1`] = `
+Object {
+  "{\\"includeAfter\\":false,\\"looseGroups\\":false}": /b/,
+  "{\\"includeAfter\\":true,\\"looseGroups\\":false}": /b\\[\\^\\]/,
+}
+`;
+
+exports[`getLongestPrefix /a{0}b/ ltr 1`] = `
+Object {
+  "{\\"includeAfter\\":false,\\"looseGroups\\":false}": /b/,
+  "{\\"includeAfter\\":true,\\"looseGroups\\":false}": /b\\[\\^\\]/,
+}
+`;
+
+exports[`getLongestPrefix /a{0}b/ rtl 1`] = `
+Object {
+  "{\\"includeAfter\\":false,\\"looseGroups\\":false}": /b/,
+  "{\\"includeAfter\\":true,\\"looseGroups\\":false}": /b\\[\\^\\]/,
+}
+`;
+
+exports[`getLongestPrefix /a{4,4}/ ltr 1`] = `
+Object {
+  "{\\"includeAfter\\":false,\\"looseGroups\\":false}": /aaaa/,
+  "{\\"includeAfter\\":true,\\"looseGroups\\":false}": /aaaa\\[\\^\\]/,
+}
+`;
+
+exports[`getLongestPrefix /a{4,4}/ rtl 1`] = `
+Object {
+  "{\\"includeAfter\\":false,\\"looseGroups\\":false}": /aaaa/,
+  "{\\"includeAfter\\":true,\\"looseGroups\\":false}": /aaaa\\[\\^\\]/,
+}
+`;
+
+exports[`getLongestPrefix /a{4,4}b/ ltr 1`] = `
+Object {
+  "{\\"includeAfter\\":false,\\"looseGroups\\":false}": /aaaab/,
+  "{\\"includeAfter\\":true,\\"looseGroups\\":false}": /aaaab\\[\\^\\]/,
+}
+`;
+
+exports[`getLongestPrefix /a{4,4}b/ rtl 1`] = `
+Object {
+  "{\\"includeAfter\\":false,\\"looseGroups\\":false}": /baaaa/,
+  "{\\"includeAfter\\":true,\\"looseGroups\\":false}": /baaaa\\[\\^\\]/,
+}
+`;
+
+exports[`getLongestPrefix /a{4,7}/ ltr 1`] = `
+Object {
+  "{\\"includeAfter\\":false,\\"looseGroups\\":false}": /aaaa/,
+  "{\\"includeAfter\\":true,\\"looseGroups\\":false}": /aaaa\\[\\^\\]/,
+}
+`;
+
+exports[`getLongestPrefix /a{4,7}/ rtl 1`] = `
+Object {
+  "{\\"includeAfter\\":false,\\"looseGroups\\":false}": /aaaa/,
+  "{\\"includeAfter\\":true,\\"looseGroups\\":false}": /aaaa\\[\\^\\]/,
+}
+`;
+
+exports[`getLongestPrefix /a{4,7}b/ ltr 1`] = `
+Object {
+  "{\\"includeAfter\\":false,\\"looseGroups\\":false}": /aaaa/,
+  "{\\"includeAfter\\":true,\\"looseGroups\\":false}": /aaaa\\[ab\\]/,
+}
+`;
+
+exports[`getLongestPrefix /a{4,7}b/ rtl 1`] = `
+Object {
+  "{\\"includeAfter\\":false,\\"looseGroups\\":false}": /baaaa/,
+  "{\\"includeAfter\\":true,\\"looseGroups\\":false}": /baaaa\\[\\^\\]/,
+}
+`;
+
+exports[`getLongestPrefix /abc/ ltr 1`] = `
+Object {
+  "{\\"includeAfter\\":false,\\"looseGroups\\":false}": /abc/,
+  "{\\"includeAfter\\":true,\\"looseGroups\\":false}": /abc\\[\\^\\]/,
+}
+`;
+
+exports[`getLongestPrefix /abc/ rtl 1`] = `
+Object {
+  "{\\"includeAfter\\":false,\\"looseGroups\\":false}": /cba/,
+  "{\\"includeAfter\\":true,\\"looseGroups\\":false}": /cba\\[\\^\\]/,
+}
+`;
+
+exports[`getLongestPrefix /foo$/ ltr 1`] = `
+Object {
+  "{\\"includeAfter\\":false,\\"looseGroups\\":false}": /foo/,
+  "{\\"includeAfter\\":true,\\"looseGroups\\":false}": /foo\\[\\]/,
+}
+`;
+
+exports[`getLongestPrefix /foo$/ rtl 1`] = `
+Object {
+  "{\\"includeAfter\\":false,\\"looseGroups\\":false}": /oof/,
+  "{\\"includeAfter\\":true,\\"looseGroups\\":false}": /oof\\[\\^\\]/,
+}
+`;
