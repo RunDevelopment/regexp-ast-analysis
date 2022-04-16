@@ -58,24 +58,24 @@ guaranteed to be have equivalently.</p>
 <p>Note that this function makes no guarantees about the alternative
 <code>U \ (T ∪ M)</code>. Permutations that change the position of those alternatives
 are <strong>not</strong> guaranteed to be valid.</p>
-<p>Example: <code>/0|1|2|A|3|4|B|C|5|6/</code> with <code>T = A|B|C</code>, <code>U = 0|1|2|3|4|5|6</code>, and
+<p>Example: <code>/0|1|2|👀|3|4|💯|👋|5|6/</code> with <code>T = 👀|💯|👋</code>, <code>U = 0|1|2|3|4|5|6</code>, and
 <code>M = 3|4</code>.</p>
 <p>This function will return <code>true</code> and the following are <strong>guaranteed</strong> to be
 valid permutations:</p>
 <ul>
-<li><code>/0|1|2|A|3|4|B|C|5|6/</code> (unchanged)</li>
-<li><code>/0|1|2|3|A|4|B|C|5|6/</code></li>
-<li><code>/0|1|2|3|4|A|B|C|5|6/</code></li>
-<li><code>/0|1|2|A|B|3|4|C|5|6/</code></li>
-<li><code>/0|1|2|A|B|C|3|4|5|6/</code></li>
-<li><code>/0|1|2|C|B|A|3|4|5|6/</code></li>
-<li><code>/0|1|2|C|3|4|B|A|5|6/</code></li>
+<li><code>/0|1|2|👀|3|4|💯|👋|5|6/</code> (unchanged)</li>
+<li><code>/0|1|2|3|👀|4|💯|👋|5|6/</code></li>
+<li><code>/0|1|2|3|4|👀|💯|👋|5|6/</code></li>
+<li><code>/0|1|2|👀|💯|3|4|👋|5|6/</code></li>
+<li><code>/0|1|2|👀|💯|👋|3|4|5|6/</code></li>
+<li><code>/0|1|2|👋|💯|👀|3|4|5|6/</code></li>
+<li><code>/0|1|2|👋|3|4|💯|👀|5|6/</code></li>
 </ul>
 <p>The following are <strong>not guaranteed</strong> to be valid permutations:</p>
 <ul>
-<li><code>/0|1|2|A|4|3|B|C|5|6/</code> (<code>3</code> and <code>4</code> were swapped)</li>
-<li><code>/A|0|1|2|3|4|B|C|5|6/</code> (the position of <code>0</code> was changed)</li>
-<li><code>/0|1|2|A|3|4|C|5|6|B/</code> (the position of <code>6</code> was changed)</li>
+<li><code>/0|1|2|👀|4|3|💯|👋|5|6/</code> (<code>3</code> and <code>4</code> were swapped)</li>
+<li><code>/👀|0|1|2|3|4|💯|👋|5|6/</code> (the position of <code>0</code> was changed)</li>
+<li><code>/0|1|2|👀|3|4|👋|5|6|💯/</code> (the position of <code>6</code> was changed)</li>
 </ul>
 </div></div><h4 class="tsd-parameters-title">Parameters</h4><ul class="tsd-parameters"><li><h5>alternatives: <span class="tsd-signature-type">Iterable</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Alternative</span><span class="tsd-signature-symbol">&gt;</span></h5></li><li><h5>flags: <a href="interfaces/ReadonlyFlags.html" class="tsd-signature-type" data-tsd-kind="Interface">ReadonlyFlags</a></h5></li><li><h5>options: <a href="interfaces/CanReorderOptions.html" class="tsd-signature-type" data-tsd-kind="Interface">CanReorderOptions</a><span class="tsd-signature-symbol"> = {}</span></h5></li></ul><h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4></li></ul></section><section class="tsd-panel tsd-member tsd-kind-function tsd-has-type-parameter"><a id="containsCapturingGroup" class="tsd-anchor"></a><h3 class="tsd-anchor-link">contains<wbr/>Capturing<wbr/>Group<a href="#containsCapturingGroup" aria-label="Permalink" class="tsd-anchor-icon"><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5"></path><path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5"></path></svg></a></h3><ul class="tsd-signatures tsd-kind-function tsd-has-type-parameter"><li class="tsd-signature tsd-kind-icon">contains<wbr/>Capturing<wbr/>Group<span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type" data-tsd-kind="Type parameter">N</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">(</span>node<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type" data-tsd-kind="Type parameter">N</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="modules.html#ContainsCapturingGroup" class="tsd-signature-type" data-tsd-kind="Type alias">ContainsCapturingGroup</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type" data-tsd-kind="Type parameter">N</span><span class="tsd-signature-symbol">&gt;</span></li></ul><ul class="tsd-descriptions"><li class="tsd-description"><div class="tsd-comment tsd-typography"><div class="lead">
 <p>Returns whether the given node contains or is a capturing group.</p>
