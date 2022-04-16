@@ -142,8 +142,8 @@ function isPotentiallyZeroLengthImpl(e: Element | Alternative, root: Element | A
 }
 
 /**
- * Returns whether all (but at least one of the) paths of the given element do not consume characters and accept do not
- * assert characters.
+ * Returns whether all (but at least one of the) paths of the given element do neither consume characters nor assert
+ * characters.
  *
  * If this function returns `true`, then {@link isZeroLength} and {@link isPotentiallyEmpty} are guaranteed to return
  * `true`.
@@ -194,8 +194,7 @@ function isEmptyImpl(element: Element | Alternative): boolean {
 	}
 }
 /**
- * Returns whether at least one path of the given element does not consume characters and accept does not assert
- * characters.
+ * Returns whether at least one path of the given element does neither consume characters nor assert characters.
  *
  * ## Backreferences
  *
