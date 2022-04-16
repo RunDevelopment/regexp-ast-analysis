@@ -54,7 +54,6 @@ describe(getDeterminismEqClasses.name, function () {
 					"expected the number of returned alternatives to be the same as the number of input alternatives."
 				);
 
-				// eslint-disable-next-line @typescript-eslint/require-array-sort-compare -- x
 				result[dir][parent.raw] = classes
 					.map(eq =>
 						[...eq]
