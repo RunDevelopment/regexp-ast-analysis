@@ -1,11 +1,11 @@
 import { assert } from "chai";
 import { RegExpParser } from "regexpp";
-import * as RAA from "../src";
 import { OptionalMatchingDirection } from "../src";
+import { getDeterminismEqClasses } from "../src/determinism";
 import { assertSnapshot } from "./helper/snapshot";
 import { visitParents } from "./helper/util";
 
-describe(RAA.getDeterminismEqClasses.name, function () {
+describe(getDeterminismEqClasses.name, function () {
 	const directionIndependentRegexes: RegExp[] = [
 		/abc/,
 		/a|b|c|d/,
@@ -46,7 +46,7 @@ describe(RAA.getDeterminismEqClasses.name, function () {
 
 		visitParents(pattern, parent => {
 			for (const dir of directions) {
-				const classes = RAA.getDeterminismEqClasses(parent.alternatives, dir, flags);
+				const classes = getDeterminismEqClasses(parent.alternatives, dir, flags);
 
 				assert.equal(
 					classes.reduce((p, c) => p + c.length, 0),
