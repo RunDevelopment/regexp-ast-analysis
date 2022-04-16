@@ -14,6 +14,9 @@ import {
 import { toCharSet } from "./to-char-set";
 import { assertNever } from "./util";
 
+/**
+ * Options to control the behavior of {@link getLongestPrefix}.
+ */
 export interface GetLongestPrefixOptions {
 	/**
 	 * Whether the returned sequence is to include the next character (if any)
