@@ -487,6 +487,15 @@ export function getPattern(node: Node): Pattern {
 export type MatchingDirection = "ltr" | "rtl";
 
 /**
+ * This extends the {@link MatchingDirection} type to allow unknown matching
+ * directions.
+ *
+ * This is useful when the matching direction of an element/alternative cannot
+ * be known with 100% certainty.
+ */
+export type OptionalMatchingDirection = MatchingDirection | "unknown";
+
+/**
  * Returns the direction which which the given node will be matched relative to the closest parent alternative.
  *
  * If the given node is a lookaround, then the result of `getMatchingDirection(lookaround)` will be the same as
