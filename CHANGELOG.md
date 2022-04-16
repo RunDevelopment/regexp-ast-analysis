@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.4.0 (2022-04-16)
+
+### Breaking
+
+- Dropped support for NodeJS 10. The library will likely still work on this NodeJS version, but it won't be tested and NodeJS-10-specific bugs will be rejected.
+
+### Added
+
+- Added `containsCapturingGroup`.
+- Added `getLongestPrefix`.
+- Added `canReorder`.
+
 ## 0.3.0 (2021-09-04)
 
 ### Breaking
