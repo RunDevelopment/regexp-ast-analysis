@@ -9,6 +9,7 @@ import {
 	isPotentiallyZeroLength,
 	OptionalMatchingDirection,
 } from "./basic";
+import { toCache } from "./cache";
 import { Chars } from "./chars";
 import { getDeterminismEqClasses } from "./determinism";
 import { ReadonlyFlags } from "./flags";
@@ -94,6 +95,7 @@ export function canReorder(
 	flags: ReadonlyFlags,
 	options: CanReorderOptions = {}
 ): boolean {
+	flags = toCache(flags);
 	const { ignoreCapturingGroups = false, matchingDirection } = options;
 
 	const target = asReadonlySet(alternatives);
