@@ -37,19 +37,22 @@ export interface GetLongestPrefixOptions {
 	 */
 	includeAfter?: boolean;
 	/**
-	 * Whether the returned sequence is to include the next character (if any)
-	 * after the longest knowable sequence.
+	 * Whether groups will be combined more loosely.
 	 *
-	 * The next character after the longest knowable sequence is either:
-	 * - not consumed by the given alternative
-	 *   (e.g. `(ab)c` -> `[/a/, /b/, /c/]`),
-	 * - only a superset of the actual next character
-	 *   (e.g. `ab(cd|ef)` -> `[/a/, /b/, /[ce]/]`), or
-	 * - both.
+	 * With this option disabled, groups will only be combined if they are of
+	 * the same length and differ in at most one position. E.g. the longest
+	 * prefix of `/(?:bitter|barber)/` is `[/b/, /[ia]/]`. This requirement is
+	 * very strict and most groups do not fulfill it in practice.
 	 *
-	 * Note that enabling this options means that the returned sequence of
-	 * character sets is no longer guaranteed to be a prefix of the given
-	 * alternative.
+	 * With this option enabled, groups will be combined if they are of the
+	 * same length. Different characters at the same position are simply
+	 * combined. E.g. the longest prefix `/(?:bitter|barber)/` is
+	 * `[/b/, /[ia]/, /[tr]/, /[tb]/, /e/, /r/]`. With this option enabled, the
+	 * returned prefix is only guaranteed to be a superset of the actual strict
+	 * longest prefix.
+	 *
+	 * The purpose of this option is to provide longer prefixes in use cases
+	 * where an approximation of the actual prefix is good enough.
 	 *
 	 * @default false
 	 */
