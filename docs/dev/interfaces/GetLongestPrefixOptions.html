@@ -16,18 +16,18 @@ character sets is no longer guaranteed to be a prefix of the given
 alternative.</p>
 </div><dl class="tsd-comment-tags"><dt>default</dt><dd><p>false</p>
 </dd></dl></div></section><section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface"><a id="looseGroups" class="tsd-anchor"></a><h3 class="tsd-anchor-link"><span class="tsd-flag ts-flagOptional">Optional</span> loose<wbr/>Groups<a href="#looseGroups" aria-label="Permalink" class="tsd-anchor-icon"><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5"></path><path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5"></path></svg></a></h3><div class="tsd-signature tsd-kind-icon">loose<wbr/>Groups<span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">boolean</span></div><div class="tsd-comment tsd-typography"><div class="lead">
-<p>Whether the returned sequence is to include the next character (if any)
-after the longest knowable sequence.</p>
-</div><div><p>The next character after the longest knowable sequence is either:</p>
-<ul>
-<li>not consumed by the given alternative
-(e.g. <code>(ab)c</code> -&gt; <code>[/a/, /b/, /c/]</code>),</li>
-<li>only a superset of the actual next character
-(e.g. <code>ab(cd|ef)</code> -&gt; <code>[/a/, /b/, /[ce]/]</code>), or</li>
-<li>both.</li>
-</ul>
-<p>Note that enabling this options means that the returned sequence of
-character sets is no longer guaranteed to be a prefix of the given
-alternative.</p>
+<p>Whether groups will be combined more loosely.</p>
+</div><div><p>With this option disabled, groups will only be combined if they are of
+the same length and differ in at most one position. E.g. the longest
+prefix of <code>/(?:bitter|barber)/</code> is <code>[/b/, /[ia]/]</code>. This requirement is
+very strict and most groups do not fulfill it in practice.</p>
+<p>With this option enabled, groups will be combined if they are of the
+same length. Different characters at the same position are simply
+combined. E.g. the longest prefix <code>/(?:bitter|barber)/</code> is
+<code>[/b/, /[ia]/, /[tr]/, /[tb]/, /e/, /r/]</code>. With this option enabled, the
+returned prefix is only guaranteed to be a superset of the actual strict
+longest prefix.</p>
+<p>The purpose of this option is to provide longer prefixes in use cases
+where an approximation of the actual prefix is good enough.</p>
 </div><dl class="tsd-comment-tags"><dt>default</dt><dd><p>false</p>
 </dd></dl></div></section></section></div><div class="col-4 col-menu menu-sticky-wrap menu-highlight"><nav class="tsd-navigation primary"><ul><li class=""><a href="../modules.html">Exports</a></li><li class=" tsd-kind-namespace"><a href="../modules/Chars.html">Chars</a></li><li class=" tsd-kind-namespace"><a href="../modules/FirstConsumedChars.html">First<wbr/>Consumed<wbr/>Chars</a></li><li class=" tsd-kind-namespace"><a href="../modules/FirstLookChars.html">First<wbr/>Look<wbr/>Chars</a></li></ul></nav><nav class="tsd-navigation secondary menu-sticky"><ul><li class="current tsd-kind-interface"><a href="GetLongestPrefixOptions.html" class="tsd-kind-icon">Get<wbr/>Longest<wbr/>Prefix<wbr/>Options</a><ul><li class="tsd-kind-property tsd-parent-kind-interface"><a href="GetLongestPrefixOptions.html#includeAfter" class="tsd-kind-icon">include<wbr/>After</a></li><li class="tsd-kind-property tsd-parent-kind-interface"><a href="GetLongestPrefixOptions.html#looseGroups" class="tsd-kind-icon">loose<wbr/>Groups</a></li></ul></li></ul></nav></div></div></div><footer class=""><div class="container"><h2>Legend</h2><div class="tsd-legend-group"><ul class="tsd-legend"><li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li><li class="tsd-kind-method tsd-parent-kind-interface"><span class="tsd-kind-icon">Method</span></li></ul></div><h2>Settings</h2><p>Theme <select id="theme"><option value="os">OS</option><option value="light">Light</option><option value="dark">Dark</option></select></p></div></footer><div class="overlay"></div><script src="../assets/main.js"></script></body></html>
