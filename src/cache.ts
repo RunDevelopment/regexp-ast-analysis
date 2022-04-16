@@ -71,11 +71,7 @@ export function createCache(flags: ReadonlyFlags): Cache {
  * @see {@link createCache}
  */
 export function toCache(flags: ReadonlyFlags): Cache {
-	if (flags instanceof CacheInstance) {
-		return flags;
-	} else {
-		return createCache(flags);
-	}
+	return CacheInstance.from(flags);
 }
 
 /** @internal */
@@ -103,5 +99,13 @@ export class CacheInstance implements Cache {
 		this.multiline = !!flags.multiline;
 		this.sticky = !!flags.sticky;
 		this.unicode = !!flags.unicode;
+	}
+
+	static from(flags: ReadonlyFlags): CacheInstance {
+		if (flags instanceof CacheInstance) {
+			return flags;
+		} else {
+			return new CacheInstance(flags);
+		}
 	}
 }

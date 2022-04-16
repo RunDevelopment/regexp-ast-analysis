@@ -1,7 +1,7 @@
 import { CharSet } from "refa";
 import { Alternative, CapturingGroup, Element, Group, Quantifier } from "regexpp/ast";
 import { isPotentiallyZeroLength, isStrictBackreference, isZeroLength, MatchingDirection } from "./basic";
-import { CacheInstance, toCache } from "./cache";
+import { CacheInstance } from "./cache";
 import { ReadonlyFlags } from "./flags";
 import {
 	FirstConsumedChar,
@@ -72,14 +72,11 @@ export function getLongestPrefix(
 	flags: ReadonlyFlags,
 	options: Readonly<GetLongestPrefixOptions> = {}
 ): readonly CharSet[] {
-	flags = toCache(flags);
+	const cacheInstance = CacheInstance.from(flags);
+	flags = cacheInstance;
 	const { includeAfter = false, looseGroups = false } = options;
 
-	if (!(flags instanceof CacheInstance)) {
-		throw new Error("Expect toCache to produce a cache");
-	}
-
-	const cache = flags.getLongestPrefix;
+	const cache = cacheInstance.getLongestPrefix;
 	const cacheKey = `${direction},${includeAfter},${looseGroups}`;
 	let weakCache = cache.get(cacheKey);
 	if (weakCache === undefined) {
