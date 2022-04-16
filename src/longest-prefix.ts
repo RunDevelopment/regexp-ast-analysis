@@ -1,6 +1,12 @@
 import { CharSet } from "refa";
 import { Alternative, CapturingGroup, Element, Group, Quantifier } from "regexpp/ast";
-import { isPotentiallyZeroLength, isStrictBackreference, isZeroLength, MatchingDirection } from "./basic";
+import {
+	isEmptyBackreference,
+	isPotentiallyZeroLength,
+	isStrictBackreference,
+	isZeroLength,
+	MatchingDirection,
+} from "./basic";
 import { CacheInstance } from "./cache";
 import { ReadonlyFlags } from "./flags";
 import {
@@ -173,6 +179,9 @@ function getElementPrefix(
 			return getQuantifierPrefix(element, direction, options, flags);
 
 		case "Backreference": {
+			if (isEmptyBackreference(element)) {
+				return EMPTY_COMPLETE;
+			}
 			if (isStrictBackreference(element)) {
 				const inner = getElementPrefix(element.resolved, direction, { ...options, includeAfter: false }, flags);
 				return inner;

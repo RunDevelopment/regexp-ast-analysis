@@ -52,6 +52,7 @@ describe(RAA.getLongestPrefix.name, function () {
 		/(a)b(?<this>\1)c/,
 		/(ab?)b(?<this>\1)c/,
 		/(?:(a)|f)b(?<this>\1)c/,
+		/(?<this>\1\2b)c(a)/,
 	]);
 
 	function test(regexes: RegExp[]): void {

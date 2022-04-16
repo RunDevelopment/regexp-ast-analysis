@@ -14,6 +14,20 @@ Object {
 }
 `;
 
+exports[`getLongestPrefix /(?<this>\\1\\2b)c(a)/ ltr 1`] = `
+Object {
+  "{\\"includeAfter\\":false,\\"looseGroups\\":false}": /b/,
+  "{\\"includeAfter\\":true,\\"looseGroups\\":false}": /bc/,
+}
+`;
+
+exports[`getLongestPrefix /(?<this>\\1\\2b)c(a)/ rtl 1`] = `
+Object {
+  "{\\"includeAfter\\":false,\\"looseGroups\\":false}": /b/,
+  "{\\"includeAfter\\":true,\\"looseGroups\\":false}": /b\\[\\^\\]/,
+}
+`;
+
 exports[`getLongestPrefix /(?<this>A(?!a)(?:(?!B)|(?!C)))\\w/ ltr 1`] = `
 Object {
   "{\\"includeAfter\\":false,\\"looseGroups\\":false}": /A/,
