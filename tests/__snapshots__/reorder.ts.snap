@@ -1,5 +1,35 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`canReorder /(?:a+b|a+c|a+d)\\b/ 1`] = `
+Object {
+  "(?:a+b|a+c|a+d)": Object {
+    "a+b|a+c|a+d": Object {
+      "dir:ltr     ignoreCG:false": true,
+      "dir:ltr     ignoreCG:true ": true,
+      "dir:rtl     ignoreCG:false": true,
+      "dir:rtl     ignoreCG:true ": true,
+      "dir:unknown ignoreCG:false": true,
+      "dir:unknown ignoreCG:true ": true,
+    },
+  },
+}
+`;
+
+exports[`canReorder /(?:js|jso?n?)$/ 1`] = `
+Object {
+  "(?:js|jso?n?)": Object {
+    "js|jso?n?": Object {
+      "dir:ltr     ignoreCG:false": true,
+      "dir:ltr     ignoreCG:true ": true,
+      "dir:rtl     ignoreCG:false": false,
+      "dir:rtl     ignoreCG:true ": false,
+      "dir:unknown ignoreCG:false": false,
+      "dir:unknown ignoreCG:true ": false,
+    },
+  },
+}
+`;
+
 exports[`canReorder /(?:script|source)_foo|sample/ 1`] = `
 Object {
   "(?:script|source)": Object {
@@ -20,6 +50,36 @@ Object {
       "dir:rtl     ignoreCG:true ": true,
       "dir:unknown ignoreCG:false": true,
       "dir:unknown ignoreCG:true ": true,
+    },
+  },
+}
+`;
+
+exports[`canReorder /(?:yml|ya?ml)$/ 1`] = `
+Object {
+  "(?:yml|ya?ml)": Object {
+    "yml|ya?ml": Object {
+      "dir:ltr     ignoreCG:false": true,
+      "dir:ltr     ignoreCG:true ": true,
+      "dir:rtl     ignoreCG:false": false,
+      "dir:rtl     ignoreCG:true ": false,
+      "dir:unknown ignoreCG:false": false,
+      "dir:unknown ignoreCG:true ": false,
+    },
+  },
+}
+`;
+
+exports[`canReorder /(?:yml|ya?ml)/ 1`] = `
+Object {
+  "(?:yml|ya?ml)": Object {
+    "yml|ya?ml": Object {
+      "dir:ltr     ignoreCG:false": false,
+      "dir:ltr     ignoreCG:true ": false,
+      "dir:rtl     ignoreCG:false": false,
+      "dir:rtl     ignoreCG:true ": false,
+      "dir:unknown ignoreCG:false": false,
+      "dir:unknown ignoreCG:true ": false,
     },
   },
 }

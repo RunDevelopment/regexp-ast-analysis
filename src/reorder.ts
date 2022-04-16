@@ -7,6 +7,7 @@ import {
 	hasSomeDescendant,
 	isEmptyBackreference,
 	isPotentiallyZeroLength,
+	MatchingDirection,
 	OptionalMatchingDirection,
 } from "./basic";
 import { toCache } from "./cache";
@@ -107,8 +108,25 @@ export function canReorder(
 
 	const slice = getAlternativesSlice(target);
 
-	const dir = matchingDirection ?? getMatchingDirection(slice[0]);
-	const eqClasses = getDeterminismEqClasses(slice, dir, flags);
+	const direction = matchingDirection ?? getMatchingDirection(slice[0]);
+
+	if (direction === "unknown") {
+		return (
+			canReorderDirectional(target, slice, "ltr", flags, ignoreCapturingGroups) &&
+			canReorderDirectional(target, slice, "rtl", flags, ignoreCapturingGroups)
+		);
+	}
+
+	return canReorderDirectional(target, slice, direction, flags, ignoreCapturingGroups);
+}
+export function canReorderDirectional(
+	target: ReadonlySet<Alternative>,
+	slice: Alternative[],
+	direction: MatchingDirection,
+	flags: ReadonlyFlags,
+	ignoreCapturingGroups: boolean
+): boolean {
+	const eqClasses = getDeterminismEqClasses(slice, direction, flags);
 
 	if (!ignoreCapturingGroups && !canReorderCapturingGroups(target, slice, eqClasses)) {
 		return false;
@@ -131,7 +149,7 @@ export function canReorder(
 			return true;
 		}
 
-		return canReorderBasedOnLength(eq) || canReorderBasedOnConsumedChars(eq, flags);
+		return canReorderBasedOnLength(eq) || canReorderBasedOnConsumedChars(eq, direction, flags);
 	});
 }
 
@@ -219,7 +237,11 @@ function canReorderBasedOnLength(slice: readonly Alternative[]): boolean {
  * consumed by the alternatives, then the order order of the alternatives
  * doesn't matter.
  */
-function canReorderBasedOnConsumedChars(slice: readonly Alternative[], flags: ReadonlyFlags): boolean {
+function canReorderBasedOnConsumedChars(
+	slice: readonly Alternative[],
+	direction: MatchingDirection,
+	flags: ReadonlyFlags
+): boolean {
 	// we assume that at least one character is consumed in each alternative
 	if (slice.some(isPotentiallyZeroLength)) {
 		return false;
@@ -232,10 +254,9 @@ function canReorderBasedOnConsumedChars(slice: readonly Alternative[], flags: Re
 
 	const consumedChars = Chars.empty(flags).union(...slice.map(a => getConsumedChars(a, flags)));
 
-	return (
-		getFirstCharAfter(parent, "rtl", flags).char.isDisjointWith(consumedChars) &&
-		getFirstCharAfter(parent, "ltr", flags).char.isDisjointWith(consumedChars)
-	);
+	// If we know the current direction, then it is enough to prove that the char after the alternatives is
+	// different from the chars that could possibly be consumed by the alternatives.
+	return getFirstCharAfter(parent, direction, flags).char.isDisjointWith(consumedChars);
 }
 
 /**
