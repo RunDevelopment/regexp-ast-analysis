@@ -6,7 +6,6 @@ import {
 	getMatchingDirection,
 	hasSomeDescendant,
 	isEmptyBackreference,
-	isPotentiallyZeroLength,
 	MatchingDirection,
 	OptionalMatchingDirection,
 } from "./basic";
@@ -233,30 +232,120 @@ function canReorderBasedOnLength(slice: readonly Alternative[]): boolean {
  * Returns whether alternatives can be reordered because the characters
  * consumed.
  *
- * If the given alternatives are preceded and followed by characters not
- * consumed by the alternatives, then the order order of the alternatives
- * doesn't matter.
+ * If the given alternatives are followed (in their current matching direction)
+ * by characters not consumed by the alternatives, then the order order of the
+ * alternatives doesn't matter.
+ *
+ * Furthermore, we can factor out common prefixes and suffixes. E.g. checking
+ * whether `(?:foobar|footwear)` can be reordered is the same as checking
+ * whether `foo(?:b|twe)ar` can be reordered. Using this idea, we can narrow
+ * down the consumed characters and find additional characters that also have
+ * to be disjoint with the consumed characters.
  */
 function canReorderBasedOnConsumedChars(
 	slice: readonly Alternative[],
 	direction: MatchingDirection,
 	flags: ReadonlyFlags
 ): boolean {
-	// we assume that at least one character is consumed in each alternative
-	if (slice.some(isPotentiallyZeroLength)) {
-		return false;
+	const factoredOut = factorOutCommon(
+		slice.map(a => a.elements),
+		flags
+	);
+
+	const elements: Element[] = [];
+	for (const alternative of factoredOut.rest) {
+		elements.push(...alternative);
 	}
 
+	const consumedChars = Chars.empty(flags).union(...elements.map(e => getConsumedChars(e, flags)));
+
+	// we first check all suffix characters because we get them for free when factoring out.
+	const suffix = direction === "ltr" ? factoredOut.right : factoredOut.left;
+	if (suffix.some(cs => cs.isDisjointWith(consumedChars))) {
+		return true;
+	}
+
+	// now we check the character after the parent of the given alternatives
 	const parent = slice[0].parent;
 	if (parent.type === "Pattern" || parent.type === "Assertion") {
 		return false;
 	}
 
-	const consumedChars = Chars.empty(flags).union(...slice.map(a => getConsumedChars(a, flags)));
-
-	// If we know the current direction, then it is enough to prove that the char after the alternatives is
-	// different from the chars that could possibly be consumed by the alternatives.
 	return getFirstCharAfter(parent, direction, flags).char.isDisjointWith(consumedChars);
+}
+interface FactoredOut {
+	left: CharSet[];
+	right: CharSet[];
+	rest: readonly (readonly Element[])[];
+}
+function factorOutCommon(alternatives: readonly (readonly Element[])[], flags: ReadonlyFlags): FactoredOut {
+	const prefix = factorOutCommonPrefix(alternatives, "ltr", flags);
+	const suffix = factorOutCommonPrefix(prefix.rest, "rtl", flags);
+	return { left: prefix.prefix, right: suffix.prefix, rest: suffix.rest };
+}
+interface FactoredOutPrefix {
+	prefix: CharSet[];
+	rest: readonly (readonly Element[])[];
+}
+function factorOutCommonPrefix(
+	alternatives: readonly (readonly Element[])[],
+	direction: MatchingDirection,
+	flags: ReadonlyFlags
+): FactoredOutPrefix {
+	const prefix = getLongestPureCharPrefix(alternatives, direction, flags);
+	if (prefix.length === 0) {
+		return { prefix, rest: alternatives };
+	} else {
+		// remove prefix
+		return {
+			prefix,
+			rest: alternatives.map(elements => {
+				const start = direction === "ltr" ? prefix.length : 0;
+				const end = direction === "ltr" ? elements.length : elements.length - prefix.length;
+				return elements.slice(start, end);
+			}),
+		};
+	}
+}
+function getLongestPureCharPrefix(
+	alternatives: readonly (readonly Element[])[],
+	direction: MatchingDirection,
+	flags: ReadonlyFlags
+): CharSet[] {
+	const prefix: CharSet[] = [];
+
+	for (let i = 0; ; i++) {
+		let char: CharSet | null = null;
+
+		for (const elements of alternatives) {
+			const current = direction === "ltr" ? i : elements.length - 1 - i;
+
+			if (i >= 0 && i < elements.length) {
+				const element = elements[current];
+				switch (element.type) {
+					case "Character":
+					case "CharacterClass":
+					case "CharacterSet":
+						if (char === null) {
+							char = toCharSet(element, flags);
+						} else {
+							if (!char.equals(toCharSet(element, flags))) {
+								return prefix;
+							}
+						}
+						break;
+
+					default:
+						return prefix;
+				}
+			} else {
+				return prefix;
+			}
+		}
+
+		if (char === null) throw new Error();
+		prefix.push(char);
+	}
 }
 
 /**

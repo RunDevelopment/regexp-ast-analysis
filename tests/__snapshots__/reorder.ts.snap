@@ -96,10 +96,10 @@ Object {
     "js|jso?n?": Object {
       "dir:ltr     ignoreCG:false": true,
       "dir:ltr     ignoreCG:true ": true,
-      "dir:rtl     ignoreCG:false": false,
-      "dir:rtl     ignoreCG:true ": false,
-      "dir:unknown ignoreCG:false": false,
-      "dir:unknown ignoreCG:true ": false,
+      "dir:rtl     ignoreCG:false": true,
+      "dir:rtl     ignoreCG:true ": true,
+      "dir:unknown ignoreCG:false": true,
+      "dir:unknown ignoreCG:true ": true,
     },
   },
 }
@@ -166,10 +166,10 @@ Object {
     "yml|ya?ml": Object {
       "dir:ltr     ignoreCG:false": true,
       "dir:ltr     ignoreCG:true ": true,
-      "dir:rtl     ignoreCG:false": false,
-      "dir:rtl     ignoreCG:true ": false,
-      "dir:unknown ignoreCG:false": false,
-      "dir:unknown ignoreCG:true ": false,
+      "dir:rtl     ignoreCG:false": true,
+      "dir:rtl     ignoreCG:true ": true,
+      "dir:unknown ignoreCG:false": true,
+      "dir:unknown ignoreCG:true ": true,
     },
   },
 }
@@ -179,12 +179,12 @@ exports[`canReorder /(?:yml|ya?ml)/ 1`] = `
 Object {
   "(?:yml|ya?ml)": Object {
     "yml|ya?ml": Object {
-      "dir:ltr     ignoreCG:false": false,
-      "dir:ltr     ignoreCG:true ": false,
-      "dir:rtl     ignoreCG:false": false,
-      "dir:rtl     ignoreCG:true ": false,
-      "dir:unknown ignoreCG:false": false,
-      "dir:unknown ignoreCG:true ": false,
+      "dir:ltr     ignoreCG:false": true,
+      "dir:ltr     ignoreCG:true ": true,
+      "dir:rtl     ignoreCG:false": true,
+      "dir:rtl     ignoreCG:true ": true,
+      "dir:unknown ignoreCG:false": true,
+      "dir:unknown ignoreCG:true ": true,
     },
   },
 }
@@ -279,8 +279,8 @@ exports[`canReorder /\\d*\\.\\d+_|\\d+\\.\\d*_/ 1`] = `
 Object {
   "\\\\d*\\\\.\\\\d+_|\\\\d+\\\\.\\\\d*_": Object {
     "\\\\d*\\\\.\\\\d+_|\\\\d+\\\\.\\\\d*_": Object {
-      "dir:ltr     ignoreCG:false": false,
-      "dir:ltr     ignoreCG:true ": false,
+      "dir:ltr     ignoreCG:false": true,
+      "dir:ltr     ignoreCG:true ": true,
       "dir:rtl     ignoreCG:false": false,
       "dir:rtl     ignoreCG:true ": false,
       "dir:unknown ignoreCG:false": false,
@@ -336,21 +336,6 @@ Object {
 `;
 
 exports[`canReorder /\\w|abc|123|_|[A-Z]|\\$| / 1`] = `
-Object {
-  "\\\\w|abc|123|_|[A-Z]|\\\\$| ": Object {
-    "\\\\w|abc|123|_|[A-Z]|\\\\$| ": Object {
-      "dir:ltr     ignoreCG:false": false,
-      "dir:ltr     ignoreCG:true ": false,
-      "dir:rtl     ignoreCG:false": false,
-      "dir:rtl     ignoreCG:true ": false,
-      "dir:unknown ignoreCG:false": false,
-      "dir:unknown ignoreCG:true ": false,
-    },
-  },
-}
-`;
-
-exports[`canReorder /\\w|abc|123|_|[A-Z]|\\$| / 2`] = `
 Object {
   "\\\\w|abc|123|_|[A-Z]|\\\\$| ": Object {
     "\\\\w|abc|123|_|[A-Z]|\\\\$| ": Object {
@@ -429,8 +414,8 @@ exports[`canReorder /A+_|A*_/ 1`] = `
 Object {
   "A+_|A*_": Object {
     "A+_|A*_": Object {
-      "dir:ltr     ignoreCG:false": false,
-      "dir:ltr     ignoreCG:true ": false,
+      "dir:ltr     ignoreCG:false": true,
+      "dir:ltr     ignoreCG:true ": true,
       "dir:rtl     ignoreCG:false": false,
       "dir:rtl     ignoreCG:true ": false,
       "dir:unknown ignoreCG:false": false,
@@ -446,8 +431,8 @@ Object {
     "FOO|foo(?:bar)?": Object {
       "dir:ltr     ignoreCG:false": false,
       "dir:ltr     ignoreCG:true ": false,
-      "dir:rtl     ignoreCG:false": false,
-      "dir:rtl     ignoreCG:true ": false,
+      "dir:rtl     ignoreCG:false": true,
+      "dir:rtl     ignoreCG:true ": true,
       "dir:unknown ignoreCG:false": false,
       "dir:unknown ignoreCG:true ": false,
     },
