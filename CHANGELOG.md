@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.4.1 (2022-04-17)
+
+### Improved
+
+- `canReorder` can now prove more alternatives to be safe to reorder.
+- `canReorder` will now create a cache if none is provided.
+
 ## 0.4.0 (2022-04-16)
 
 ### Breaking
