@@ -1,3 +1,4 @@
+import { assert } from "chai";
 import { JS } from "refa";
 import { RegExpParser, visitRegExpAST } from "regexpp";
 import { Alternative } from "regexpp/ast";
@@ -85,7 +86,16 @@ describe(RAA.getLongestPrefix.name, function () {
 						);
 
 						for (const o of options) {
-							if (!hasGroups && o.looseGroups) continue;
+							if (!hasGroups && o.looseGroups) {
+								const loose = RAA.getLongestPrefix(alternative, direction, flags, o);
+								const strict = RAA.getLongestPrefix(alternative, direction, flags, {
+									...o,
+									looseGroups: false,
+								});
+
+								assert.deepStrictEqual(loose, strict);
+								continue;
+							}
 
 							const prefix = RAA.getLongestPrefix(alternative, direction, flags, o);
 
