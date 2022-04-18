@@ -2,7 +2,7 @@ import { CharSet } from "refa";
 import { Alternative, CapturingGroup, Element, Group, Quantifier } from "regexpp/ast";
 import {
 	isEmptyBackreference,
-	isPotentiallyZeroLength,
+	isLengthRangeMinZero,
 	isStrictBackreference,
 	isZeroLength,
 	MatchingDirection,
@@ -43,6 +43,22 @@ export interface GetLongestPrefixOptions {
 	 */
 	includeAfter?: boolean;
 	/**
+	 * Whether only characters inside the given alternative may be considered
+	 * when creating the last character.
+	 *
+	 * This option control the behavior of {@link includeAfter}. By default,
+	 * {@link includeAfter} will also look at the characters after the
+	 * alternative to create the last character. This may be undesirable in
+	 * some case.
+	 *
+	 * The enabling this option has the following effect: If the last character
+	 * of the prefix is affected by characters outside the alternative, then
+	 * the prefix with {@link includeAfter} set to `false` will be returned.
+	 *
+	 * @default false
+	 */
+	onlyInside?: boolean;
+	/**
 	 * Whether groups will be combined more loosely.
 	 *
 	 * With this option disabled, groups will only be combined if they are of
@@ -80,7 +96,7 @@ export function getLongestPrefix(
 ): readonly CharSet[] {
 	const cacheInstance = CacheInstance.from(flags);
 	flags = cacheInstance;
-	const { includeAfter = false, looseGroups = false } = options;
+	const { includeAfter = false, onlyInside = false, looseGroups = false } = options;
 
 	const cache = cacheInstance.getLongestPrefix;
 	const cacheKey = `${direction},${includeAfter},${looseGroups}`;
@@ -92,16 +108,25 @@ export function getLongestPrefix(
 
 	let cached = weakCache.get(alternative);
 	if (cached === undefined) {
-		cached = getLongestPrefixImpl(alternative, direction, { includeAfter, looseGroups }, flags);
+		cached = getLongestPrefixImpl(
+			alternative,
+			direction,
+			{ includeAfter, onlyInside, looseGroups, root: alternative },
+			flags
+		);
 		weakCache.set(alternative, cached);
 	}
 	return cached;
 }
 
+interface InternalOptions extends Readonly<Required<GetLongestPrefixOptions>> {
+	readonly root: Alternative;
+}
+
 function getLongestPrefixImpl(
 	alternative: Alternative,
 	direction: MatchingDirection,
-	options: Required<GetLongestPrefixOptions>,
+	options: InternalOptions,
 	flags: ReadonlyFlags
 ): readonly CharSet[] {
 	const { chars, complete } = getAlternativePrefix(alternative, direction, options, flags);
@@ -114,7 +139,7 @@ function getLongestPrefixImpl(
 	}
 
 	// append the next character after the alternative
-	if (complete && options.includeAfter) {
+	if (complete && options.includeAfter && !options.onlyInside) {
 		chars.push(getFirstCharAfterAlternative(alternative, direction, flags).char);
 	}
 
@@ -132,7 +157,7 @@ const EMPTY_INCOMPLETE: Prefix = { chars: [], complete: false };
 function getAlternativePrefix(
 	alternative: Alternative,
 	direction: MatchingDirection,
-	options: Required<GetLongestPrefixOptions>,
+	options: InternalOptions,
 	flags: ReadonlyFlags
 ): Prefix {
 	const { elements } = alternative;
@@ -156,7 +181,7 @@ function getAlternativePrefix(
 function getElementPrefix(
 	element: Element,
 	direction: MatchingDirection,
-	options: Required<GetLongestPrefixOptions>,
+	options: InternalOptions,
 	flags: ReadonlyFlags
 ): Prefix {
 	switch (element.type) {
@@ -187,7 +212,7 @@ function getElementPrefix(
 				return inner;
 			}
 
-			if (!options.includeAfter) {
+			if (!mayLookAhead(element, options, direction)) {
 				return EMPTY_INCOMPLETE;
 			}
 
@@ -203,7 +228,7 @@ function getElementPrefix(
 function getGroupPrefix(
 	element: Group | CapturingGroup,
 	direction: MatchingDirection,
-	options: Required<GetLongestPrefixOptions>,
+	options: InternalOptions,
 	flags: ReadonlyFlags
 ): Prefix {
 	const alternatives = element.alternatives.map(a => getAlternativePrefix(a, direction, options, flags));
@@ -240,7 +265,7 @@ function getGroupPrefix(
 			// This means that one (but not all) complete alternatives have
 			// reached the end, so we have consider the chars after the group.
 			complete = false;
-			if (!options.includeAfter) {
+			if (!mayLookAheadAfter(element, options, direction)) {
 				break;
 			}
 
@@ -267,14 +292,14 @@ function getGroupPrefix(
 function getQuantifierPrefix(
 	element: Quantifier,
 	direction: MatchingDirection,
-	options: Required<GetLongestPrefixOptions>,
+	options: InternalOptions,
 	flags: ReadonlyFlags
 ): Prefix {
 	if (isZeroLength(element)) {
 		return EMPTY_COMPLETE;
 	}
-	if (isPotentiallyZeroLength(element)) {
-		if (!options.includeAfter) {
+	if (isLengthRangeMinZero(element)) {
+		if (!mayLookAhead(element, options, direction)) {
 			return EMPTY_INCOMPLETE;
 		}
 
@@ -306,7 +331,7 @@ function getQuantifierPrefix(
 		return { chars, complete: true };
 	}
 
-	if (options.includeAfter) {
+	if (mayLookAheadAfter(element, options, direction)) {
 		const look = getFirstCharAfter(element, direction, flags);
 		chars.push(look.char.union(inner.chars[0]));
 	}
@@ -358,4 +383,67 @@ function getFirstCharAfterAlternative(
 	} else {
 		return FirstConsumedChars.toLook(getFirstConsumedCharPlusAfter(alternative, direction, flags));
 	}
+}
+
+function mayLookAhead(element: Element, options: InternalOptions, direction: MatchingDirection): boolean {
+	if (!options.includeAfter) {
+		return false;
+	}
+	if (options.onlyInside) {
+		return isNextCharacterInside(element, direction, options.root);
+	}
+	return true;
+}
+function mayLookAheadAfter(element: Element, options: InternalOptions, direction: MatchingDirection): boolean {
+	if (!options.includeAfter) {
+		return false;
+	}
+	if (options.onlyInside) {
+		return isNextCharacterInsideAfter(element, direction, options.root);
+	}
+	return true;
+}
+
+function isNextCharacterInside(element: Element, direction: MatchingDirection, root: Alternative): boolean {
+	return !isLengthRangeMinZero(element) || isNextCharacterInsideAfter(element, direction, root);
+}
+/**
+ * Returns whether the next character consumed after `afterThis` is entirely determined by the elements of the given
+ * `root` alternative.
+ *
+ * This assumes that `afterThis` is a descendant of `root`.
+ */
+function isNextCharacterInsideAfter(afterThis: Element, direction: MatchingDirection, root: Alternative): boolean {
+	const parent = afterThis.parent;
+	if (parent.type === "CharacterClass" || parent.type === "CharacterClassRange") {
+		throw new Error("Expected an element outside a character class.");
+	}
+	if (parent.type === "Quantifier") {
+		return isNextCharacterInsideAfter(parent, direction, root);
+	}
+
+	const inc = direction === "ltr" ? +1 : -1;
+	const start = parent.elements.indexOf(afterThis);
+	for (let i = start + inc; i >= 0 && i < parent.elements.length; i += inc) {
+		const e = parent.elements[i];
+		if (!isLengthRangeMinZero(e)) {
+			return true;
+		}
+	}
+
+	if (parent === root) {
+		// since we reached the root, we couldn't find something is consumed a character
+		return false;
+	}
+
+	const grandparent = parent.parent;
+	if (grandparent.type === "Pattern") {
+		throw new Error("Expected the given element to be a descendant of the root alternative.");
+	}
+	if (grandparent.type === "Assertion") {
+		// honestly, this doesn't make sense, so let's just throw an error
+		throw new Error();
+	}
+
+	return isNextCharacterInsideAfter(grandparent, direction, root);
 }

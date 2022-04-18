@@ -7,10 +7,12 @@ import { assertSnapshot } from "./helper/snapshot";
 
 describe(RAA.getLongestPrefix.name, function () {
 	const options: Required<RAA.GetLongestPrefixOptions>[] = [
-		{ includeAfter: false, looseGroups: false },
-		{ includeAfter: false, looseGroups: true },
-		{ includeAfter: true, looseGroups: false },
-		{ includeAfter: true, looseGroups: true },
+		{ includeAfter: false, onlyInside: false, looseGroups: false },
+		{ includeAfter: false, onlyInside: false, looseGroups: true },
+		{ includeAfter: true, onlyInside: false, looseGroups: false },
+		{ includeAfter: true, onlyInside: false, looseGroups: true },
+		{ includeAfter: true, onlyInside: true, looseGroups: false },
+		{ includeAfter: true, onlyInside: true, looseGroups: true },
 	];
 
 	test([
@@ -79,7 +81,8 @@ describe(RAA.getLongestPrefix.name, function () {
 							},
 							{ flags }
 						);
-						actual[JSON.stringify(o)] = RegExp(literal.source, literal.flags);
+						const key = `insideAfter:${o.includeAfter} onlyInside:${o.onlyInside} looseG:${o.looseGroups}`;
+						actual[key] = RegExp(literal.source, literal.flags);
 					}
 
 					assertSnapshot(actual);
