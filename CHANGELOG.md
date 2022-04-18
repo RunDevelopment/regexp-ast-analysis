@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.5.0 (2022-04-18)
+
+### Breaking
+
+- `getLengthRange` will now throw a `RangeError` instead of returning `undefined` for empty arrays.
+
+### Added
+
+- Added `isLengthRangeMinZero` function that is equivalent to `getLengthRange(e).min === 0` but implemented more efficiently.
+- Added `onlyInside` option for `getLongest` function.
+
 ## 0.4.1 (2022-04-17)
 
 ### Improved
