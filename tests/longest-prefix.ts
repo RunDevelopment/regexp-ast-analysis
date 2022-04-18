@@ -65,7 +65,9 @@ describe(RAA.getLongestPrefix.name, function () {
 		for (const direction of ["ltr", "rtl"] as MatchingDirection[]) {
 			for (const regex of regexes) {
 				it(`${regex} ${direction}`, function () {
-					const { pattern, flags } = new RegExpParser().parseLiteral(regex.toString());
+					const parsed = new RegExpParser().parseLiteral(regex.toString());
+					const { pattern } = parsed;
+					const flags = RAA.toCache(parsed.flags);
 
 					const parent = selectNamedGroups(pattern, /^this$/)[0] ?? pattern;
 					const alternatives: Alternative[] = [];

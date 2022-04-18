@@ -99,7 +99,7 @@ export function getLongestPrefix(
 	const { includeAfter = false, onlyInside = false, looseGroups = false } = options;
 
 	const cache = cacheInstance.getLongestPrefix;
-	const cacheKey = `${direction},${includeAfter},${looseGroups}`;
+	const cacheKey = `${direction},${includeAfter},${onlyInside},${looseGroups}`;
 	let weakCache = cache.get(cacheKey);
 	if (weakCache === undefined) {
 		weakCache = new WeakMap();
