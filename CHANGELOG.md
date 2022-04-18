@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.5.1 (2022-04-18)
+
+### Fixed
+
+- Fixed `getLongestPrefix` not caching correctly.
+
+
 ## 0.5.0 (2022-04-18)
 
 ### Breaking
@@ -11,12 +18,14 @@
 - Added `isLengthRangeMinZero` function that is equivalent to `getLengthRange(e).min === 0` but implemented more efficiently.
 - Added `onlyInside` option for `getLongest` function.
 
+
 ## 0.4.1 (2022-04-17)
 
 ### Improved
 
 - `canReorder` can now prove more alternatives to be safe to reorder.
 - `canReorder` will now create a cache if none is provided.
+
 
 ## 0.4.0 (2022-04-16)
 
@@ -29,6 +38,7 @@
 - Added `containsCapturingGroup`.
 - Added `getLongestPrefix`.
 - Added `canReorder`.
+
 
 ## 0.3.0 (2021-09-04)
 
