@@ -2,588 +2,950 @@
 
 exports[`getLongestPrefix /(?:(a)|f)b(?<this>\\1)c/ ltr 1`] = `
 Object {
-  "insideAfter:false onlyInside:false looseG:false": /\\(\\?:\\)/,
-  "insideAfter:true onlyInside:false looseG:false": /\\[ac\\]/,
-  "insideAfter:true onlyInside:true looseG:false": /\\(\\?:\\)/,
+  "19: \\\\1": Object {
+    "insideAfter:false onlyInside:false looseG:false": /\\(\\?:\\)/,
+    "insideAfter:true onlyInside:false looseG:false": /\\[ac\\]/,
+    "insideAfter:true onlyInside:true looseG:false": /\\(\\?:\\)/,
+  },
 }
 `;
 
 exports[`getLongestPrefix /(?:(a)|f)b(?<this>\\1)c/ rtl 1`] = `
 Object {
-  "insideAfter:false onlyInside:false looseG:false": /\\(\\?:\\)/,
-  "insideAfter:true onlyInside:false looseG:false": /\\[ab\\]/,
-  "insideAfter:true onlyInside:true looseG:false": /\\(\\?:\\)/,
+  "19: \\\\1": Object {
+    "insideAfter:false onlyInside:false looseG:false": /\\(\\?:\\)/,
+    "insideAfter:true onlyInside:false looseG:false": /\\[ab\\]/,
+    "insideAfter:true onlyInside:true looseG:false": /\\(\\?:\\)/,
+  },
 }
 `;
 
 exports[`getLongestPrefix /(?<this>\\1\\2b)c(a)/ ltr 1`] = `
 Object {
-  "insideAfter:false onlyInside:false looseG:false": /b/,
-  "insideAfter:true onlyInside:false looseG:false": /bc/,
-  "insideAfter:true onlyInside:true looseG:false": /b/,
+  "9: \\\\1\\\\2b": Object {
+    "insideAfter:false onlyInside:false looseG:false": /b/,
+    "insideAfter:true onlyInside:false looseG:false": /bc/,
+    "insideAfter:true onlyInside:true looseG:false": /b/,
+  },
 }
 `;
 
 exports[`getLongestPrefix /(?<this>\\1\\2b)c(a)/ rtl 1`] = `
 Object {
-  "insideAfter:false onlyInside:false looseG:false": /b/,
-  "insideAfter:true onlyInside:false looseG:false": /b\\[\\^\\]/,
-  "insideAfter:true onlyInside:true looseG:false": /b/,
+  "9: \\\\1\\\\2b": Object {
+    "insideAfter:false onlyInside:false looseG:false": /b/,
+    "insideAfter:true onlyInside:false looseG:false": /b\\[\\^\\]/,
+    "insideAfter:true onlyInside:true looseG:false": /b/,
+  },
 }
 `;
 
 exports[`getLongestPrefix /(?<this>A(?!a)(?:(?!B)|(?!C)))\\w/ ltr 1`] = `
 Object {
-  "insideAfter:false onlyInside:false looseG:false": /A/,
-  "insideAfter:false onlyInside:false looseG:true": /A/,
-  "insideAfter:true onlyInside:false looseG:false": /A\\[\\\\dA-Z_b-z\\]/,
-  "insideAfter:true onlyInside:false looseG:true": /A\\[\\\\dA-Z_b-z\\]/,
-  "insideAfter:true onlyInside:true looseG:false": /A/,
-  "insideAfter:true onlyInside:true looseG:true": /A/,
+  "18: (?!B)": Object {
+    "insideAfter:false onlyInside:false looseG:false": /\\(\\?:\\)/,
+    "insideAfter:true onlyInside:false looseG:false": /\\[\\\\dAC-Z_a-z\\]/,
+    "insideAfter:true onlyInside:true looseG:false": /\\(\\?:\\)/,
+  },
+  "24: (?!C)": Object {
+    "insideAfter:false onlyInside:false looseG:false": /\\(\\?:\\)/,
+    "insideAfter:true onlyInside:false looseG:false": /\\[\\\\dABD-Z_a-z\\]/,
+    "insideAfter:true onlyInside:true looseG:false": /\\(\\?:\\)/,
+  },
+  "9: A(?!a)(?:(?!B)|(?!C))": Object {
+    "insideAfter:false onlyInside:false looseG:false": /A/,
+    "insideAfter:false onlyInside:false looseG:true": /A/,
+    "insideAfter:true onlyInside:false looseG:false": /A\\[\\\\dA-Z_b-z\\]/,
+    "insideAfter:true onlyInside:false looseG:true": /A\\[\\\\dA-Z_b-z\\]/,
+    "insideAfter:true onlyInside:true looseG:false": /A/,
+    "insideAfter:true onlyInside:true looseG:true": /A/,
+  },
 }
 `;
 
 exports[`getLongestPrefix /(?<this>A(?!a)(?:(?!B)|(?!C)))\\w/ rtl 1`] = `
 Object {
-  "insideAfter:false onlyInside:false looseG:false": /A/,
-  "insideAfter:false onlyInside:false looseG:true": /A/,
-  "insideAfter:true onlyInside:false looseG:false": /A\\[\\^\\]/,
-  "insideAfter:true onlyInside:false looseG:true": /A\\[\\^\\]/,
-  "insideAfter:true onlyInside:true looseG:false": /A/,
-  "insideAfter:true onlyInside:true looseG:true": /A/,
+  "18: (?!B)": Object {
+    "insideAfter:false onlyInside:false looseG:false": /\\(\\?:\\)/,
+    "insideAfter:true onlyInside:false looseG:false": /A/,
+    "insideAfter:true onlyInside:true looseG:false": /\\(\\?:\\)/,
+  },
+  "24: (?!C)": Object {
+    "insideAfter:false onlyInside:false looseG:false": /\\(\\?:\\)/,
+    "insideAfter:true onlyInside:false looseG:false": /A/,
+    "insideAfter:true onlyInside:true looseG:false": /\\(\\?:\\)/,
+  },
+  "9: A(?!a)(?:(?!B)|(?!C))": Object {
+    "insideAfter:false onlyInside:false looseG:false": /A/,
+    "insideAfter:false onlyInside:false looseG:true": /A/,
+    "insideAfter:true onlyInside:false looseG:false": /A\\[\\^\\]/,
+    "insideAfter:true onlyInside:false looseG:true": /A\\[\\^\\]/,
+    "insideAfter:true onlyInside:true looseG:false": /A/,
+    "insideAfter:true onlyInside:true looseG:true": /A/,
+  },
 }
 `;
 
 exports[`getLongestPrefix /(?<this>A)\\b/ ltr 1`] = `
 Object {
-  "insideAfter:false onlyInside:false looseG:false": /A/,
-  "insideAfter:true onlyInside:false looseG:false": /A\\\\W/,
-  "insideAfter:true onlyInside:true looseG:false": /A/,
+  "9: A": Object {
+    "insideAfter:false onlyInside:false looseG:false": /A/,
+    "insideAfter:true onlyInside:false looseG:false": /A\\\\W/,
+    "insideAfter:true onlyInside:true looseG:false": /A/,
+  },
 }
 `;
 
 exports[`getLongestPrefix /(?<this>A)\\b/ rtl 1`] = `
 Object {
-  "insideAfter:false onlyInside:false looseG:false": /A/,
-  "insideAfter:true onlyInside:false looseG:false": /A\\[\\^\\]/,
-  "insideAfter:true onlyInside:true looseG:false": /A/,
+  "9: A": Object {
+    "insideAfter:false onlyInside:false looseG:false": /A/,
+    "insideAfter:true onlyInside:false looseG:false": /A\\[\\^\\]/,
+    "insideAfter:true onlyInside:true looseG:false": /A/,
+  },
 }
 `;
 
 exports[`getLongestPrefix /(a)b(?<this>\\1)c/ ltr 1`] = `
 Object {
-  "insideAfter:false onlyInside:false looseG:false": /a/,
-  "insideAfter:true onlyInside:false looseG:false": /ac/,
-  "insideAfter:true onlyInside:true looseG:false": /a/,
+  "13: \\\\1": Object {
+    "insideAfter:false onlyInside:false looseG:false": /a/,
+    "insideAfter:true onlyInside:false looseG:false": /ac/,
+    "insideAfter:true onlyInside:true looseG:false": /a/,
+  },
 }
 `;
 
 exports[`getLongestPrefix /(a)b(?<this>\\1)c/ rtl 1`] = `
 Object {
-  "insideAfter:false onlyInside:false looseG:false": /a/,
-  "insideAfter:true onlyInside:false looseG:false": /ab/,
-  "insideAfter:true onlyInside:true looseG:false": /a/,
+  "13: \\\\1": Object {
+    "insideAfter:false onlyInside:false looseG:false": /a/,
+    "insideAfter:true onlyInside:false looseG:false": /ab/,
+    "insideAfter:true onlyInside:true looseG:false": /a/,
+  },
 }
 `;
 
 exports[`getLongestPrefix /(ab?)b(?<this>\\1)c/ ltr 1`] = `
 Object {
-  "insideAfter:false onlyInside:false looseG:false": /a/,
-  "insideAfter:true onlyInside:false looseG:false": /a/,
-  "insideAfter:true onlyInside:true looseG:false": /a/,
+  "15: \\\\1": Object {
+    "insideAfter:false onlyInside:false looseG:false": /a/,
+    "insideAfter:true onlyInside:false looseG:false": /a/,
+    "insideAfter:true onlyInside:true looseG:false": /a/,
+  },
 }
 `;
 
 exports[`getLongestPrefix /(ab?)b(?<this>\\1)c/ rtl 1`] = `
 Object {
-  "insideAfter:false onlyInside:false looseG:false": /\\(\\?:\\)/,
-  "insideAfter:true onlyInside:false looseG:false": /\\(\\?:\\)/,
-  "insideAfter:true onlyInside:true looseG:false": /\\(\\?:\\)/,
+  "15: \\\\1": Object {
+    "insideAfter:false onlyInside:false looseG:false": /\\(\\?:\\)/,
+    "insideAfter:true onlyInside:false looseG:false": /\\(\\?:\\)/,
+    "insideAfter:true onlyInside:true looseG:false": /\\(\\?:\\)/,
+  },
 }
 `;
 
 exports[`getLongestPrefix /(int|integer)/ ltr 1`] = `
 Object {
-  "insideAfter:false onlyInside:false looseG:false": /int/,
-  "insideAfter:false onlyInside:false looseG:true": /int/,
-  "insideAfter:true onlyInside:false looseG:false": /int\\[\\^\\]/,
-  "insideAfter:true onlyInside:false looseG:true": /int\\[\\^\\]/,
-  "insideAfter:true onlyInside:true looseG:false": /int/,
-  "insideAfter:true onlyInside:true looseG:true": /int/,
+  "1: (int|integer)": Object {
+    "insideAfter:false onlyInside:false looseG:false": /int/,
+    "insideAfter:false onlyInside:false looseG:true": /int/,
+    "insideAfter:true onlyInside:false looseG:false": /int\\[\\^\\]/,
+    "insideAfter:true onlyInside:false looseG:true": /int\\[\\^\\]/,
+    "insideAfter:true onlyInside:true looseG:false": /int/,
+    "insideAfter:true onlyInside:true looseG:true": /int/,
+  },
+  "2: int": Object {
+    "insideAfter:false onlyInside:false looseG:false": /int/,
+    "insideAfter:true onlyInside:false looseG:false": /int\\[\\^\\]/,
+    "insideAfter:true onlyInside:true looseG:false": /int/,
+  },
+  "6: integer": Object {
+    "insideAfter:false onlyInside:false looseG:false": /integer/,
+    "insideAfter:true onlyInside:false looseG:false": /integer\\[\\^\\]/,
+    "insideAfter:true onlyInside:true looseG:false": /integer/,
+  },
 }
 `;
 
 exports[`getLongestPrefix /(int|integer)/ rtl 1`] = `
 Object {
-  "insideAfter:false onlyInside:false looseG:false": /\\[rt\\]/,
-  "insideAfter:false onlyInside:false looseG:true": /\\[rt\\]\\[en\\]\\[gi\\]/,
-  "insideAfter:true onlyInside:false looseG:false": /\\[rt\\]\\[en\\]/,
-  "insideAfter:true onlyInside:false looseG:true": /\\[rt\\]\\[en\\]\\[gi\\]\\[\\^\\]/,
-  "insideAfter:true onlyInside:true looseG:false": /\\[rt\\]\\[en\\]/,
-  "insideAfter:true onlyInside:true looseG:true": /\\[rt\\]\\[en\\]\\[gi\\]/,
+  "1: (int|integer)": Object {
+    "insideAfter:false onlyInside:false looseG:false": /\\[rt\\]/,
+    "insideAfter:false onlyInside:false looseG:true": /\\[rt\\]\\[en\\]\\[gi\\]/,
+    "insideAfter:true onlyInside:false looseG:false": /\\[rt\\]\\[en\\]/,
+    "insideAfter:true onlyInside:false looseG:true": /\\[rt\\]\\[en\\]\\[gi\\]\\[\\^\\]/,
+    "insideAfter:true onlyInside:true looseG:false": /\\[rt\\]\\[en\\]/,
+    "insideAfter:true onlyInside:true looseG:true": /\\[rt\\]\\[en\\]\\[gi\\]/,
+  },
+  "2: int": Object {
+    "insideAfter:false onlyInside:false looseG:false": /tni/,
+    "insideAfter:true onlyInside:false looseG:false": /tni\\[\\^\\]/,
+    "insideAfter:true onlyInside:true looseG:false": /tni/,
+  },
+  "6: integer": Object {
+    "insideAfter:false onlyInside:false looseG:false": /regetni/,
+    "insideAfter:true onlyInside:false looseG:false": /regetni\\[\\^\\]/,
+    "insideAfter:true onlyInside:true looseG:false": /regetni/,
+  },
 }
 `;
 
 exports[`getLongestPrefix /=(food|foot)-/ ltr 1`] = `
 Object {
-  "insideAfter:false onlyInside:false looseG:false": /=foo\\[dt\\]-/,
-  "insideAfter:false onlyInside:false looseG:true": /=foo\\[dt\\]-/,
-  "insideAfter:true onlyInside:false looseG:false": /=foo\\[dt\\]-\\[\\^\\]/,
-  "insideAfter:true onlyInside:false looseG:true": /=foo\\[dt\\]-\\[\\^\\]/,
-  "insideAfter:true onlyInside:true looseG:false": /=foo\\[dt\\]-/,
-  "insideAfter:true onlyInside:true looseG:true": /=foo\\[dt\\]-/,
+  "1: =(food|foot)-": Object {
+    "insideAfter:false onlyInside:false looseG:false": /=foo\\[dt\\]-/,
+    "insideAfter:false onlyInside:false looseG:true": /=foo\\[dt\\]-/,
+    "insideAfter:true onlyInside:false looseG:false": /=foo\\[dt\\]-\\[\\^\\]/,
+    "insideAfter:true onlyInside:false looseG:true": /=foo\\[dt\\]-\\[\\^\\]/,
+    "insideAfter:true onlyInside:true looseG:false": /=foo\\[dt\\]-/,
+    "insideAfter:true onlyInside:true looseG:true": /=foo\\[dt\\]-/,
+  },
+  "3: food": Object {
+    "insideAfter:false onlyInside:false looseG:false": /food/,
+    "insideAfter:true onlyInside:false looseG:false": /food-/,
+    "insideAfter:true onlyInside:true looseG:false": /food/,
+  },
+  "8: foot": Object {
+    "insideAfter:false onlyInside:false looseG:false": /foot/,
+    "insideAfter:true onlyInside:false looseG:false": /foot-/,
+    "insideAfter:true onlyInside:true looseG:false": /foot/,
+  },
 }
 `;
 
 exports[`getLongestPrefix /=(food|foot)-/ rtl 1`] = `
 Object {
-  "insideAfter:false onlyInside:false looseG:false": /-\\[dt\\]oof=/,
-  "insideAfter:false onlyInside:false looseG:true": /-\\[dt\\]oof=/,
-  "insideAfter:true onlyInside:false looseG:false": /-\\[dt\\]oof=\\[\\^\\]/,
-  "insideAfter:true onlyInside:false looseG:true": /-\\[dt\\]oof=\\[\\^\\]/,
-  "insideAfter:true onlyInside:true looseG:false": /-\\[dt\\]oof=/,
-  "insideAfter:true onlyInside:true looseG:true": /-\\[dt\\]oof=/,
+  "1: =(food|foot)-": Object {
+    "insideAfter:false onlyInside:false looseG:false": /-\\[dt\\]oof=/,
+    "insideAfter:false onlyInside:false looseG:true": /-\\[dt\\]oof=/,
+    "insideAfter:true onlyInside:false looseG:false": /-\\[dt\\]oof=\\[\\^\\]/,
+    "insideAfter:true onlyInside:false looseG:true": /-\\[dt\\]oof=\\[\\^\\]/,
+    "insideAfter:true onlyInside:true looseG:false": /-\\[dt\\]oof=/,
+    "insideAfter:true onlyInside:true looseG:true": /-\\[dt\\]oof=/,
+  },
+  "3: food": Object {
+    "insideAfter:false onlyInside:false looseG:false": /doof/,
+    "insideAfter:true onlyInside:false looseG:false": /doof=/,
+    "insideAfter:true onlyInside:true looseG:false": /doof/,
+  },
+  "8: foot": Object {
+    "insideAfter:false onlyInside:false looseG:false": /toof/,
+    "insideAfter:true onlyInside:false looseG:false": /toof=/,
+    "insideAfter:true onlyInside:true looseG:false": /toof/,
+  },
 }
 `;
 
 exports[`getLongestPrefix /=(script|source)/ ltr 1`] = `
 Object {
-  "insideAfter:false onlyInside:false looseG:false": /=s\\[co\\]/,
-  "insideAfter:false onlyInside:false looseG:true": /=s\\[co\\]\\[ru\\]\\[ir\\]\\[cp\\]\\[et\\]/,
-  "insideAfter:true onlyInside:false looseG:false": /=s\\[co\\]\\[ru\\]/,
-  "insideAfter:true onlyInside:false looseG:true": /=s\\[co\\]\\[ru\\]\\[ir\\]\\[cp\\]\\[et\\]\\[\\^\\]/,
-  "insideAfter:true onlyInside:true looseG:false": /=s\\[co\\]\\[ru\\]/,
-  "insideAfter:true onlyInside:true looseG:true": /=s\\[co\\]\\[ru\\]\\[ir\\]\\[cp\\]\\[et\\]/,
+  "10: source": Object {
+    "insideAfter:false onlyInside:false looseG:false": /source/,
+    "insideAfter:true onlyInside:false looseG:false": /source\\[\\^\\]/,
+    "insideAfter:true onlyInside:true looseG:false": /source/,
+  },
+  "1: =(script|source)": Object {
+    "insideAfter:false onlyInside:false looseG:false": /=s\\[co\\]/,
+    "insideAfter:false onlyInside:false looseG:true": /=s\\[co\\]\\[ru\\]\\[ir\\]\\[cp\\]\\[et\\]/,
+    "insideAfter:true onlyInside:false looseG:false": /=s\\[co\\]\\[ru\\]/,
+    "insideAfter:true onlyInside:false looseG:true": /=s\\[co\\]\\[ru\\]\\[ir\\]\\[cp\\]\\[et\\]\\[\\^\\]/,
+    "insideAfter:true onlyInside:true looseG:false": /=s\\[co\\]\\[ru\\]/,
+    "insideAfter:true onlyInside:true looseG:true": /=s\\[co\\]\\[ru\\]\\[ir\\]\\[cp\\]\\[et\\]/,
+  },
+  "3: script": Object {
+    "insideAfter:false onlyInside:false looseG:false": /script/,
+    "insideAfter:true onlyInside:false looseG:false": /script\\[\\^\\]/,
+    "insideAfter:true onlyInside:true looseG:false": /script/,
+  },
 }
 `;
 
 exports[`getLongestPrefix /=(script|source)/ rtl 1`] = `
 Object {
-  "insideAfter:false onlyInside:false looseG:false": /\\[et\\]/,
-  "insideAfter:false onlyInside:false looseG:true": /\\[et\\]\\[cp\\]\\[ir\\]\\[ru\\]\\[co\\]s=/,
-  "insideAfter:true onlyInside:false looseG:false": /\\[et\\]\\[cp\\]/,
-  "insideAfter:true onlyInside:false looseG:true": /\\[et\\]\\[cp\\]\\[ir\\]\\[ru\\]\\[co\\]s=\\[\\^\\]/,
-  "insideAfter:true onlyInside:true looseG:false": /\\[et\\]\\[cp\\]/,
-  "insideAfter:true onlyInside:true looseG:true": /\\[et\\]\\[cp\\]\\[ir\\]\\[ru\\]\\[co\\]s=/,
+  "10: source": Object {
+    "insideAfter:false onlyInside:false looseG:false": /ecruos/,
+    "insideAfter:true onlyInside:false looseG:false": /ecruos=/,
+    "insideAfter:true onlyInside:true looseG:false": /ecruos/,
+  },
+  "1: =(script|source)": Object {
+    "insideAfter:false onlyInside:false looseG:false": /\\[et\\]/,
+    "insideAfter:false onlyInside:false looseG:true": /\\[et\\]\\[cp\\]\\[ir\\]\\[ru\\]\\[co\\]s=/,
+    "insideAfter:true onlyInside:false looseG:false": /\\[et\\]\\[cp\\]/,
+    "insideAfter:true onlyInside:false looseG:true": /\\[et\\]\\[cp\\]\\[ir\\]\\[ru\\]\\[co\\]s=\\[\\^\\]/,
+    "insideAfter:true onlyInside:true looseG:false": /\\[et\\]\\[cp\\]/,
+    "insideAfter:true onlyInside:true looseG:true": /\\[et\\]\\[cp\\]\\[ir\\]\\[ru\\]\\[co\\]s=/,
+  },
+  "3: script": Object {
+    "insideAfter:false onlyInside:false looseG:false": /tpircs/,
+    "insideAfter:true onlyInside:false looseG:false": /tpircs=/,
+    "insideAfter:true onlyInside:true looseG:false": /tpircs/,
+  },
 }
 `;
 
 exports[`getLongestPrefix /^(?:(?<this>a)|ab)c/u ltr 1`] = `
 Object {
-  "insideAfter:false onlyInside:false looseG:false": /a/u,
-  "insideAfter:true onlyInside:false looseG:false": /ac/u,
-  "insideAfter:true onlyInside:true looseG:false": /a/u,
+  "13: a": Object {
+    "insideAfter:false onlyInside:false looseG:false": /a/u,
+    "insideAfter:true onlyInside:false looseG:false": /ac/u,
+    "insideAfter:true onlyInside:true looseG:false": /a/u,
+  },
 }
 `;
 
 exports[`getLongestPrefix /^(?:(?<this>a)|ab)c/u rtl 1`] = `
 Object {
-  "insideAfter:false onlyInside:false looseG:false": /a/u,
-  "insideAfter:true onlyInside:false looseG:false": /a\\[\\]/u,
-  "insideAfter:true onlyInside:true looseG:false": /a/u,
+  "13: a": Object {
+    "insideAfter:false onlyInside:false looseG:false": /a/u,
+    "insideAfter:true onlyInside:false looseG:false": /a\\[\\]/u,
+    "insideAfter:true onlyInside:true looseG:false": /a/u,
+  },
 }
 `;
 
 exports[`getLongestPrefix /^(?<this>(?:a|ab))c/u ltr 1`] = `
 Object {
-  "insideAfter:false onlyInside:false looseG:false": /a/u,
-  "insideAfter:false onlyInside:false looseG:true": /a/u,
-  "insideAfter:true onlyInside:false looseG:false": /a\\[bc\\]/u,
-  "insideAfter:true onlyInside:false looseG:true": /a\\[bc\\]/u,
-  "insideAfter:true onlyInside:true looseG:false": /a/u,
-  "insideAfter:true onlyInside:true looseG:true": /a/u,
+  "10: (?:a|ab)": Object {
+    "insideAfter:false onlyInside:false looseG:false": /a/u,
+    "insideAfter:false onlyInside:false looseG:true": /a/u,
+    "insideAfter:true onlyInside:false looseG:false": /a\\[bc\\]/u,
+    "insideAfter:true onlyInside:false looseG:true": /a\\[bc\\]/u,
+    "insideAfter:true onlyInside:true looseG:false": /a/u,
+    "insideAfter:true onlyInside:true looseG:true": /a/u,
+  },
+  "13: a": Object {
+    "insideAfter:false onlyInside:false looseG:false": /a/u,
+    "insideAfter:true onlyInside:false looseG:false": /ac/u,
+    "insideAfter:true onlyInside:true looseG:false": /a/u,
+  },
+  "15: ab": Object {
+    "insideAfter:false onlyInside:false looseG:false": /ab/u,
+    "insideAfter:true onlyInside:false looseG:false": /abc/u,
+    "insideAfter:true onlyInside:true looseG:false": /ab/u,
+  },
 }
 `;
 
 exports[`getLongestPrefix /^(?<this>(?:a|ab))c/u rtl 1`] = `
 Object {
-  "insideAfter:false onlyInside:false looseG:false": /\\[ab\\]/u,
-  "insideAfter:false onlyInside:false looseG:true": /\\[ab\\]/u,
-  "insideAfter:true onlyInside:false looseG:false": /\\[ab\\]a/u,
-  "insideAfter:true onlyInside:false looseG:true": /\\[ab\\]a/u,
-  "insideAfter:true onlyInside:true looseG:false": /\\[ab\\]/u,
-  "insideAfter:true onlyInside:true looseG:true": /\\[ab\\]/u,
+  "10: (?:a|ab)": Object {
+    "insideAfter:false onlyInside:false looseG:false": /\\[ab\\]/u,
+    "insideAfter:false onlyInside:false looseG:true": /\\[ab\\]/u,
+    "insideAfter:true onlyInside:false looseG:false": /\\[ab\\]a/u,
+    "insideAfter:true onlyInside:false looseG:true": /\\[ab\\]a/u,
+    "insideAfter:true onlyInside:true looseG:false": /\\[ab\\]/u,
+    "insideAfter:true onlyInside:true looseG:true": /\\[ab\\]/u,
+  },
+  "13: a": Object {
+    "insideAfter:false onlyInside:false looseG:false": /a/u,
+    "insideAfter:true onlyInside:false looseG:false": /a\\[\\]/u,
+    "insideAfter:true onlyInside:true looseG:false": /a/u,
+  },
+  "15: ab": Object {
+    "insideAfter:false onlyInside:false looseG:false": /ba/u,
+    "insideAfter:true onlyInside:false looseG:false": /ba\\[\\]/u,
+    "insideAfter:true onlyInside:true looseG:false": /ba/u,
+  },
 }
 `;
 
 exports[`getLongestPrefix /^(?<this>A(?!a)(?!B))\\w/m ltr 1`] = `
 Object {
-  "insideAfter:false onlyInside:false looseG:false": /A/m,
-  "insideAfter:true onlyInside:false looseG:false": /A\\[\\\\dAC-Z_b-z\\]/m,
-  "insideAfter:true onlyInside:true looseG:false": /A/m,
+  "10: A(?!a)(?!B)": Object {
+    "insideAfter:false onlyInside:false looseG:false": /A/m,
+    "insideAfter:true onlyInside:false looseG:false": /A\\[\\\\dAC-Z_b-z\\]/m,
+    "insideAfter:true onlyInside:true looseG:false": /A/m,
+  },
 }
 `;
 
 exports[`getLongestPrefix /^(?<this>A(?!a)(?!B))\\w/m rtl 1`] = `
 Object {
-  "insideAfter:false onlyInside:false looseG:false": /A/m,
-  "insideAfter:true onlyInside:false looseG:false": /A\\[\\\\n\\\\r\\\\u2028\\\\u2029\\]/m,
-  "insideAfter:true onlyInside:true looseG:false": /A/m,
+  "10: A(?!a)(?!B)": Object {
+    "insideAfter:false onlyInside:false looseG:false": /A/m,
+    "insideAfter:true onlyInside:false looseG:false": /A\\[\\\\n\\\\r\\\\u2028\\\\u2029\\]/m,
+    "insideAfter:true onlyInside:true looseG:false": /A/m,
+  },
 }
 `;
 
 exports[`getLongestPrefix /^foo/ ltr 1`] = `
 Object {
-  "insideAfter:false onlyInside:false looseG:false": /foo/,
-  "insideAfter:true onlyInside:false looseG:false": /foo\\[\\^\\]/,
-  "insideAfter:true onlyInside:true looseG:false": /foo/,
+  "1: ^foo": Object {
+    "insideAfter:false onlyInside:false looseG:false": /foo/,
+    "insideAfter:true onlyInside:false looseG:false": /foo\\[\\^\\]/,
+    "insideAfter:true onlyInside:true looseG:false": /foo/,
+  },
 }
 `;
 
 exports[`getLongestPrefix /^foo/ rtl 1`] = `
 Object {
-  "insideAfter:false onlyInside:false looseG:false": /oof/,
-  "insideAfter:true onlyInside:false looseG:false": /oof\\[\\]/,
-  "insideAfter:true onlyInside:true looseG:false": /oof/,
+  "1: ^foo": Object {
+    "insideAfter:false onlyInside:false looseG:false": /oof/,
+    "insideAfter:true onlyInside:false looseG:false": /oof\\[\\]/,
+    "insideAfter:true onlyInside:true looseG:false": /oof/,
+  },
 }
 `;
 
 exports[`getLongestPrefix /-(bets|bits)-/ ltr 1`] = `
 Object {
-  "insideAfter:false onlyInside:false looseG:false": /-b\\[ei\\]ts-/,
-  "insideAfter:false onlyInside:false looseG:true": /-b\\[ei\\]ts-/,
-  "insideAfter:true onlyInside:false looseG:false": /-b\\[ei\\]ts-\\[\\^\\]/,
-  "insideAfter:true onlyInside:false looseG:true": /-b\\[ei\\]ts-\\[\\^\\]/,
-  "insideAfter:true onlyInside:true looseG:false": /-b\\[ei\\]ts-/,
-  "insideAfter:true onlyInside:true looseG:true": /-b\\[ei\\]ts-/,
+  "1: -(bets|bits)-": Object {
+    "insideAfter:false onlyInside:false looseG:false": /-b\\[ei\\]ts-/,
+    "insideAfter:false onlyInside:false looseG:true": /-b\\[ei\\]ts-/,
+    "insideAfter:true onlyInside:false looseG:false": /-b\\[ei\\]ts-\\[\\^\\]/,
+    "insideAfter:true onlyInside:false looseG:true": /-b\\[ei\\]ts-\\[\\^\\]/,
+    "insideAfter:true onlyInside:true looseG:false": /-b\\[ei\\]ts-/,
+    "insideAfter:true onlyInside:true looseG:true": /-b\\[ei\\]ts-/,
+  },
+  "3: bets": Object {
+    "insideAfter:false onlyInside:false looseG:false": /bets/,
+    "insideAfter:true onlyInside:false looseG:false": /bets-/,
+    "insideAfter:true onlyInside:true looseG:false": /bets/,
+  },
+  "8: bits": Object {
+    "insideAfter:false onlyInside:false looseG:false": /bits/,
+    "insideAfter:true onlyInside:false looseG:false": /bits-/,
+    "insideAfter:true onlyInside:true looseG:false": /bits/,
+  },
 }
 `;
 
 exports[`getLongestPrefix /-(bets|bits)-/ rtl 1`] = `
 Object {
-  "insideAfter:false onlyInside:false looseG:false": /-st\\[ei\\]b-/,
-  "insideAfter:false onlyInside:false looseG:true": /-st\\[ei\\]b-/,
-  "insideAfter:true onlyInside:false looseG:false": /-st\\[ei\\]b-\\[\\^\\]/,
-  "insideAfter:true onlyInside:false looseG:true": /-st\\[ei\\]b-\\[\\^\\]/,
-  "insideAfter:true onlyInside:true looseG:false": /-st\\[ei\\]b-/,
-  "insideAfter:true onlyInside:true looseG:true": /-st\\[ei\\]b-/,
+  "1: -(bets|bits)-": Object {
+    "insideAfter:false onlyInside:false looseG:false": /-st\\[ei\\]b-/,
+    "insideAfter:false onlyInside:false looseG:true": /-st\\[ei\\]b-/,
+    "insideAfter:true onlyInside:false looseG:false": /-st\\[ei\\]b-\\[\\^\\]/,
+    "insideAfter:true onlyInside:false looseG:true": /-st\\[ei\\]b-\\[\\^\\]/,
+    "insideAfter:true onlyInside:true looseG:false": /-st\\[ei\\]b-/,
+    "insideAfter:true onlyInside:true looseG:true": /-st\\[ei\\]b-/,
+  },
+  "3: bets": Object {
+    "insideAfter:false onlyInside:false looseG:false": /steb/,
+    "insideAfter:true onlyInside:false looseG:false": /steb-/,
+    "insideAfter:true onlyInside:true looseG:false": /steb/,
+  },
+  "8: bits": Object {
+    "insideAfter:false onlyInside:false looseG:false": /stib/,
+    "insideAfter:true onlyInside:false looseG:false": /stib-/,
+    "insideAfter:true onlyInside:true looseG:false": /stib/,
+  },
 }
 `;
 
 exports[`getLongestPrefix /-(bets|bits|byte)-/ ltr 1`] = `
 Object {
-  "insideAfter:false onlyInside:false looseG:false": /-b\\[eiy\\]t/,
-  "insideAfter:false onlyInside:false looseG:true": /-b\\[eiy\\]t\\[es\\]-/,
-  "insideAfter:true onlyInside:false looseG:false": /-b\\[eiy\\]t\\[es\\]/,
-  "insideAfter:true onlyInside:false looseG:true": /-b\\[eiy\\]t\\[es\\]-\\[\\^\\]/,
-  "insideAfter:true onlyInside:true looseG:false": /-b\\[eiy\\]t\\[es\\]/,
-  "insideAfter:true onlyInside:true looseG:true": /-b\\[eiy\\]t\\[es\\]-/,
+  "13: byte": Object {
+    "insideAfter:false onlyInside:false looseG:false": /byte/,
+    "insideAfter:true onlyInside:false looseG:false": /byte-/,
+    "insideAfter:true onlyInside:true looseG:false": /byte/,
+  },
+  "1: -(bets|bits|byte)-": Object {
+    "insideAfter:false onlyInside:false looseG:false": /-b\\[eiy\\]t/,
+    "insideAfter:false onlyInside:false looseG:true": /-b\\[eiy\\]t\\[es\\]-/,
+    "insideAfter:true onlyInside:false looseG:false": /-b\\[eiy\\]t\\[es\\]/,
+    "insideAfter:true onlyInside:false looseG:true": /-b\\[eiy\\]t\\[es\\]-\\[\\^\\]/,
+    "insideAfter:true onlyInside:true looseG:false": /-b\\[eiy\\]t\\[es\\]/,
+    "insideAfter:true onlyInside:true looseG:true": /-b\\[eiy\\]t\\[es\\]-/,
+  },
+  "3: bets": Object {
+    "insideAfter:false onlyInside:false looseG:false": /bets/,
+    "insideAfter:true onlyInside:false looseG:false": /bets-/,
+    "insideAfter:true onlyInside:true looseG:false": /bets/,
+  },
+  "8: bits": Object {
+    "insideAfter:false onlyInside:false looseG:false": /bits/,
+    "insideAfter:true onlyInside:false looseG:false": /bits-/,
+    "insideAfter:true onlyInside:true looseG:false": /bits/,
+  },
 }
 `;
 
 exports[`getLongestPrefix /-(bets|bits|byte)-/ rtl 1`] = `
 Object {
-  "insideAfter:false onlyInside:false looseG:false": /-\\[es\\]t/,
-  "insideAfter:false onlyInside:false looseG:true": /-\\[es\\]t\\[eiy\\]b-/,
-  "insideAfter:true onlyInside:false looseG:false": /-\\[es\\]t\\[eiy\\]/,
-  "insideAfter:true onlyInside:false looseG:true": /-\\[es\\]t\\[eiy\\]b-\\[\\^\\]/,
-  "insideAfter:true onlyInside:true looseG:false": /-\\[es\\]t\\[eiy\\]/,
-  "insideAfter:true onlyInside:true looseG:true": /-\\[es\\]t\\[eiy\\]b-/,
+  "13: byte": Object {
+    "insideAfter:false onlyInside:false looseG:false": /etyb/,
+    "insideAfter:true onlyInside:false looseG:false": /etyb-/,
+    "insideAfter:true onlyInside:true looseG:false": /etyb/,
+  },
+  "1: -(bets|bits|byte)-": Object {
+    "insideAfter:false onlyInside:false looseG:false": /-\\[es\\]t/,
+    "insideAfter:false onlyInside:false looseG:true": /-\\[es\\]t\\[eiy\\]b-/,
+    "insideAfter:true onlyInside:false looseG:false": /-\\[es\\]t\\[eiy\\]/,
+    "insideAfter:true onlyInside:false looseG:true": /-\\[es\\]t\\[eiy\\]b-\\[\\^\\]/,
+    "insideAfter:true onlyInside:true looseG:false": /-\\[es\\]t\\[eiy\\]/,
+    "insideAfter:true onlyInside:true looseG:true": /-\\[es\\]t\\[eiy\\]b-/,
+  },
+  "3: bets": Object {
+    "insideAfter:false onlyInside:false looseG:false": /steb/,
+    "insideAfter:true onlyInside:false looseG:false": /steb-/,
+    "insideAfter:true onlyInside:true looseG:false": /steb/,
+  },
+  "8: bits": Object {
+    "insideAfter:false onlyInside:false looseG:false": /stib/,
+    "insideAfter:true onlyInside:false looseG:false": /stib-/,
+    "insideAfter:true onlyInside:true looseG:false": /stib/,
+  },
 }
 `;
 
 exports[`getLongestPrefix /a(?!c)b/ ltr 1`] = `
 Object {
-  "insideAfter:false onlyInside:false looseG:false": /ab/,
-  "insideAfter:true onlyInside:false looseG:false": /ab\\[\\^\\]/,
-  "insideAfter:true onlyInside:true looseG:false": /ab/,
+  "1: a(?!c)b": Object {
+    "insideAfter:false onlyInside:false looseG:false": /ab/,
+    "insideAfter:true onlyInside:false looseG:false": /ab\\[\\^\\]/,
+    "insideAfter:true onlyInside:true looseG:false": /ab/,
+  },
 }
 `;
 
 exports[`getLongestPrefix /a(?!c)b/ rtl 1`] = `
 Object {
-  "insideAfter:false onlyInside:false looseG:false": /ba/,
-  "insideAfter:true onlyInside:false looseG:false": /ba\\[\\^\\]/,
-  "insideAfter:true onlyInside:true looseG:false": /ba/,
+  "1: a(?!c)b": Object {
+    "insideAfter:false onlyInside:false looseG:false": /ba/,
+    "insideAfter:true onlyInside:false looseG:false": /ba\\[\\^\\]/,
+    "insideAfter:true onlyInside:true looseG:false": /ba/,
+  },
 }
 `;
 
 exports[`getLongestPrefix /a(?<this>bc)d/ ltr 1`] = `
 Object {
-  "insideAfter:false onlyInside:false looseG:false": /bc/,
-  "insideAfter:true onlyInside:false looseG:false": /bcd/,
-  "insideAfter:true onlyInside:true looseG:false": /bc/,
+  "10: bc": Object {
+    "insideAfter:false onlyInside:false looseG:false": /bc/,
+    "insideAfter:true onlyInside:false looseG:false": /bcd/,
+    "insideAfter:true onlyInside:true looseG:false": /bc/,
+  },
 }
 `;
 
 exports[`getLongestPrefix /a(?<this>bc)d/ rtl 1`] = `
 Object {
-  "insideAfter:false onlyInside:false looseG:false": /cb/,
-  "insideAfter:true onlyInside:false looseG:false": /cba/,
-  "insideAfter:true onlyInside:true looseG:false": /cb/,
+  "10: bc": Object {
+    "insideAfter:false onlyInside:false looseG:false": /cb/,
+    "insideAfter:true onlyInside:false looseG:false": /cba/,
+    "insideAfter:true onlyInside:true looseG:false": /cb/,
+  },
 }
 `;
 
 exports[`getLongestPrefix /a(b|c|d)z/ ltr 1`] = `
 Object {
-  "insideAfter:false onlyInside:false looseG:false": /a\\[bcd\\]z/,
-  "insideAfter:false onlyInside:false looseG:true": /a\\[bcd\\]z/,
-  "insideAfter:true onlyInside:false looseG:false": /a\\[bcd\\]z\\[\\^\\]/,
-  "insideAfter:true onlyInside:false looseG:true": /a\\[bcd\\]z\\[\\^\\]/,
-  "insideAfter:true onlyInside:true looseG:false": /a\\[bcd\\]z/,
-  "insideAfter:true onlyInside:true looseG:true": /a\\[bcd\\]z/,
+  "1: a(b|c|d)z": Object {
+    "insideAfter:false onlyInside:false looseG:false": /a\\[bcd\\]z/,
+    "insideAfter:false onlyInside:false looseG:true": /a\\[bcd\\]z/,
+    "insideAfter:true onlyInside:false looseG:false": /a\\[bcd\\]z\\[\\^\\]/,
+    "insideAfter:true onlyInside:false looseG:true": /a\\[bcd\\]z\\[\\^\\]/,
+    "insideAfter:true onlyInside:true looseG:false": /a\\[bcd\\]z/,
+    "insideAfter:true onlyInside:true looseG:true": /a\\[bcd\\]z/,
+  },
+  "3: b": Object {
+    "insideAfter:false onlyInside:false looseG:false": /b/,
+    "insideAfter:true onlyInside:false looseG:false": /bz/,
+    "insideAfter:true onlyInside:true looseG:false": /b/,
+  },
+  "5: c": Object {
+    "insideAfter:false onlyInside:false looseG:false": /c/,
+    "insideAfter:true onlyInside:false looseG:false": /cz/,
+    "insideAfter:true onlyInside:true looseG:false": /c/,
+  },
+  "7: d": Object {
+    "insideAfter:false onlyInside:false looseG:false": /d/,
+    "insideAfter:true onlyInside:false looseG:false": /dz/,
+    "insideAfter:true onlyInside:true looseG:false": /d/,
+  },
 }
 `;
 
 exports[`getLongestPrefix /a(b|c|d)z/ rtl 1`] = `
 Object {
-  "insideAfter:false onlyInside:false looseG:false": /z\\[bcd\\]a/,
-  "insideAfter:false onlyInside:false looseG:true": /z\\[bcd\\]a/,
-  "insideAfter:true onlyInside:false looseG:false": /z\\[bcd\\]a\\[\\^\\]/,
-  "insideAfter:true onlyInside:false looseG:true": /z\\[bcd\\]a\\[\\^\\]/,
-  "insideAfter:true onlyInside:true looseG:false": /z\\[bcd\\]a/,
-  "insideAfter:true onlyInside:true looseG:true": /z\\[bcd\\]a/,
+  "1: a(b|c|d)z": Object {
+    "insideAfter:false onlyInside:false looseG:false": /z\\[bcd\\]a/,
+    "insideAfter:false onlyInside:false looseG:true": /z\\[bcd\\]a/,
+    "insideAfter:true onlyInside:false looseG:false": /z\\[bcd\\]a\\[\\^\\]/,
+    "insideAfter:true onlyInside:false looseG:true": /z\\[bcd\\]a\\[\\^\\]/,
+    "insideAfter:true onlyInside:true looseG:false": /z\\[bcd\\]a/,
+    "insideAfter:true onlyInside:true looseG:true": /z\\[bcd\\]a/,
+  },
+  "3: b": Object {
+    "insideAfter:false onlyInside:false looseG:false": /b/,
+    "insideAfter:true onlyInside:false looseG:false": /ba/,
+    "insideAfter:true onlyInside:true looseG:false": /b/,
+  },
+  "5: c": Object {
+    "insideAfter:false onlyInside:false looseG:false": /c/,
+    "insideAfter:true onlyInside:false looseG:false": /ca/,
+    "insideAfter:true onlyInside:true looseG:false": /c/,
+  },
+  "7: d": Object {
+    "insideAfter:false onlyInside:false looseG:false": /d/,
+    "insideAfter:true onlyInside:false looseG:false": /da/,
+    "insideAfter:true onlyInside:true looseG:false": /d/,
+  },
 }
 `;
 
 exports[`getLongestPrefix /a(b|c|de)z/ ltr 1`] = `
 Object {
-  "insideAfter:false onlyInside:false looseG:false": /a\\[bcd\\]/,
-  "insideAfter:false onlyInside:false looseG:true": /a\\[bcd\\]/,
-  "insideAfter:true onlyInside:false looseG:false": /a\\[bcd\\]\\[ez\\]/,
-  "insideAfter:true onlyInside:false looseG:true": /a\\[bcd\\]\\[ez\\]/,
-  "insideAfter:true onlyInside:true looseG:false": /a\\[bcd\\]\\[ez\\]/,
-  "insideAfter:true onlyInside:true looseG:true": /a\\[bcd\\]\\[ez\\]/,
+  "1: a(b|c|de)z": Object {
+    "insideAfter:false onlyInside:false looseG:false": /a\\[bcd\\]/,
+    "insideAfter:false onlyInside:false looseG:true": /a\\[bcd\\]/,
+    "insideAfter:true onlyInside:false looseG:false": /a\\[bcd\\]\\[ez\\]/,
+    "insideAfter:true onlyInside:false looseG:true": /a\\[bcd\\]\\[ez\\]/,
+    "insideAfter:true onlyInside:true looseG:false": /a\\[bcd\\]\\[ez\\]/,
+    "insideAfter:true onlyInside:true looseG:true": /a\\[bcd\\]\\[ez\\]/,
+  },
+  "3: b": Object {
+    "insideAfter:false onlyInside:false looseG:false": /b/,
+    "insideAfter:true onlyInside:false looseG:false": /bz/,
+    "insideAfter:true onlyInside:true looseG:false": /b/,
+  },
+  "5: c": Object {
+    "insideAfter:false onlyInside:false looseG:false": /c/,
+    "insideAfter:true onlyInside:false looseG:false": /cz/,
+    "insideAfter:true onlyInside:true looseG:false": /c/,
+  },
+  "7: de": Object {
+    "insideAfter:false onlyInside:false looseG:false": /de/,
+    "insideAfter:true onlyInside:false looseG:false": /dez/,
+    "insideAfter:true onlyInside:true looseG:false": /de/,
+  },
 }
 `;
 
 exports[`getLongestPrefix /a(b|c|de)z/ rtl 1`] = `
 Object {
-  "insideAfter:false onlyInside:false looseG:false": /z\\[bce\\]/,
-  "insideAfter:false onlyInside:false looseG:true": /z\\[bce\\]/,
-  "insideAfter:true onlyInside:false looseG:false": /z\\[bce\\]\\[ad\\]/,
-  "insideAfter:true onlyInside:false looseG:true": /z\\[bce\\]\\[ad\\]/,
-  "insideAfter:true onlyInside:true looseG:false": /z\\[bce\\]\\[ad\\]/,
-  "insideAfter:true onlyInside:true looseG:true": /z\\[bce\\]\\[ad\\]/,
+  "1: a(b|c|de)z": Object {
+    "insideAfter:false onlyInside:false looseG:false": /z\\[bce\\]/,
+    "insideAfter:false onlyInside:false looseG:true": /z\\[bce\\]/,
+    "insideAfter:true onlyInside:false looseG:false": /z\\[bce\\]\\[ad\\]/,
+    "insideAfter:true onlyInside:false looseG:true": /z\\[bce\\]\\[ad\\]/,
+    "insideAfter:true onlyInside:true looseG:false": /z\\[bce\\]\\[ad\\]/,
+    "insideAfter:true onlyInside:true looseG:true": /z\\[bce\\]\\[ad\\]/,
+  },
+  "3: b": Object {
+    "insideAfter:false onlyInside:false looseG:false": /b/,
+    "insideAfter:true onlyInside:false looseG:false": /ba/,
+    "insideAfter:true onlyInside:true looseG:false": /b/,
+  },
+  "5: c": Object {
+    "insideAfter:false onlyInside:false looseG:false": /c/,
+    "insideAfter:true onlyInside:false looseG:false": /ca/,
+    "insideAfter:true onlyInside:true looseG:false": /c/,
+  },
+  "7: de": Object {
+    "insideAfter:false onlyInside:false looseG:false": /ed/,
+    "insideAfter:true onlyInside:false looseG:false": /eda/,
+    "insideAfter:true onlyInside:true looseG:false": /ed/,
+  },
 }
 `;
 
 exports[`getLongestPrefix /a(foo|bar)z/ ltr 1`] = `
 Object {
-  "insideAfter:false onlyInside:false looseG:false": /a\\[bf\\]/,
-  "insideAfter:false onlyInside:false looseG:true": /a\\[bf\\]\\[ao\\]\\[or\\]z/,
-  "insideAfter:true onlyInside:false looseG:false": /a\\[bf\\]\\[ao\\]/,
-  "insideAfter:true onlyInside:false looseG:true": /a\\[bf\\]\\[ao\\]\\[or\\]z\\[\\^\\]/,
-  "insideAfter:true onlyInside:true looseG:false": /a\\[bf\\]\\[ao\\]/,
-  "insideAfter:true onlyInside:true looseG:true": /a\\[bf\\]\\[ao\\]\\[or\\]z/,
+  "1: a(foo|bar)z": Object {
+    "insideAfter:false onlyInside:false looseG:false": /a\\[bf\\]/,
+    "insideAfter:false onlyInside:false looseG:true": /a\\[bf\\]\\[ao\\]\\[or\\]z/,
+    "insideAfter:true onlyInside:false looseG:false": /a\\[bf\\]\\[ao\\]/,
+    "insideAfter:true onlyInside:false looseG:true": /a\\[bf\\]\\[ao\\]\\[or\\]z\\[\\^\\]/,
+    "insideAfter:true onlyInside:true looseG:false": /a\\[bf\\]\\[ao\\]/,
+    "insideAfter:true onlyInside:true looseG:true": /a\\[bf\\]\\[ao\\]\\[or\\]z/,
+  },
+  "3: foo": Object {
+    "insideAfter:false onlyInside:false looseG:false": /foo/,
+    "insideAfter:true onlyInside:false looseG:false": /fooz/,
+    "insideAfter:true onlyInside:true looseG:false": /foo/,
+  },
+  "7: bar": Object {
+    "insideAfter:false onlyInside:false looseG:false": /bar/,
+    "insideAfter:true onlyInside:false looseG:false": /barz/,
+    "insideAfter:true onlyInside:true looseG:false": /bar/,
+  },
 }
 `;
 
 exports[`getLongestPrefix /a(foo|bar)z/ rtl 1`] = `
 Object {
-  "insideAfter:false onlyInside:false looseG:false": /z\\[or\\]/,
-  "insideAfter:false onlyInside:false looseG:true": /z\\[or\\]\\[ao\\]\\[bf\\]a/,
-  "insideAfter:true onlyInside:false looseG:false": /z\\[or\\]\\[ao\\]/,
-  "insideAfter:true onlyInside:false looseG:true": /z\\[or\\]\\[ao\\]\\[bf\\]a\\[\\^\\]/,
-  "insideAfter:true onlyInside:true looseG:false": /z\\[or\\]\\[ao\\]/,
-  "insideAfter:true onlyInside:true looseG:true": /z\\[or\\]\\[ao\\]\\[bf\\]a/,
+  "1: a(foo|bar)z": Object {
+    "insideAfter:false onlyInside:false looseG:false": /z\\[or\\]/,
+    "insideAfter:false onlyInside:false looseG:true": /z\\[or\\]\\[ao\\]\\[bf\\]a/,
+    "insideAfter:true onlyInside:false looseG:false": /z\\[or\\]\\[ao\\]/,
+    "insideAfter:true onlyInside:false looseG:true": /z\\[or\\]\\[ao\\]\\[bf\\]a\\[\\^\\]/,
+    "insideAfter:true onlyInside:true looseG:false": /z\\[or\\]\\[ao\\]/,
+    "insideAfter:true onlyInside:true looseG:true": /z\\[or\\]\\[ao\\]\\[bf\\]a/,
+  },
+  "3: foo": Object {
+    "insideAfter:false onlyInside:false looseG:false": /oof/,
+    "insideAfter:true onlyInside:false looseG:false": /oofa/,
+    "insideAfter:true onlyInside:true looseG:false": /oof/,
+  },
+  "7: bar": Object {
+    "insideAfter:false onlyInside:false looseG:false": /rab/,
+    "insideAfter:true onlyInside:false looseG:false": /raba/,
+    "insideAfter:true onlyInside:true looseG:false": /rab/,
+  },
 }
 `;
 
 exports[`getLongestPrefix /a*/ ltr 1`] = `
 Object {
-  "insideAfter:false onlyInside:false looseG:false": /\\(\\?:\\)/,
-  "insideAfter:true onlyInside:false looseG:false": /\\[\\^\\]/,
-  "insideAfter:true onlyInside:true looseG:false": /\\(\\?:\\)/,
+  "1: a*": Object {
+    "insideAfter:false onlyInside:false looseG:false": /\\(\\?:\\)/,
+    "insideAfter:true onlyInside:false looseG:false": /\\[\\^\\]/,
+    "insideAfter:true onlyInside:true looseG:false": /\\(\\?:\\)/,
+  },
 }
 `;
 
 exports[`getLongestPrefix /a*/ rtl 1`] = `
 Object {
-  "insideAfter:false onlyInside:false looseG:false": /\\(\\?:\\)/,
-  "insideAfter:true onlyInside:false looseG:false": /\\[\\^\\]/,
-  "insideAfter:true onlyInside:true looseG:false": /\\(\\?:\\)/,
+  "1: a*": Object {
+    "insideAfter:false onlyInside:false looseG:false": /\\(\\?:\\)/,
+    "insideAfter:true onlyInside:false looseG:false": /\\[\\^\\]/,
+    "insideAfter:true onlyInside:true looseG:false": /\\(\\?:\\)/,
+  },
 }
 `;
 
 exports[`getLongestPrefix /a*b/ ltr 1`] = `
 Object {
-  "insideAfter:false onlyInside:false looseG:false": /\\(\\?:\\)/,
-  "insideAfter:true onlyInside:false looseG:false": /\\[ab\\]/,
-  "insideAfter:true onlyInside:true looseG:false": /\\[ab\\]/,
+  "1: a*b": Object {
+    "insideAfter:false onlyInside:false looseG:false": /\\(\\?:\\)/,
+    "insideAfter:true onlyInside:false looseG:false": /\\[ab\\]/,
+    "insideAfter:true onlyInside:true looseG:false": /\\[ab\\]/,
+  },
 }
 `;
 
 exports[`getLongestPrefix /a*b/ rtl 1`] = `
 Object {
-  "insideAfter:false onlyInside:false looseG:false": /b/,
-  "insideAfter:true onlyInside:false looseG:false": /b\\[\\^\\]/,
-  "insideAfter:true onlyInside:true looseG:false": /b/,
+  "1: a*b": Object {
+    "insideAfter:false onlyInside:false looseG:false": /b/,
+    "insideAfter:true onlyInside:false looseG:false": /b\\[\\^\\]/,
+    "insideAfter:true onlyInside:true looseG:false": /b/,
+  },
 }
 `;
 
 exports[`getLongestPrefix /a+/ ltr 1`] = `
 Object {
-  "insideAfter:false onlyInside:false looseG:false": /a/,
-  "insideAfter:true onlyInside:false looseG:false": /a\\[\\^\\]/,
-  "insideAfter:true onlyInside:true looseG:false": /a/,
+  "1: a+": Object {
+    "insideAfter:false onlyInside:false looseG:false": /a/,
+    "insideAfter:true onlyInside:false looseG:false": /a\\[\\^\\]/,
+    "insideAfter:true onlyInside:true looseG:false": /a/,
+  },
 }
 `;
 
 exports[`getLongestPrefix /a+/ rtl 1`] = `
 Object {
-  "insideAfter:false onlyInside:false looseG:false": /a/,
-  "insideAfter:true onlyInside:false looseG:false": /a\\[\\^\\]/,
-  "insideAfter:true onlyInside:true looseG:false": /a/,
+  "1: a+": Object {
+    "insideAfter:false onlyInside:false looseG:false": /a/,
+    "insideAfter:true onlyInside:false looseG:false": /a\\[\\^\\]/,
+    "insideAfter:true onlyInside:true looseG:false": /a/,
+  },
 }
 `;
 
 exports[`getLongestPrefix /a+b/ ltr 1`] = `
 Object {
-  "insideAfter:false onlyInside:false looseG:false": /a/,
-  "insideAfter:true onlyInside:false looseG:false": /a\\[ab\\]/,
-  "insideAfter:true onlyInside:true looseG:false": /a\\[ab\\]/,
+  "1: a+b": Object {
+    "insideAfter:false onlyInside:false looseG:false": /a/,
+    "insideAfter:true onlyInside:false looseG:false": /a\\[ab\\]/,
+    "insideAfter:true onlyInside:true looseG:false": /a\\[ab\\]/,
+  },
 }
 `;
 
 exports[`getLongestPrefix /a+b/ rtl 1`] = `
 Object {
-  "insideAfter:false onlyInside:false looseG:false": /ba/,
-  "insideAfter:true onlyInside:false looseG:false": /ba\\[\\^\\]/,
-  "insideAfter:true onlyInside:true looseG:false": /ba/,
+  "1: a+b": Object {
+    "insideAfter:false onlyInside:false looseG:false": /ba/,
+    "insideAfter:true onlyInside:false looseG:false": /ba\\[\\^\\]/,
+    "insideAfter:true onlyInside:true looseG:false": /ba/,
+  },
 }
 `;
 
 exports[`getLongestPrefix /a?/ ltr 1`] = `
 Object {
-  "insideAfter:false onlyInside:false looseG:false": /\\(\\?:\\)/,
-  "insideAfter:true onlyInside:false looseG:false": /\\[\\^\\]/,
-  "insideAfter:true onlyInside:true looseG:false": /\\(\\?:\\)/,
+  "1: a?": Object {
+    "insideAfter:false onlyInside:false looseG:false": /\\(\\?:\\)/,
+    "insideAfter:true onlyInside:false looseG:false": /\\[\\^\\]/,
+    "insideAfter:true onlyInside:true looseG:false": /\\(\\?:\\)/,
+  },
 }
 `;
 
 exports[`getLongestPrefix /a?/ rtl 1`] = `
 Object {
-  "insideAfter:false onlyInside:false looseG:false": /\\(\\?:\\)/,
-  "insideAfter:true onlyInside:false looseG:false": /\\[\\^\\]/,
-  "insideAfter:true onlyInside:true looseG:false": /\\(\\?:\\)/,
+  "1: a?": Object {
+    "insideAfter:false onlyInside:false looseG:false": /\\(\\?:\\)/,
+    "insideAfter:true onlyInside:false looseG:false": /\\[\\^\\]/,
+    "insideAfter:true onlyInside:true looseG:false": /\\(\\?:\\)/,
+  },
 }
 `;
 
 exports[`getLongestPrefix /a?b/ ltr 1`] = `
 Object {
-  "insideAfter:false onlyInside:false looseG:false": /\\(\\?:\\)/,
-  "insideAfter:true onlyInside:false looseG:false": /\\[ab\\]/,
-  "insideAfter:true onlyInside:true looseG:false": /\\[ab\\]/,
+  "1: a?b": Object {
+    "insideAfter:false onlyInside:false looseG:false": /\\(\\?:\\)/,
+    "insideAfter:true onlyInside:false looseG:false": /\\[ab\\]/,
+    "insideAfter:true onlyInside:true looseG:false": /\\[ab\\]/,
+  },
 }
 `;
 
 exports[`getLongestPrefix /a?b/ rtl 1`] = `
 Object {
-  "insideAfter:false onlyInside:false looseG:false": /b/,
-  "insideAfter:true onlyInside:false looseG:false": /b\\[\\^\\]/,
-  "insideAfter:true onlyInside:true looseG:false": /b/,
+  "1: a?b": Object {
+    "insideAfter:false onlyInside:false looseG:false": /b/,
+    "insideAfter:true onlyInside:false looseG:false": /b\\[\\^\\]/,
+    "insideAfter:true onlyInside:true looseG:false": /b/,
+  },
 }
 `;
 
 exports[`getLongestPrefix /a{0}b/ ltr 1`] = `
 Object {
-  "insideAfter:false onlyInside:false looseG:false": /b/,
-  "insideAfter:true onlyInside:false looseG:false": /b\\[\\^\\]/,
-  "insideAfter:true onlyInside:true looseG:false": /b/,
+  "1: a{0}b": Object {
+    "insideAfter:false onlyInside:false looseG:false": /b/,
+    "insideAfter:true onlyInside:false looseG:false": /b\\[\\^\\]/,
+    "insideAfter:true onlyInside:true looseG:false": /b/,
+  },
 }
 `;
 
 exports[`getLongestPrefix /a{0}b/ rtl 1`] = `
 Object {
-  "insideAfter:false onlyInside:false looseG:false": /b/,
-  "insideAfter:true onlyInside:false looseG:false": /b\\[\\^\\]/,
-  "insideAfter:true onlyInside:true looseG:false": /b/,
+  "1: a{0}b": Object {
+    "insideAfter:false onlyInside:false looseG:false": /b/,
+    "insideAfter:true onlyInside:false looseG:false": /b\\[\\^\\]/,
+    "insideAfter:true onlyInside:true looseG:false": /b/,
+  },
 }
 `;
 
 exports[`getLongestPrefix /a{4,4}/ ltr 1`] = `
 Object {
-  "insideAfter:false onlyInside:false looseG:false": /aaaa/,
-  "insideAfter:true onlyInside:false looseG:false": /aaaa\\[\\^\\]/,
-  "insideAfter:true onlyInside:true looseG:false": /aaaa/,
+  "1: a{4,4}": Object {
+    "insideAfter:false onlyInside:false looseG:false": /aaaa/,
+    "insideAfter:true onlyInside:false looseG:false": /aaaa\\[\\^\\]/,
+    "insideAfter:true onlyInside:true looseG:false": /aaaa/,
+  },
 }
 `;
 
 exports[`getLongestPrefix /a{4,4}/ rtl 1`] = `
 Object {
-  "insideAfter:false onlyInside:false looseG:false": /aaaa/,
-  "insideAfter:true onlyInside:false looseG:false": /aaaa\\[\\^\\]/,
-  "insideAfter:true onlyInside:true looseG:false": /aaaa/,
+  "1: a{4,4}": Object {
+    "insideAfter:false onlyInside:false looseG:false": /aaaa/,
+    "insideAfter:true onlyInside:false looseG:false": /aaaa\\[\\^\\]/,
+    "insideAfter:true onlyInside:true looseG:false": /aaaa/,
+  },
 }
 `;
 
 exports[`getLongestPrefix /a{4,4}b/ ltr 1`] = `
 Object {
-  "insideAfter:false onlyInside:false looseG:false": /aaaab/,
-  "insideAfter:true onlyInside:false looseG:false": /aaaab\\[\\^\\]/,
-  "insideAfter:true onlyInside:true looseG:false": /aaaab/,
+  "1: a{4,4}b": Object {
+    "insideAfter:false onlyInside:false looseG:false": /aaaab/,
+    "insideAfter:true onlyInside:false looseG:false": /aaaab\\[\\^\\]/,
+    "insideAfter:true onlyInside:true looseG:false": /aaaab/,
+  },
 }
 `;
 
 exports[`getLongestPrefix /a{4,4}b/ rtl 1`] = `
 Object {
-  "insideAfter:false onlyInside:false looseG:false": /baaaa/,
-  "insideAfter:true onlyInside:false looseG:false": /baaaa\\[\\^\\]/,
-  "insideAfter:true onlyInside:true looseG:false": /baaaa/,
+  "1: a{4,4}b": Object {
+    "insideAfter:false onlyInside:false looseG:false": /baaaa/,
+    "insideAfter:true onlyInside:false looseG:false": /baaaa\\[\\^\\]/,
+    "insideAfter:true onlyInside:true looseG:false": /baaaa/,
+  },
 }
 `;
 
 exports[`getLongestPrefix /a{4,7}/ ltr 1`] = `
 Object {
-  "insideAfter:false onlyInside:false looseG:false": /aaaa/,
-  "insideAfter:true onlyInside:false looseG:false": /aaaa\\[\\^\\]/,
-  "insideAfter:true onlyInside:true looseG:false": /aaaa/,
+  "1: a{4,7}": Object {
+    "insideAfter:false onlyInside:false looseG:false": /aaaa/,
+    "insideAfter:true onlyInside:false looseG:false": /aaaa\\[\\^\\]/,
+    "insideAfter:true onlyInside:true looseG:false": /aaaa/,
+  },
 }
 `;
 
 exports[`getLongestPrefix /a{4,7}/ rtl 1`] = `
 Object {
-  "insideAfter:false onlyInside:false looseG:false": /aaaa/,
-  "insideAfter:true onlyInside:false looseG:false": /aaaa\\[\\^\\]/,
-  "insideAfter:true onlyInside:true looseG:false": /aaaa/,
+  "1: a{4,7}": Object {
+    "insideAfter:false onlyInside:false looseG:false": /aaaa/,
+    "insideAfter:true onlyInside:false looseG:false": /aaaa\\[\\^\\]/,
+    "insideAfter:true onlyInside:true looseG:false": /aaaa/,
+  },
 }
 `;
 
 exports[`getLongestPrefix /a{4,7}b/ ltr 1`] = `
 Object {
-  "insideAfter:false onlyInside:false looseG:false": /aaaa/,
-  "insideAfter:true onlyInside:false looseG:false": /aaaa\\[ab\\]/,
-  "insideAfter:true onlyInside:true looseG:false": /aaaa\\[ab\\]/,
+  "1: a{4,7}b": Object {
+    "insideAfter:false onlyInside:false looseG:false": /aaaa/,
+    "insideAfter:true onlyInside:false looseG:false": /aaaa\\[ab\\]/,
+    "insideAfter:true onlyInside:true looseG:false": /aaaa\\[ab\\]/,
+  },
 }
 `;
 
 exports[`getLongestPrefix /a{4,7}b/ rtl 1`] = `
 Object {
-  "insideAfter:false onlyInside:false looseG:false": /baaaa/,
-  "insideAfter:true onlyInside:false looseG:false": /baaaa\\[\\^\\]/,
-  "insideAfter:true onlyInside:true looseG:false": /baaaa/,
+  "1: a{4,7}b": Object {
+    "insideAfter:false onlyInside:false looseG:false": /baaaa/,
+    "insideAfter:true onlyInside:false looseG:false": /baaaa\\[\\^\\]/,
+    "insideAfter:true onlyInside:true looseG:false": /baaaa/,
+  },
 }
 `;
 
 exports[`getLongestPrefix /abc/ ltr 1`] = `
 Object {
-  "insideAfter:false onlyInside:false looseG:false": /abc/,
-  "insideAfter:true onlyInside:false looseG:false": /abc\\[\\^\\]/,
-  "insideAfter:true onlyInside:true looseG:false": /abc/,
+  "1: abc": Object {
+    "insideAfter:false onlyInside:false looseG:false": /abc/,
+    "insideAfter:true onlyInside:false looseG:false": /abc\\[\\^\\]/,
+    "insideAfter:true onlyInside:true looseG:false": /abc/,
+  },
 }
 `;
 
 exports[`getLongestPrefix /abc/ rtl 1`] = `
 Object {
-  "insideAfter:false onlyInside:false looseG:false": /cba/,
-  "insideAfter:true onlyInside:false looseG:false": /cba\\[\\^\\]/,
-  "insideAfter:true onlyInside:true looseG:false": /cba/,
+  "1: abc": Object {
+    "insideAfter:false onlyInside:false looseG:false": /cba/,
+    "insideAfter:true onlyInside:false looseG:false": /cba\\[\\^\\]/,
+    "insideAfter:true onlyInside:true looseG:false": /cba/,
+  },
 }
 `;
 
 exports[`getLongestPrefix /foo$/ ltr 1`] = `
 Object {
-  "insideAfter:false onlyInside:false looseG:false": /foo/,
-  "insideAfter:true onlyInside:false looseG:false": /foo\\[\\]/,
-  "insideAfter:true onlyInside:true looseG:false": /foo/,
+  "1: foo$": Object {
+    "insideAfter:false onlyInside:false looseG:false": /foo/,
+    "insideAfter:true onlyInside:false looseG:false": /foo\\[\\]/,
+    "insideAfter:true onlyInside:true looseG:false": /foo/,
+  },
 }
 `;
 
 exports[`getLongestPrefix /foo$/ rtl 1`] = `
 Object {
-  "insideAfter:false onlyInside:false looseG:false": /oof/,
-  "insideAfter:true onlyInside:false looseG:false": /oof\\[\\^\\]/,
-  "insideAfter:true onlyInside:true looseG:false": /oof/,
+  "1: foo$": Object {
+    "insideAfter:false onlyInside:false looseG:false": /oof/,
+    "insideAfter:true onlyInside:false looseG:false": /oof\\[\\^\\]/,
+    "insideAfter:true onlyInside:true looseG:false": /oof/,
+  },
 }
 `;

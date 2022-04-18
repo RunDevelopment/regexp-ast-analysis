@@ -1,5 +1,6 @@
 import { JS } from "refa";
-import { RegExpParser } from "regexpp";
+import { RegExpParser, visitRegExpAST } from "regexpp";
+import { Alternative } from "regexpp/ast";
 import * as RAA from "../src";
 import { MatchingDirection } from "../src";
 import { selectNamedGroups } from "./helper/select";
@@ -64,27 +65,40 @@ describe(RAA.getLongestPrefix.name, function () {
 			for (const regex of regexes) {
 				it(`${regex} ${direction}`, function () {
 					const { pattern, flags } = new RegExpParser().parseLiteral(regex.toString());
-					const alternative = (selectNamedGroups(pattern, /^this$/)[0] ?? pattern).alternatives[0];
-					const hasGroups = RAA.hasSomeDescendant(
-						alternative,
-						d => d.type === "Group" || d.type === "CapturingGroup"
-					);
 
-					const actual: Record<string, RegExp> = {};
-					for (const o of options) {
-						if (!hasGroups && o.looseGroups) continue;
+					const parent = selectNamedGroups(pattern, /^this$/)[0] ?? pattern;
+					const alternatives: Alternative[] = [];
+					visitRegExpAST(parent, {
+						onAlternativeEnter(a) {
+							if (a.parent.type === "Assertion") return;
+							alternatives.push(a);
+						},
+					});
 
-						const prefix = RAA.getLongestPrefix(alternative, direction, flags, o);
+					const actual: Record<string, Record<string, RegExp>> = {};
+					for (const alternative of alternatives) {
+						const a = (actual[`${alternative.start}: ${alternative.raw}`] ??= {});
 
-						const literal = JS.toLiteral(
-							{
-								type: "Concatenation",
-								elements: prefix.map(cs => ({ type: "CharacterClass", characters: cs })),
-							},
-							{ flags }
+						const hasGroups = RAA.hasSomeDescendant(
+							alternative,
+							d => d.type === "Group" || d.type === "CapturingGroup"
 						);
-						const key = `insideAfter:${o.includeAfter} onlyInside:${o.onlyInside} looseG:${o.looseGroups}`;
-						actual[key] = RegExp(literal.source, literal.flags);
+
+						for (const o of options) {
+							if (!hasGroups && o.looseGroups) continue;
+
+							const prefix = RAA.getLongestPrefix(alternative, direction, flags, o);
+
+							const literal = JS.toLiteral(
+								{
+									type: "Concatenation",
+									elements: prefix.map(cs => ({ type: "CharacterClass", characters: cs })),
+								},
+								{ flags }
+							);
+							const key = `insideAfter:${o.includeAfter} onlyInside:${o.onlyInside} looseG:${o.looseGroups}`;
+							a[key] = RegExp(literal.source, literal.flags);
+						}
 					}
 
 					assertSnapshot(actual);
