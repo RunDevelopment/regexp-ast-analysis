@@ -872,6 +872,67 @@ function getLengthRangeElementImpl(element: Element | Alternative): LengthRange 
 			throw assertNever(element);
 	}
 }
+/**
+ * Returns whether `getLengthRange(e).min == 0`.
+ *
+ * This function is slightly different from {@link isPotentiallyZeroLength} in how it handles backreferences. See the
+ * notes on backreferences in the documentation of {@link isPotentiallyZeroLength} and {@link getLengthRange} for more
+ * information.
+ *
+ * ## Relations
+ *
+ * - `isLengthRangeMinZero(e) <-> getLengthRange(e).min == 0`
+ *
+ * @throws {RangeError} if an empty array of alternatives is given.
+ *
+ * @see {@link getLengthRange}
+ */
+export function isLengthRangeMinZero(element: Element | Alternative | readonly Alternative[]): boolean {
+	if (isReadonlyArray(element)) {
+		return isLengthRangeMinZeroAlternativesImpl(element);
+	} else {
+		return isLengthRangeMinZeroElementImpl(element);
+	}
+}
+function isLengthRangeMinZeroAlternativesImpl(alternatives: readonly Alternative[]): boolean {
+	if (alternatives.length === 0) {
+		throw new RangeError("Expected the alternatives array to have at least one alternative.");
+	}
+
+	return alternatives.some(isLengthRangeMinZeroElementImpl);
+}
+function isLengthRangeMinZeroElementImpl(element: Element | Alternative): boolean {
+	switch (element.type) {
+		case "Assertion":
+			return true;
+
+		case "Character":
+		case "CharacterClass":
+		case "CharacterSet":
+			return false;
+
+		case "Quantifier":
+			return element.min === 0 || isLengthRangeMinZeroElementImpl(element.element);
+
+		case "Alternative":
+			return element.elements.every(isLengthRangeMinZeroElementImpl);
+
+		case "CapturingGroup":
+		case "Group":
+			return isLengthRangeMinZeroAlternativesImpl(element.alternatives);
+
+		case "Backreference": {
+			return (
+				isEmptyBackreference(element) ||
+				!isStrictBackreference(element) ||
+				isLengthRangeMinZeroElementImpl(element.resolved)
+			);
+		}
+
+		default:
+			throw assertNever(element);
+	}
+}
 
 /**
  * The type of the closest ancestor of two nodes with the given types.

@@ -24,6 +24,9 @@ describe("length", function () {
 		"getLengthRange(e).max == 0",
 		({ selected }) => RAA.getLengthRange(selected).max === 0
 	);
+	const isLengthRangeMinZero = new Predicate<PredicateTestCaseInfo>("isLengthRangeMinZero(e)", ({ selected }) =>
+		RAA.isLengthRangeMinZero(selected)
+	);
 
 	const model = new Model<PredicateTestCaseInfo>();
 
@@ -34,6 +37,9 @@ describe("length", function () {
 
 	model.implication(isZeroLength, isLengthMaxZero);
 	model.implication(isPotentiallyZeroLength, isLengthMinZero);
+
+	model.implication(isLengthRangeMinZero, isLengthMinZero);
+	model.implication(isLengthMinZero, isLengthRangeMinZero);
 
 	// test cases
 
@@ -214,9 +220,13 @@ describe("length", function () {
 });
 
 describe(RAA.getLengthRange.name, function () {
+	it("should throw on empty array", function () {
+		assert.throws(() => RAA.getLengthRange([]));
+	});
+
 	interface TestCase {
 		regexp: RegExp;
-		expected: RAA.LengthRange | undefined;
+		expected: RAA.LengthRange;
 		selectNamed?: boolean | RegExp;
 	}
 
@@ -286,4 +296,10 @@ describe(RAA.getLengthRange.name, function () {
 			}
 		}
 	}
+});
+
+describe(RAA.isLengthRangeMinZero.name, function () {
+	it("should throw on empty array", function () {
+		assert.throws(() => RAA.isLengthRangeMinZero([]));
+	});
 });
