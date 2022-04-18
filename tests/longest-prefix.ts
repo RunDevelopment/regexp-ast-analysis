@@ -28,6 +28,8 @@ describe(RAA.getLongestPrefix.name, function () {
 		/-(bets|bits|byte)-/,
 		/=(script|source)/,
 		/=(food|foot)-/,
+		/^(?<this>(?:a|ab))c/u,
+		/^(?:(?<this>a)|ab)c/u,
 
 		// assertions
 		/^foo/,

@@ -168,6 +168,44 @@ Object {
 }
 `;
 
+exports[`getLongestPrefix /^(?:(?<this>a)|ab)c/u ltr 1`] = `
+Object {
+  "insideAfter:false onlyInside:false looseG:false": /a/u,
+  "insideAfter:true onlyInside:false looseG:false": /ac/u,
+  "insideAfter:true onlyInside:true looseG:false": /a/u,
+}
+`;
+
+exports[`getLongestPrefix /^(?:(?<this>a)|ab)c/u rtl 1`] = `
+Object {
+  "insideAfter:false onlyInside:false looseG:false": /a/u,
+  "insideAfter:true onlyInside:false looseG:false": /a\\[\\]/u,
+  "insideAfter:true onlyInside:true looseG:false": /a/u,
+}
+`;
+
+exports[`getLongestPrefix /^(?<this>(?:a|ab))c/u ltr 1`] = `
+Object {
+  "insideAfter:false onlyInside:false looseG:false": /a/u,
+  "insideAfter:false onlyInside:false looseG:true": /a/u,
+  "insideAfter:true onlyInside:false looseG:false": /a\\[bc\\]/u,
+  "insideAfter:true onlyInside:false looseG:true": /a\\[bc\\]/u,
+  "insideAfter:true onlyInside:true looseG:false": /a/u,
+  "insideAfter:true onlyInside:true looseG:true": /a/u,
+}
+`;
+
+exports[`getLongestPrefix /^(?<this>(?:a|ab))c/u rtl 1`] = `
+Object {
+  "insideAfter:false onlyInside:false looseG:false": /\\[ab\\]/u,
+  "insideAfter:false onlyInside:false looseG:true": /\\[ab\\]/u,
+  "insideAfter:true onlyInside:false looseG:false": /\\[ab\\]a/u,
+  "insideAfter:true onlyInside:false looseG:true": /\\[ab\\]a/u,
+  "insideAfter:true onlyInside:true looseG:false": /\\[ab\\]/u,
+  "insideAfter:true onlyInside:true looseG:true": /\\[ab\\]/u,
+}
+`;
+
 exports[`getLongestPrefix /^(?<this>A(?!a)(?!B))\\w/m ltr 1`] = `
 Object {
   "insideAfter:false onlyInside:false looseG:false": /A/m,
