@@ -7,5 +7,6 @@ node_modules/
 coverage/
 docs/
 /index.js
+/index.js.map
 /index.mjs
 /index.d.ts

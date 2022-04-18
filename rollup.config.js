@@ -8,6 +8,7 @@ export default /** @type {import('rollup').RollupOptions[]} */ ([
 		output: {
 			file: "index.js",
 			format: "cjs",
+			sourcemap: true
 		},
 		plugins: [
 			nodeResolve(),
