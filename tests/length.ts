@@ -18,11 +18,11 @@ describe("length", function () {
 	);
 	const isLengthMinZero = new Predicate<PredicateTestCaseInfo>(
 		"getLengthRange(e).min == 0",
-		({ selected }) => (RAA.getLengthRange(selected) ?? { min: Infinity, max: Infinity }).min === 0
+		({ selected }) => RAA.getLengthRange(selected).min === 0
 	);
 	const isLengthMaxZero = new Predicate<PredicateTestCaseInfo>(
 		"getLengthRange(e).max == 0",
-		({ selected }) => (RAA.getLengthRange(selected) ?? { min: Infinity, max: Infinity }).max === 0
+		({ selected }) => RAA.getLengthRange(selected).max === 0
 	);
 
 	const model = new Model<PredicateTestCaseInfo>();

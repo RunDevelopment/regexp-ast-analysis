@@ -53,7 +53,7 @@ function isInvokeSome(
  * ## Relations
  *
  * - `isZeroLength(e) -> isPotentiallyZeroLength(e)`
- * - `isZeroLength(e) -> (getLengthRange(e) !== undefined && getLengthRange(e).max == 0)`
+ * - `isZeroLength(e) -> getLengthRange(e).max == 0`
  *
  * @see {@link isPotentiallyZeroLength}
  * @see {@link isEmpty}
@@ -99,7 +99,7 @@ function isZeroLengthImpl(element: Element | Alternative): boolean {
  *
  * ## Relations
  *
- * - `isPotentiallyZeroLength(e) -> (getLengthRange(e) !== undefined && getLengthRange(e).min == 0)`
+ * - `isPotentiallyZeroLength(e) -> getLengthRange(e).min == 0`
  *
  * @see {@link isZeroLength}
  * @see {@link isEmpty}
@@ -773,53 +773,50 @@ const ONE_LENGTH_RANGE: LengthRange = { min: 1, max: 1 };
 /**
  * Returns how many characters the given element can consume at most and has to consume at least.
  *
- * If `undefined` is returned, then the given element can't consume any characters.
- *
- * **Note:** `undefined` is only returned for empty alternative arrays. All characters classes/sets are assumed to
- * consume at least one characters and all assertions are assumed to have some accepting path.
+ * Note that character classes are not parsed by this function and are assumed to be non-empty.
  *
  * ## Backreferences
  *
- * While {@link isPotentiallyEmpty} generally assumes the worst-case for backreferences that references capturing group
+ * While {@link isPotentiallyZeroLength} generally assumes the worst-case for backreferences that references capturing group
  * outside the given element, this function does not/cannot. The length range of a backreference only depends on the
  * referenced capturing group and the relative positions of the backreference and the capturing group within the
  * pattern. It does not depend on the given element.
  *
- * This is an important distinction because it means that `isPotentiallyEmpty(e) -> getLengthRange(e).min == 0` is
- * guaranteed but `getLengthRange(e).min == 0 -> isPotentiallyEmpty(e)` is only guaranteed if `e` does not contain
+ * This is an important distinction because it means that `isPotentiallyZeroLength(e) -> getLengthRange(e).min == 0` is
+ * guaranteed but `getLengthRange(e).min == 0 -> isPotentiallyZeroLength(e)` is only guaranteed if `e` does not contain
  * backreferences.
+ *
+ * @throws {RangeError} if an empty array of alternatives is given.
  *
  * @see {@link isZeroLength}
  * @see {@link isPotentiallyZeroLength}
  * @see {@link isEmpty}
  * @see {@link isPotentiallyEmpty}
  */
-export function getLengthRange(element: Element | Alternative | readonly Alternative[]): LengthRange | undefined {
+export function getLengthRange(element: Element | Alternative | readonly Alternative[]): LengthRange {
 	if (isReadonlyArray(element)) {
 		return getLengthRangeAlternativesImpl(element);
 	} else {
 		return getLengthRangeElementImpl(element);
 	}
 }
-function getLengthRangeAlternativesImpl(alternatives: readonly Alternative[]): LengthRange | undefined {
+function getLengthRangeAlternativesImpl(alternatives: readonly Alternative[]): LengthRange {
 	let min = Infinity;
 	let max = 0;
 
 	for (const a of alternatives) {
 		const eRange = getLengthRangeElementImpl(a);
-		if (eRange) {
-			min = Math.min(min, eRange.min);
-			max = Math.max(max, eRange.max);
-		}
+		min = Math.min(min, eRange.min);
+		max = Math.max(max, eRange.max);
 	}
 
 	if (min > max) {
-		return undefined;
+		throw new RangeError("Expected the alternatives array to have at least one alternative.");
 	} else {
 		return { min, max };
 	}
 }
-function getLengthRangeElementImpl(element: Element | Alternative): LengthRange | undefined {
+function getLengthRangeElementImpl(element: Element | Alternative): LengthRange {
 	switch (element.type) {
 		case "Assertion":
 			return ZERO_LENGTH_RANGE;
@@ -834,9 +831,7 @@ function getLengthRangeElementImpl(element: Element | Alternative): LengthRange 
 				return ZERO_LENGTH_RANGE;
 			}
 			const elementRange = getLengthRangeElementImpl(element.element);
-			if (!elementRange) {
-				return element.min === 0 ? ZERO_LENGTH_RANGE : undefined;
-			} else if (elementRange.max === 0) {
+			if (elementRange.max === 0) {
 				return ZERO_LENGTH_RANGE;
 			} else {
 				return { min: elementRange.min * element.min, max: elementRange.max * element.max };
@@ -849,9 +844,6 @@ function getLengthRangeElementImpl(element: Element | Alternative): LengthRange 
 
 			for (const e of element.elements) {
 				const eRange = getLengthRangeElementImpl(e);
-				if (!eRange) {
-					return undefined;
-				}
 				min += eRange.min;
 				max += eRange.max;
 			}
@@ -868,13 +860,7 @@ function getLengthRangeElementImpl(element: Element | Alternative): LengthRange 
 				return ZERO_LENGTH_RANGE;
 			} else {
 				const resolvedRange = getLengthRangeElementImpl(element.resolved);
-				if (!resolvedRange) {
-					if (isStrictBackreference(element)) {
-						return ZERO_LENGTH_RANGE;
-					} else {
-						return undefined;
-					}
-				} else if (resolvedRange.min > 0 && !isStrictBackreference(element)) {
+				if (resolvedRange.min > 0 && !isStrictBackreference(element)) {
 					return { min: 0, max: resolvedRange.max };
 				} else {
 					return resolvedRange;
