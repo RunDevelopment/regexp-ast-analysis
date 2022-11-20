@@ -948,12 +948,38 @@ export type ClosestAncestor<A extends Node, B extends Node> = Exclude<A | B, Des
 /**
  * Returns the closest ancestor of the given nodes.
  *
- * If the two nodes are the same node, the given node will be returned.
+ * Since only one node is given, the node will be returned as is.
+ */
+export function getClosestAncestor<A extends Node>(a: A): A;
+/**
+ * Returns the closest ancestor of the given nodes.
  *
- * If the two given nodes are not part of the same AST tree, an error will be thrown.
+ * If the nodes are all the same node, the given node will be returned.
+ *
+ * If the given nodes are not part of the same AST tree, an error will be thrown.
  */
 export function getClosestAncestor<A extends Node, B extends Node>(a: A, b: B): ClosestAncestor<A, B>;
-export function getClosestAncestor(a: Node, b: Node): Node {
+/**
+ * Returns the closest ancestor of the given nodes.
+ *
+ * If the nodes are all the same node, the given node will be returned.
+ *
+ * If the given nodes are not part of the same AST tree, an error will be thrown.
+ */
+export function getClosestAncestor<A extends Node, B extends Node>(a: A, ...b: B[]): ClosestAncestor<A, B>;
+/**
+ * Returns the closest ancestor of the given nodes.
+ *
+ * If the nodes are all the same node, the given node will be returned.
+ *
+ * If the given nodes are not part of the same AST tree, an error will be thrown.
+ */
+export function getClosestAncestor<T extends Node>(...args: T[]): ClosestAncestor<T, T> | undefined;
+export function getClosestAncestor(...args: Node[]): Node | undefined {
+	if (args.length === 0) return undefined;
+	return args.reduce(getClosestAncestorImpl);
+}
+function getClosestAncestorImpl(a: Node, b: Node): Node {
 	if (a === b) {
 		// trivial
 		return a;

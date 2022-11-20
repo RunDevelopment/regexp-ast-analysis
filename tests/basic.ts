@@ -167,6 +167,10 @@ describe(RAA.getClosestAncestor.name, function () {
 			});
 		}
 	}
+
+	it(`Should return undefined for no args`, function () {
+		assert.equal(undefined, RAA.getClosestAncestor());
+	});
 });
 
 describe("hasSomeAncestor and hasSomeDescendant condition", function () {
