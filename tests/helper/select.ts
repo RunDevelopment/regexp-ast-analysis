@@ -1,5 +1,13 @@
-import {} from "regexpp";
-import { Alternative, CapturingGroup, Character, CharacterClass, CharacterSet, Element, Pattern } from "regexpp/ast";
+import {} from "@eslint-community/regexpp";
+import {
+	Alternative,
+	CapturingGroup,
+	Character,
+	CharacterClass,
+	CharacterSet,
+	Element,
+	Pattern,
+} from "@eslint-community/regexpp/ast";
 import { Descendant, hasSomeDescendant } from "../../src";
 
 export function select<T extends Descendant<Pattern>>(

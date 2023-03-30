@@ -1,5 +1,5 @@
 import { assert } from "chai";
-import { RegExpParser } from "regexpp";
+import { RegExpParser } from "@eslint-community/regexpp";
 import { OptionalMatchingDirection } from "../src";
 import { getDeterminismEqClasses } from "../src/determinism";
 import { assertSnapshot } from "./helper/snapshot";

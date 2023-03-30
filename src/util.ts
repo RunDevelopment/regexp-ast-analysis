@@ -1,5 +1,5 @@
 import { CharSet } from "refa";
-import { Alternative } from "regexpp/ast";
+import { Alternative } from "@eslint-community/regexpp/ast";
 import { Chars } from "./chars";
 import { ReadonlyFlags } from "./flags";
 

@@ -14,7 +14,7 @@ import {
 	Backreference,
 	CharacterSet,
 	Assertion,
-} from "regexpp/ast";
+} from "@eslint-community/regexpp/ast";
 import { isStrictBackreference, isEmptyBackreference } from "./basic";
 import { assertNever } from "./util";
 

@@ -1,4 +1,4 @@
-import { visitRegExpAST } from "regexpp";
+import { visitRegExpAST } from "@eslint-community/regexpp";
 import {
 	Node,
 	Group,
@@ -18,7 +18,7 @@ import {
 	CharacterSet,
 	EdgeAssertion,
 	WordBoundaryAssertion,
-} from "regexpp/ast";
+} from "@eslint-community/regexpp/ast";
 import { assertNever, isReadonlyArray } from "./util";
 
 function isInvokeEvery(

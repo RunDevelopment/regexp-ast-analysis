@@ -1,5 +1,7 @@
+/* eslint-disable no-useless-backreference */
+/* eslint-disable @typescript-eslint/naming-convention */
 import { assert } from "chai";
-import { RegExpParser, visitRegExpAST } from "regexpp";
+import { RegExpParser, visitRegExpAST } from "@eslint-community/regexpp";
 import * as RAA from "../src";
 import { MatchingDirection } from "../src";
 import { selectNamedGroups } from "./helper/select";
@@ -107,7 +109,8 @@ describe(RAA.getFirstConsumedChar.name, function () {
 	it("performance test", function () {
 		this.timeout(1000);
 
-		const monster = /(:\s*)(?!\s)(?:!?\s*(?:(?:\?|\bp>|(?:\[\]|\*(?!\*)|\*\*)(?:\s*a\)|\s*ct\b|\s*ve\b|\s*ao\b)*)\s*)*(?:\bpe\b|(?:\be\.)?\b(?!\bk\b)(?!\d)\w+\b(?:\.\b(?!\bk\b)(?!\d)\w+\b)*(?!\s+\b(?!\bk\b)(?!\d)\w+\b)))+(?=\s*(?:a\)\s*)?[=;,)])|(?!\s)(?:!?\s*(?:(?:\?|\bp>|(?:\[\]|\*(?!\*)|\*\*)(?:\s*a\)|\s*ct\b|\s*ve\b|\s*ao\b)*)\s*)*(?:\bpe\b|(?:\be\.)?\b(?!\bk\b)(?!\d)\w+\b(?:\.\b(?!\bk\b)(?!\d)\w+\b)*(?!\s+\b(?!\bk\b)(?!\d)\w+\b)))+(?=\s*(?:a\)\s*)?\{)/;
+		const monster =
+			/(:\s*)(?!\s)(?:!?\s*(?:(?:\?|\bp>|(?:\[\]|\*(?!\*)|\*\*)(?:\s*a\)|\s*ct\b|\s*ve\b|\s*ao\b)*)\s*)*(?:\bpe\b|(?:\be\.)?\b(?!\bk\b)(?!\d)\w+\b(?:\.\b(?!\bk\b)(?!\d)\w+\b)*(?!\s+\b(?!\bk\b)(?!\d)\w+\b)))+(?=\s*(?:a\)\s*)?[=;,)])|(?!\s)(?:!?\s*(?:(?:\?|\bp>|(?:\[\]|\*(?!\*)|\*\*)(?:\s*a\)|\s*ct\b|\s*ve\b|\s*ao\b)*)\s*)*(?:\bpe\b|(?:\be\.)?\b(?!\bk\b)(?!\d)\w+\b(?:\.\b(?!\bk\b)(?!\d)\w+\b)*(?!\s+\b(?!\bk\b)(?!\d)\w+\b)))+(?=\s*(?:a\)\s*)?\{)/;
 
 		const { pattern, flags } = new RegExpParser().parseLiteral(monster.toString());
 

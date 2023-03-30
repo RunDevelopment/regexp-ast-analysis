@@ -1,4 +1,4 @@
-import { RegExpParser } from "regexpp";
+import { RegExpParser } from "@eslint-community/regexpp";
 import * as RAA from "../src";
 import { assert } from "chai";
 

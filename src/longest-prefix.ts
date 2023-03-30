@@ -1,5 +1,5 @@
 import { CharSet } from "refa";
-import { Alternative, CapturingGroup, Element, Group, Quantifier } from "regexpp/ast";
+import { Alternative, CapturingGroup, Element, Group, Quantifier } from "@eslint-community/regexpp/ast";
 import {
 	isEmptyBackreference,
 	isLengthRangeMinZero,

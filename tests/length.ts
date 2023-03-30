@@ -1,6 +1,7 @@
+/* eslint-disable no-useless-backreference */
 import { assert } from "chai";
-import { RegExpParser, visitRegExpAST } from "regexpp";
-import { Alternative, Element, Flags, Pattern, RegExpLiteral } from "regexpp/ast";
+import { RegExpParser, visitRegExpAST } from "@eslint-community/regexpp";
+import { Alternative, Element, Flags, Pattern, RegExpLiteral } from "@eslint-community/regexpp/ast";
 import * as RAA from "../src";
 import { Predicate, Model, testModel } from "./helper/model";
 import { selectNamedGroups } from "./helper/select";

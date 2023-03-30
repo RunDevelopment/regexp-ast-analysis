@@ -1,5 +1,5 @@
 import { CharSet } from "refa";
-import { Alternative, Assertion, Element, WordBoundaryAssertion } from "regexpp/ast";
+import { Alternative, Assertion, Element, WordBoundaryAssertion } from "@eslint-community/regexpp/ast";
 import {
 	getMatchingDirectionFromAssertionKind,
 	isStrictBackreference,

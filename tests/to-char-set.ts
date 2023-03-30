@@ -1,5 +1,12 @@
-import { RegExpParser } from "regexpp";
-import { Character, CharacterClass, CharacterClassRange, CharacterSet, Flags, Pattern } from "regexpp/ast";
+import { RegExpParser } from "@eslint-community/regexpp";
+import {
+	Character,
+	CharacterClass,
+	CharacterClassRange,
+	CharacterSet,
+	Flags,
+	Pattern,
+} from "@eslint-community/regexpp/ast";
 import { select, selectSingleChar } from "./helper/select";
 import * as RAA from "../src";
 import { Model, Predicate, testModel } from "./helper/model";
