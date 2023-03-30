@@ -1,5 +1,5 @@
 import { assert } from "chai";
-import { RegExpParser, visitRegExpAST } from "regexpp";
+import { RegExpParser, visitRegExpAST } from "@eslint-community/regexpp";
 import * as RAA from "../src";
 import { MatchingDirection } from "../src";
 import { selectNamedGroups } from "./helper/select";

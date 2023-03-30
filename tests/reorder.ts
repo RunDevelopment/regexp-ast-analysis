@@ -1,5 +1,5 @@
-import { RegExpParser } from "regexpp";
-import { Alternative, Pattern } from "regexpp/ast";
+import { RegExpParser } from "@eslint-community/regexpp";
+import { Alternative, Pattern } from "@eslint-community/regexpp/ast";
 import * as RAA from "../src";
 import { assertSnapshot } from "./helper/snapshot";
 import { visitParents } from "./helper/util";

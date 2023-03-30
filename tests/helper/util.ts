@@ -1,5 +1,5 @@
-import { visitRegExpAST } from "regexpp";
-import { Alternative, Node } from "regexpp/ast";
+import { visitRegExpAST } from "@eslint-community/regexpp";
+import { Alternative, Node } from "@eslint-community/regexpp/ast";
 
 export function* iterateBFS<S>(startElements: Iterable<S>, next: (element: S) => Iterable<S>): Iterable<S> {
 	const visited = new Set<S>();

@@ -4,7 +4,7 @@ import { terser } from "rollup-plugin-terser";
 export default /** @type {import('rollup').RollupOptions[]} */ ([
 	{
 		input: ".out/index.js",
-		external: ["regexpp", "refa"],
+		external: ["@eslint-community/regexpp", "refa"],
 		output: {
 			file: "index.js",
 			format: "cjs",

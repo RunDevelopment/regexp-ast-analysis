@@ -1,5 +1,5 @@
 import { CharSet } from "refa";
-import { Alternative, Element, Pattern } from "regexpp/ast";
+import { Alternative, Element, Pattern } from "@eslint-community/regexpp/ast";
 import {
 	containsCapturingGroup,
 	getLengthRange,

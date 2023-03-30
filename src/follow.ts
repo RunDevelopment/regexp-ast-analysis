@@ -1,4 +1,4 @@
-import { Alternative, Element, LookaroundAssertion, Quantifier } from "regexpp/ast";
+import { Alternative, Element, LookaroundAssertion, Quantifier } from "@eslint-community/regexpp/ast";
 import { getMatchingDirectionFromAssertionKind, getMatchingDirection, MatchingDirection } from "./basic";
 import { assertNever } from "./util";
 

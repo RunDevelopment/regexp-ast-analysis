@@ -1,7 +1,7 @@
 import { assert } from "chai";
 import { JS } from "refa";
-import { RegExpParser, visitRegExpAST } from "regexpp";
-import { Alternative } from "regexpp/ast";
+import { RegExpParser, visitRegExpAST } from "@eslint-community/regexpp";
+import { Alternative } from "@eslint-community/regexpp/ast";
 import * as RAA from "../src";
 import { MatchingDirection } from "../src";
 import { selectNamedGroups } from "./helper/select";

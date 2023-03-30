@@ -1,5 +1,5 @@
 import { CharBase, CharSet } from "refa";
-import { Alternative } from "regexpp/ast";
+import { Alternative } from "@eslint-community/regexpp/ast";
 import { MatchingDirection, OptionalMatchingDirection } from "./basic";
 import { ReadonlyFlags } from "./flags";
 import { getLongestPrefix, GetLongestPrefixOptions } from "./longest-prefix";
