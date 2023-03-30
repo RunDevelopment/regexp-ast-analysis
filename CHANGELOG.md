@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.6.0 (2023-03-30)
+
+### Breaking
+
+- Upgraded dependencies to `@eslint-community/regexpp` v4.5.0 and `refa` v0.11.0.
+
+### Added
+
+- `getClosestAncestor` now supports any number of arguments.
+
+
 ## 0.5.1 (2022-04-18)
 
 ### Fixed
