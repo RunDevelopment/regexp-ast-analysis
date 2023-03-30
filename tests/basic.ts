@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-backreference */
 import { RegExpParser, visitRegExpAST } from "@eslint-community/regexpp";
 import { Backreference, CapturingGroup, Node } from "@eslint-community/regexpp/ast";
 import { select, selectFirstWithRaw, selectNamedGroups } from "./helper/select";

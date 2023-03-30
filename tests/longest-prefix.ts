@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-backreference */
 import { assert } from "chai";
 import { JS } from "refa";
 import { RegExpParser, visitRegExpAST } from "@eslint-community/regexpp";
