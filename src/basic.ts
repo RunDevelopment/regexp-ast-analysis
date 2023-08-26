@@ -50,7 +50,12 @@ function characterIsEmpty(element: CharacterElement, flags: ReadonlyFlags): bool
 			return false;
 
 		case "CharacterClass":
-			return element.unicodeSets && !element.negate && element.elements.every(e => characterIsEmpty(e, flags));
+			return (
+				element.unicodeSets &&
+				!element.negate &&
+				element.elements.length > 0 &&
+				element.elements.every(e => characterIsEmpty(e, flags))
+			);
 		case "ExpressionCharacterClass":
 			return !element.negate && characterIsEmpty(element.expression, flags);
 
@@ -58,9 +63,7 @@ function characterIsEmpty(element: CharacterElement, flags: ReadonlyFlags): bool
 		case "ClassSubtraction": {
 			// we actually need to evaluate the operation to implement this correctly
 			const set = toUnicodeSet(element, flags);
-			return (
-				set.isEmpty || (set.chars.isEmpty && set.accept.words.length === 1 && set.accept.words[0].length === 0)
-			);
+			return set.chars.isEmpty && set.accept.words.length === 1 && set.accept.hasEmptyWord;
 		}
 
 		case "ClassStringDisjunction":
@@ -85,7 +88,7 @@ function characterIsPotentiallyEmpty(element: CharacterElement): boolean {
 			return !element.negate && characterIsPotentiallyEmpty(element.expression);
 
 		case "ClassIntersection":
-			return characterIsPotentiallyEmpty(element.left) || characterIsPotentiallyEmpty(element.right);
+			return characterIsPotentiallyEmpty(element.left) && characterIsPotentiallyEmpty(element.right);
 		case "ClassSubtraction":
 			return characterIsPotentiallyEmpty(element.left) && !characterIsPotentiallyEmpty(element.right);
 
@@ -1010,7 +1013,7 @@ function unicodeSetToLengthRange(set: JS.UnicodeSet): LengthRange {
 	if (!set.chars.isEmpty) {
 		min = max = 1;
 	}
-	if (set.accept.isEmpty) {
+	if (!set.accept.isEmpty) {
 		min = Math.min(min, set.accept.words[0].length);
 		max = Math.max(max, set.accept.words[set.accept.words.length - 1].length);
 	}
@@ -1158,8 +1161,8 @@ function isLengthRangeMinZeroElementImpl(
 
 		case "CharacterSet":
 			if (element.kind === "property" && element.strings) {
-				// we have to evaluate it
-				return toUnicodeSet(element, flags).hasEmptyWord;
+				// there are current no unicode properties that include the empty string
+				return false;
 			} else {
 				return false;
 			}

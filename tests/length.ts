@@ -65,6 +65,10 @@ describe("length", function () {
 			{ regexp: /\1(a)/, raw: String.raw`\1` },
 			{ regexp: /\1|(a)/, raw: String.raw`\1` },
 			{ regexp: /(?<=(a)\1)/, raw: String.raw`\1` },
+
+			{ regexp: String.raw`/[\q{}]/v`, whole: true },
+			{ regexp: String.raw`/[\q{foo|bar|}&&\q{x|}]/v`, whole: true },
+			{ regexp: String.raw`/[\q{foo|bar|}--\q{foo|bar}]/v`, whole: true },
 		])
 	);
 	model.add(
@@ -77,6 +81,9 @@ describe("length", function () {
 
 			{ regexp: /(?:\b)?/, whole: true },
 			{ regexp: /(?:\b)*/, whole: true },
+
+			{ regexp: String.raw`/[\q{foo|bar|}]/v`, whole: true },
+			{ regexp: String.raw`/[\q{foo|bar|}--a]/v`, whole: true },
 		])
 	);
 
@@ -95,17 +102,28 @@ describe("length", function () {
 			{ regexp: /(a?)\1/, whole: true },
 			{ regexp: /(a)?\1/, whole: true },
 			{ regexp: /(?:(a)|)\1/, whole: true },
+
+			{ regexp: String.raw`/[\q{foo|bar|}]/v`, whole: true },
+			{ regexp: String.raw`/[\q{foo|bar|}&&\q{x|}]/v`, whole: true },
+			{ regexp: String.raw`/[\q{foo|bar|}--a]/v`, whole: true },
 		])
 	);
 	model.add(
 		isPotentiallyEmpty.not(),
 		casesToInfos([
 			{ regexp: /\b/, whole: true },
+			{ regexp: /[]/, whole: true },
 			{ regexp: /(?:\b)+/, whole: true },
 			{ regexp: /(?:\b){4}/, whole: true },
 
 			{ regexp: /(?:(a)|b)\1/, whole: true },
 			{ regexp: /(?:(a)|)\1/, raw: String.raw`\1` },
+
+			{ regexp: String.raw`/[\q{foo|bar|}--\q{x|}]/v`, whole: true },
+			{ regexp: String.raw`/[\q{foo|bar|}&&\q{x}]/v`, whole: true },
+			{ regexp: String.raw`/[\q{foo|bar|}&&\q{foo}]/v`, whole: true },
+			{ regexp: String.raw`/[]/v`, whole: true },
+			{ regexp: String.raw`/[^\w&&\w]/v`, whole: true },
 		])
 	);
 
@@ -122,6 +140,9 @@ describe("length", function () {
 		casesToInfos([
 			{ regexp: /foo|\b/, whole: true },
 			{ regexp: /(a)\1|\b/, whole: true },
+
+			{ regexp: String.raw`/[]/v`, whole: true },
+			{ regexp: String.raw`/[^\w&&\w]/v`, whole: true },
 		])
 	);
 
@@ -154,12 +175,12 @@ describe("length", function () {
 	});
 
 	interface PredicateTestCase {
-		regexp: RegExp;
+		regexp: RegExp | string;
 		raw?: string;
 		whole?: boolean;
 	}
 	interface PredicateTestCaseInfo {
-		regexp: RegExp;
+		regexp: RegExp | string;
 		selected: Element | Alternative | Alternative[];
 		pattern: Pattern;
 		flags: Flags;
@@ -230,7 +251,7 @@ describe(RAA.getLengthRange.name, function () {
 	});
 
 	interface TestCase {
-		regexp: RegExp;
+		regexp: RegExp | string;
 		expected: RAA.LengthRange;
 		selectNamed?: boolean | RegExp;
 	}
@@ -255,6 +276,13 @@ describe(RAA.getLengthRange.name, function () {
 		{ regexp: /(?:b{2,4}){5,8}/, expected: { min: 10, max: 32 } },
 		{ regexp: /(?:b{2,3}c?){5,8}/, expected: { min: 10, max: 32 } },
 		{ regexp: /(?:b+){5,8}/, expected: { min: 5, max: Infinity } },
+
+		{ regexp: String.raw`/[]/v`, expected: { min: 1, max: 1 } },
+		{ regexp: String.raw`/[^\w]/v`, expected: { min: 1, max: 1 } },
+		{ regexp: String.raw`/[\q{foo|bar|x}]/v`, expected: { min: 1, max: 3 } },
+		{ regexp: String.raw`/[\q{foo|bar|x|}]/v`, expected: { min: 0, max: 3 } },
+		{ regexp: String.raw`/[^a&&a]/v`, expected: { min: 1, max: 1 } },
+		{ regexp: String.raw`/\p{Basic_Emoji}/v`, expected: { min: 1, max: 2 } },
 
 		// Backreferences
 		{ regexp: /(a)\1/, expected: { min: 2, max: 2 } },
@@ -296,6 +324,7 @@ describe(RAA.getLengthRange.name, function () {
 						: `${regexp}: \`${Array.isArray(e) ? e.join("|") : e.raw}\``,
 					function () {
 						assert.deepEqual(RAA.getLengthRange(e, flags), expected);
+						assert.equal(RAA.isLengthRangeMinZero(e, flags), expected.min === 0);
 					}
 				);
 			}

@@ -175,9 +175,13 @@ describe(RAA.getClosestAncestor.name, function () {
 });
 
 describe("hasSomeAncestor and hasSomeDescendant condition", function () {
-	test([/a+|(?!(?:b?|d{1,})c)|(a)(\1b)[a-bc]/g]);
+	test([
+		/a+|(?!(?:b?|d{1,})c)|(a)(\1b)[a-bc]/g,
+		String.raw`/a+|(?!(?:b?|d{1,})c)|(a)(\1b)[a-bc]/gv`,
+		String.raw`/a[a-b\q{foo|bar|}[a--b][^\w&&\d]]/gv`,
+	]);
 
-	function test(cases: RegExp[]): void {
+	function test(cases: (RegExp | string)[]): void {
 		for (const regexp of cases) {
 			it(`${regexp}`, function () {
 				const nodes = allDescendantNodes(new RegExpParser().parseLiteral(regexp.toString()));
@@ -230,6 +234,11 @@ describe("hasSomeAncestor and hasSomeDescendant condition", function () {
 			onCapturingGroupEnter: onNode,
 			onCharacterClassEnter: onNode,
 			onCharacterClassRangeEnter: onNode,
+			onExpressionCharacterClassEnter: onNode,
+			onClassIntersectionEnter: onNode,
+			onClassSubtractionEnter: onNode,
+			onClassStringDisjunctionEnter: onNode,
+			onStringAlternativeEnter: onNode,
 		});
 
 		return nodes;
