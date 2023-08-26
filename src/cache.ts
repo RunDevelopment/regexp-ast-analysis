@@ -1,4 +1,4 @@
-import { CharSet } from "refa";
+import { CharSet, JS } from "refa";
 import { Alternative, Element, Node } from "@eslint-community/regexpp/ast";
 import { ReadonlyFlags } from "./flags";
 
@@ -83,8 +83,10 @@ export class CacheInstance implements Cache {
 	readonly multiline: boolean;
 	readonly sticky: boolean;
 	readonly unicode: boolean;
+	readonly unicodeSets: boolean;
 
 	readonly toCharSet = new WeakMap<Node, CharSet>();
+	readonly toUnicodeSet = new WeakMap<Node, JS.UnicodeSet>();
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	readonly getFirstConsumedCharLTR = new WeakMap<Element | Alternative, any>();
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -99,6 +101,7 @@ export class CacheInstance implements Cache {
 		this.multiline = !!flags.multiline;
 		this.sticky = !!flags.sticky;
 		this.unicode = !!flags.unicode;
+		this.unicodeSets = !!flags.unicodeSets;
 	}
 
 	static from(flags: ReadonlyFlags): CacheInstance {

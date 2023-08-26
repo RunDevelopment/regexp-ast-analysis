@@ -1,9 +1,18 @@
 import { CharSet, JS } from "refa";
-import { Character, CharacterClass, CharacterClassRange, CharacterSet } from "@eslint-community/regexpp/ast";
+import {
+	Character,
+	CharacterClass,
+	CharacterClassRange,
+	CharacterSet,
+	ClassRangesCharacterClass,
+	ClassSetOperand,
+	ExpressionCharacterClass,
+	StringAlternative,
+	StringsUnicodePropertyCharacterSet,
+} from "@eslint-community/regexpp/ast";
 import { CacheInstance } from "./cache";
 import { Chars } from "./chars";
 import { ReadonlyFlags } from "./flags";
-import { MaxChar } from "./max-char";
 import { assertNever, isReadonlyArray } from "./util";
 
 /**
@@ -11,160 +20,238 @@ import { assertNever, isReadonlyArray } from "./util";
  *
  * @see {@link toCharSet}
  */
-export type ToCharSetElement = Character | CharacterClassRange | CharacterSet | CharacterClass;
+export type ToCharSetElement =
+	| Character
+	| CharacterClassRange
+	| Exclude<CharacterSet, StringsUnicodePropertyCharacterSet>
+	| ClassRangesCharacterClass;
 
 /**
- * Converts the given element or array of elements into a refa CharSet.
+ * Converts the given element or array of elements into a refa `CharSet`.
  *
  * If an array is given, all the character sets of all elements will be unioned. This means that for any two element `a`
  * and `b`, the results of `toCharSet([a, b])` and `toCharSet(a).union(toCharSet(b))` will be the same.
+ *
+ * This is guaranteed to be equivalent to `toUnicodeSet(char).chars`.
  */
 export function toCharSet(elements: ToCharSetElement | readonly ToCharSetElement[], flags: ReadonlyFlags): CharSet {
+	if (!JS.isFlags(flags)) {
+		throw new Error("Invalid flags.");
+	}
+
 	if (!isReadonlyArray(elements)) {
 		return toCharSetSimpleCached(elements, flags);
+	}
+
+	if (elements.length === 0) {
+		return Chars.empty(flags);
 	} else if (elements.length === 1) {
 		return toCharSetSimpleCached(elements[0], flags);
-	}
-
-	const { positive, negated } = categorizeElements(elements);
-
-	if (negated.length) {
-		if (positive.length) {
-			return JS.createCharSet(makeRefaCompatible(positive), flags).union(
-				...negated.map(c => JS.createCharSet(makeRefaCompatible(c.elements), flags).negate())
-			);
-		} else {
-			if (negated.length === 1) {
-				return JS.createCharSet(makeRefaCompatible(negated[0].elements), flags).negate();
-			} else {
-				return Chars.empty(flags).union(
-					...negated.map(c => JS.createCharSet(makeRefaCompatible(c.elements), flags).negate())
-				);
-			}
-		}
-	} else if (positive.length) {
-		return JS.createCharSet(makeRefaCompatible(positive), flags);
 	} else {
-		return Chars.empty(flags);
+		return Chars.empty(flags).union(...elements.map(e => toCharSetSimpleCached(e, flags)));
 	}
 }
-
-function toCharSetSimpleCached(element: ToCharSetElement, flags: ReadonlyFlags): CharSet {
+function toCharSetSimpleCached(element: ToCharSetElement, flags: Readonly<JS.Flags>): CharSet {
 	if (flags instanceof CacheInstance) {
 		let cached = flags.toCharSet.get(element);
 		if (cached === undefined) {
-			cached = toCharSetSimple(element, flags);
+			cached = JS.parseCharSet(element, flags);
 			flags.toCharSet.set(element, cached);
 		}
 		return cached;
 	} else {
-		return toCharSetSimple(element, flags);
+		return JS.parseCharSet(element, flags);
 	}
 }
-function toCharSetSimple(element: ToCharSetElement, flags: ReadonlyFlags): CharSet {
-	if (element.type === "CharacterClass") {
-		const cs = JS.createCharSet(makeRefaCompatible(element.elements), flags);
-		return element.negate ? cs.negate() : cs;
+
+/**
+ * All possible element types that are accepted by {@link toCharSet}.
+ *
+ * @see {@link toCharSet}
+ */
+export type ToUnicodeSetElement =
+	| ToCharSetElement
+	| CharacterClass
+	| CharacterSet
+	| ClassSetOperand
+	| ExpressionCharacterClass["expression"]
+	| StringAlternative;
+
+/**
+ * Converts the given element or array of elements into a refa `UnicodeSet`.
+ *
+ * If an array is given, all the character sets of all elements will be unioned. This means that for any two element `a`
+ * and `b`, the results of `toUnicodeSet([a, b])` and `toUnicodeSet(a).union(toUnicodeSet(b))` will be the same.
+ */
+export function toUnicodeSet(
+	elements: ToUnicodeSetElement | readonly ToUnicodeSetElement[],
+	flags: ReadonlyFlags
+): JS.UnicodeSet {
+	if (!JS.isFlags(flags)) {
+		throw new Error("Invalid flags.");
 	}
 
-	return JS.createCharSet([toRefaCharElement(element)], flags);
-}
+	if (!isReadonlyArray(elements)) {
+		return toUnicodeSetSimpleCached(elements, flags);
+	}
 
-interface CategorizedElements {
-	positive: readonly (Character | CharacterClassRange | CharacterSet)[];
-	negated: readonly CharacterClass[];
+	if (elements.length === 0) {
+		return JS.UnicodeSet.empty(Chars.maxChar(flags));
+	} else if (elements.length === 1) {
+		return toUnicodeSetSimpleCached(elements[0], flags);
+	} else {
+		return JS.UnicodeSet.empty(Chars.maxChar(flags)).union(
+			...elements.map(e => toUnicodeSetSimpleCached(e, flags))
+		);
+	}
 }
-function categorizeElements(elements: readonly ToCharSetElement[]): CategorizedElements {
-	const positive: (Character | CharacterClassRange | CharacterSet)[] = [];
-	const negated: CharacterClass[] = [];
-
-	for (const e of elements) {
-		if (e.type === "CharacterClass") {
-			if (e.negate) {
-				negated.push(e);
-			} else {
-				positive.push(...e.elements);
-			}
-		} else {
-			positive.push(e);
+function toUnicodeSetSimpleCached(element: ToUnicodeSetElement, flags: Readonly<JS.Flags>): JS.UnicodeSet {
+	if (flags instanceof CacheInstance) {
+		let cached = flags.toUnicodeSet.get(element);
+		if (cached === undefined) {
+			cached = JS.parseUnicodeSet(element, flags);
+			flags.toUnicodeSet.set(element, cached);
 		}
-	}
-
-	return { positive, negated };
-}
-
-type IterableItem<T extends Iterable<unknown>> = T extends Iterable<infer I> ? I : never;
-type RefaChar = IterableItem<Parameters<typeof JS.createCharSet>[0]>;
-function makeRefaCompatible(elements: readonly (Character | CharacterClassRange | CharacterSet)[]): RefaChar[] {
-	return elements.map(toRefaCharElement);
-}
-function toRefaCharElement(e: Character | CharacterClassRange | CharacterSet): RefaChar {
-	switch (e.type) {
-		case "Character":
-			return e.value;
-		case "CharacterClassRange":
-			return { min: e.min.value, max: e.max.value };
-		case "CharacterSet":
-			return e;
-		default:
-			throw assertNever(e);
+		return cached;
+	} else {
+		return JS.parseUnicodeSet(element, flags);
 	}
 }
 
 /**
  * Returns whether the given character class/set matches all characters.
  *
- * This is guaranteed to be equivalent to `toCharSet(char).isAll` but is implemented more efficiently.
+ * This is guaranteed to be equivalent to `toUnicodeSet(char).chars.isAll` but is implemented more efficiently.
  */
-export function matchesAllCharacters(char: ToCharSetElement, flags: ReadonlyFlags): boolean {
-	if (char.type === "Character") {
-		return false;
-	} else if (char.type === "CharacterClassRange") {
-		return char.min.value === 0 && char.max.value === (flags.unicode ? MaxChar.UNICODE : MaxChar.UTF16);
-	} else if (char.type === "CharacterSet") {
-		if (char.kind === "property") {
-			return toCharSet(char, flags).isAll;
-		} else if (char.kind === "any") {
-			return !!flags.dotAll;
-		} else {
+export function matchesAllCharacters(char: ToUnicodeSetElement, flags: ReadonlyFlags): boolean {
+	switch (char.type) {
+		case "Character":
+		case "ClassStringDisjunction":
+		case "StringAlternative":
 			return false;
-		}
-	} else {
-		if (char.negate && char.elements.length === 0) {
-			return true;
-		} else {
-			if (char.negate) {
-				return toCharSet(char.elements, flags).isEmpty;
+
+		case "CharacterClassRange":
+			return char.min.value === 0 && char.max.value === Chars.maxChar(flags);
+
+		case "CharacterSet":
+			if (char.kind === "property") {
+				if (char.strings) {
+					// are currently no properties of strings that match all characters
+					return false;
+				}
+				return toCharSet(char, flags).isAll;
+			} else if (char.kind === "any") {
+				return !!flags.dotAll;
 			} else {
-				return toCharSet(char.elements, flags).isAll;
+				return false;
 			}
-		}
+
+		case "CharacterClass":
+			if (char.negate) {
+				return char.elements.every(e => matchesNoCharacters(e, flags));
+			} else {
+				if (char.elements.length === 0) {
+					return false;
+				} else if (char.elements.length === 1) {
+					return matchesAllCharacters(char.elements[0], flags);
+				} else {
+					return toUnicodeSet(char, flags).chars.isAll;
+				}
+			}
+
+		case "ExpressionCharacterClass":
+			return matchesAllCharacters(char.expression, flags);
+		case "ClassIntersection":
+			return matchesAllCharacters(char.left, flags) && matchesAllCharacters(char.right, flags);
+		case "ClassSubtraction":
+			return toUnicodeSet(char, flags).chars.isAll;
+
+		default:
+			return assertNever(char);
 	}
 }
 /**
  * Returns whether the given character class/set matches no characters.
  *
- * This is guaranteed to be equivalent to `toCharSet(char).isEmpty` but is implemented more efficiently.
+ * This is guaranteed to be equivalent to `toUnicodeSet(char).isEmpty` but is implemented more efficiently.
  */
-export function matchesNoCharacters(char: ToCharSetElement, flags: ReadonlyFlags): boolean {
-	if (char.type === "Character" || char.type === "CharacterClassRange") {
-		// both are guaranteed to match at least one character
-		return false;
-	} else if (char.type === "CharacterSet") {
-		if (char.kind === "property") {
-			return toCharSet(char, flags).isEmpty;
-		} else {
+export function matchesNoCharacters(char: ToUnicodeSetElement, flags: ReadonlyFlags): boolean {
+	switch (char.type) {
+		case "Character":
+		case "CharacterClassRange":
+		case "ClassStringDisjunction":
+		case "StringAlternative":
+			// all are guaranteed to match at least one character
 			return false;
-		}
-	} else {
-		if (!char.negate && char.elements.length === 0) {
-			return true;
-		} else {
-			if (char.negate) {
-				return toCharSet(char.elements, flags).isAll;
+
+		case "CharacterSet":
+			if (char.kind === "property") {
+				if (char.strings) {
+					// are currently no properties of strings that match no characters
+					return false;
+				}
+				return toCharSet(char, flags).isEmpty;
 			} else {
-				return toCharSet(char.elements, flags).isEmpty;
+				return false;
 			}
-		}
+
+		case "CharacterClass":
+			if (char.negate) {
+				if (char.elements.length === 0) {
+					return false;
+				} else if (char.elements.length === 1) {
+					return matchesAllCharacters(char.elements[0], flags);
+				} else {
+					return toUnicodeSet(char, flags).isEmpty;
+				}
+			} else {
+				return char.elements.every(e => matchesNoCharacters(e, flags));
+			}
+
+		case "ExpressionCharacterClass":
+			return matchesNoCharacters(char.expression, flags);
+		case "ClassIntersection":
+		case "ClassSubtraction":
+			return toUnicodeSet(char, flags).isEmpty;
+
+		default:
+			return assertNever(char);
+	}
+}
+
+/**
+ * Returns whether the given character elements contains strings.
+ *
+ * This is guaranteed to be equivalent to `!toUnicodeSet(char).accept.isEmpty` but is implemented more efficiently.
+ */
+export function hasStrings(char: ToUnicodeSetElement, flags: ReadonlyFlags): boolean {
+	switch (char.type) {
+		case "Character":
+		case "CharacterClassRange":
+			return false;
+
+		case "CharacterSet":
+			return char.kind === "property" && char.strings;
+
+		case "CharacterClass":
+			if (char.negate || !char.unicodeSets) {
+				return false;
+			} else {
+				return char.elements.some(e => hasStrings(e, flags));
+			}
+
+		case "ExpressionCharacterClass":
+			return hasStrings(char.expression, flags);
+		case "ClassIntersection":
+		case "ClassSubtraction":
+			return !toUnicodeSet(char, flags).accept.isEmpty;
+
+		case "ClassStringDisjunction":
+			return char.alternatives.some(a => hasStrings(a, flags));
+		case "StringAlternative":
+			return char.elements.length !== 1;
+
+		default:
+			return assertNever(char);
 	}
 }

@@ -46,4 +46,10 @@ export interface ReadonlyFlags {
 	 * @default false
 	 */
 	readonly unicode?: boolean;
+	/**
+	 * The `v` flag.
+	 *
+	 * @default false
+	 */
+	readonly unicodeSets?: boolean;
 }

@@ -7,26 +7,30 @@ import { Predicate, Model, testModel } from "./helper/model";
 import { selectNamedGroups } from "./helper/select";
 
 describe("length", function () {
-	const isEmpty = new Predicate<PredicateTestCaseInfo>("isEmpty(e)", ({ selected }) => RAA.isEmpty(selected));
-	const isPotentiallyEmpty = new Predicate<PredicateTestCaseInfo>("isPotentiallyEmpty(e)", ({ selected }) =>
-		RAA.isPotentiallyEmpty(selected)
+	const isEmpty = new Predicate<PredicateTestCaseInfo>("isEmpty(e)", ({ selected, flags }) =>
+		RAA.isEmpty(selected, flags)
 	);
-	const isZeroLength = new Predicate<PredicateTestCaseInfo>("isZeroLength(e)", ({ selected }) =>
-		RAA.isZeroLength(selected)
+	const isPotentiallyEmpty = new Predicate<PredicateTestCaseInfo>("isPotentiallyEmpty(e)", ({ selected, flags }) =>
+		RAA.isPotentiallyEmpty(selected, flags)
 	);
-	const isPotentiallyZeroLength = new Predicate<PredicateTestCaseInfo>("isPotentiallyZeroLength(e)", ({ selected }) =>
-		RAA.isPotentiallyZeroLength(selected)
+	const isZeroLength = new Predicate<PredicateTestCaseInfo>("isZeroLength(e)", ({ selected, flags }) =>
+		RAA.isZeroLength(selected, flags)
+	);
+	const isPotentiallyZeroLength = new Predicate<PredicateTestCaseInfo>(
+		"isPotentiallyZeroLength(e)",
+		({ selected, flags }) => RAA.isPotentiallyZeroLength(selected, flags)
 	);
 	const isLengthMinZero = new Predicate<PredicateTestCaseInfo>(
 		"getLengthRange(e).min == 0",
-		({ selected }) => RAA.getLengthRange(selected).min === 0
+		({ selected, flags }) => RAA.getLengthRange(selected, flags).min === 0
 	);
 	const isLengthMaxZero = new Predicate<PredicateTestCaseInfo>(
 		"getLengthRange(e).max == 0",
-		({ selected }) => RAA.getLengthRange(selected).max === 0
+		({ selected, flags }) => RAA.getLengthRange(selected, flags).max === 0
 	);
-	const isLengthRangeMinZero = new Predicate<PredicateTestCaseInfo>("isLengthRangeMinZero(e)", ({ selected }) =>
-		RAA.isLengthRangeMinZero(selected)
+	const isLengthRangeMinZero = new Predicate<PredicateTestCaseInfo>(
+		"isLengthRangeMinZero(e)",
+		({ selected, flags }) => RAA.isLengthRangeMinZero(selected, flags)
 	);
 
 	const model = new Model<PredicateTestCaseInfo>();
@@ -222,7 +226,7 @@ describe("length", function () {
 
 describe(RAA.getLengthRange.name, function () {
 	it("should throw on empty array", function () {
-		assert.throws(() => RAA.getLengthRange([]));
+		assert.throws(() => RAA.getLengthRange([], {}));
 	});
 
 	interface TestCase {
@@ -277,7 +281,7 @@ describe(RAA.getLengthRange.name, function () {
 
 	function test(cases: TestCase[]): void {
 		for (const { regexp, selectNamed, expected } of cases) {
-			const { pattern } = new RegExpParser().parseLiteral(regexp.toString());
+			const { pattern, flags } = new RegExpParser().parseLiteral(regexp.toString());
 			let elements;
 			if (selectNamed) {
 				elements = selectNamedGroups(pattern, selectNamed === true ? undefined : selectNamed);
@@ -291,7 +295,7 @@ describe(RAA.getLengthRange.name, function () {
 						? `${regexp}`
 						: `${regexp}: \`${Array.isArray(e) ? e.join("|") : e.raw}\``,
 					function () {
-						assert.deepEqual(RAA.getLengthRange(e), expected);
+						assert.deepEqual(RAA.getLengthRange(e, flags), expected);
 					}
 				);
 			}
@@ -301,6 +305,6 @@ describe(RAA.getLengthRange.name, function () {
 
 describe(RAA.isLengthRangeMinZero.name, function () {
 	it("should throw on empty array", function () {
-		assert.throws(() => RAA.isLengthRangeMinZero([]));
+		assert.throws(() => RAA.isLengthRangeMinZero([], {}));
 	});
 });

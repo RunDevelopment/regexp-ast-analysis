@@ -334,7 +334,14 @@ export function followPaths<S>(
 	type NextElement = false | Element | FollowEndReason | [Quantifier, NextElement];
 	function getNextElement(element: Element, state: S, direction: MatchingDirection): NextElement {
 		const parent = element.parent;
-		if (parent.type === "CharacterClass" || parent.type === "CharacterClassRange") {
+		if (
+			parent.type === "CharacterClass" ||
+			parent.type === "CharacterClassRange" ||
+			parent.type === "ClassIntersection" ||
+			parent.type === "ClassSubtraction" ||
+			parent.type === "ExpressionCharacterClass" ||
+			parent.type === "StringAlternative"
+		) {
 			throw new Error("The given element cannot be part of a character class.");
 		}
 

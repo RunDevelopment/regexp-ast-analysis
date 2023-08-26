@@ -6,6 +6,7 @@ import {
 	CharacterClass,
 	CharacterSet,
 	Element,
+	ExpressionCharacterClass,
 	Pattern,
 } from "@eslint-community/regexpp/ast";
 import { Descendant, hasSomeDescendant } from "../../src";
@@ -37,7 +38,15 @@ export function selectFirstWithRaw(pattern: Pattern, raw: string): Element | Alt
 	let result: Element | Alternative | undefined;
 
 	hasSomeDescendant(pattern, e => {
-		if (e.type !== "Pattern" && e.type !== "CharacterClassRange" && e.raw === raw) {
+		if (
+			e.type !== "Pattern" &&
+			e.type !== "CharacterClassRange" &&
+			e.type !== "ClassIntersection" &&
+			e.type !== "ClassSubtraction" &&
+			e.type !== "ClassStringDisjunction" &&
+			e.type !== "StringAlternative" &&
+			e.raw === raw
+		) {
 			result = e;
 			return true;
 		}
@@ -51,10 +60,17 @@ export function selectFirstWithRaw(pattern: Pattern, raw: string): Element | Alt
 	}
 }
 
-export function selectSingleChar(pattern: Pattern): Character | CharacterClass | CharacterSet {
+export function selectSingleChar(
+	pattern: Pattern
+): Character | CharacterClass | CharacterSet | ExpressionCharacterClass {
 	if (pattern.alternatives.length === 1 && pattern.alternatives[0].elements.length === 1) {
 		const element = pattern.alternatives[0].elements[0];
-		if (element.type === "Character" || element.type === "CharacterClass" || element.type === "CharacterSet") {
+		if (
+			element.type === "Character" ||
+			element.type === "CharacterClass" ||
+			element.type === "CharacterSet" ||
+			element.type === "ExpressionCharacterClass"
+		) {
 			return element;
 		}
 	}

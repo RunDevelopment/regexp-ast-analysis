@@ -43,7 +43,7 @@ describe(RAA.isEmptyBackreference.name, function () {
 					it(`${r.raw}`, function () {
 						const refs = select(r.pattern, (e): e is Backreference => e.type === "Backreference");
 						for (const ref of refs) {
-							assert.equal(RAA.isEmptyBackreference(ref), expected);
+							assert.equal(RAA.isEmptyBackreference(ref, r.flags), expected);
 						}
 					});
 				});

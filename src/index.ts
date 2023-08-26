@@ -8,3 +8,4 @@ export * from "./follow";
 export * from "./longest-prefix";
 export * from "./next-char";
 export * from "./reorder";
+export * from "./consumed-chars";

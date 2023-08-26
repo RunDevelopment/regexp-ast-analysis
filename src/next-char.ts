@@ -1,4 +1,4 @@
-import { CharSet } from "refa";
+import { CharSet, JS } from "refa";
 import { Alternative, Assertion, Element, WordBoundaryAssertion } from "@eslint-community/regexpp/ast";
 import {
 	getMatchingDirectionFromAssertionKind,
@@ -9,12 +9,13 @@ import {
 	MatchingDirection,
 	invertMatchingDirection,
 } from "./basic";
-import { toCharSet } from "./to-char-set";
+import { toUnicodeSet } from "./to-char-set";
 import { followPaths } from "./follow";
 import { ReadonlyFlags } from "./flags";
 import { assertNever, CharUnion, intersectInexact, isReadonlyArray, unionInexact } from "./util";
 import { Chars } from "./chars";
 import { CacheInstance } from "./cache";
+import { Char } from "refa";
 
 /**
  * The first character after some point.
@@ -575,7 +576,7 @@ function getFirstConsumedCharAssertionImpl(
 						flags,
 						options
 					);
-					const range = getLengthRange(element.alternatives);
+					const range = getLengthRange(element.alternatives, flags);
 					if (firstChar.empty || !range) {
 						// trivially rejecting
 						return { char: Chars.empty(flags), empty: false, exact: true };
@@ -650,7 +651,38 @@ function getFirstConsumedCharUncachedImpl(
 		case "Character":
 		case "CharacterSet":
 		case "CharacterClass":
-			return { char: toCharSet(element, flags), empty: false, exact: true };
+		case "ExpressionCharacterClass": {
+			const set = toUnicodeSet(element, flags);
+			if (set.accept.isEmpty) {
+				return { char: set.chars, empty: false, exact: true };
+			} else {
+				const firstChars = new Set<Char>();
+				if (direction === "ltr") {
+					for (const word of set.accept.words) {
+						if (word.length > 0) {
+							firstChars.add(word[0]);
+						}
+					}
+				} else {
+					for (const word of set.accept.words) {
+						if (word.length > 0) {
+							firstChars.add(word[word.length - 1]);
+						}
+					}
+				}
+				if (!JS.isFlags(flags)) {
+					throw new Error("Invalid flags");
+				}
+
+				const consumed: FirstConsumedChar = {
+					char: set.chars.union(JS.createCharSet(firstChars, flags)),
+					empty: false,
+					exact: true,
+				};
+
+				return set.hasEmptyWord ? FirstConsumedChars.makeOptional(consumed) : consumed;
+			}
+		}
 
 		case "Quantifier": {
 			if (element.max === 0) {
@@ -687,7 +719,7 @@ function getFirstConsumedCharUncachedImpl(
 			return getFirstConsumedCharAlternativesImpl(element.alternatives, direction, flags, options);
 
 		case "Backreference": {
-			if (isEmptyBackreference(element)) {
+			if (isEmptyBackreference(element, flags)) {
 				return FirstConsumedChars.emptyConcat(flags);
 			}
 			let resolvedChar = getFirstConsumedCharImpl(element.resolved, direction, flags, options);

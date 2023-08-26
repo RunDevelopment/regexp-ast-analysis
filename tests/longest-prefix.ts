@@ -69,6 +69,9 @@ describe(RAA.getLongestPrefix.name, function () {
 					const parsed = new RegExpParser().parseLiteral(regex.toString());
 					const { pattern } = parsed;
 					const flags = RAA.toCache(parsed.flags);
+					if (!JS.isFlags(flags)) {
+						throw new Error("Invalid flags");
+					}
 
 					const parent = selectNamedGroups(pattern, /^this$/)[0] ?? pattern;
 					const alternatives: Alternative[] = [];

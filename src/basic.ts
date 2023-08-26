@@ -18,23 +18,95 @@ import {
 	CharacterSet,
 	EdgeAssertion,
 	WordBoundaryAssertion,
+	ClassIntersection,
+	ClassSubtraction,
+	StringAlternative,
+	ExpressionCharacterClass,
+	UnicodeSetsCharacterClass,
+	ClassStringDisjunction,
+	ClassRangesCharacterClass,
+	ClassRangesCharacterClassElement,
+	UnicodeSetsCharacterClassElement,
+	ClassSetOperand,
 } from "@eslint-community/regexpp/ast";
 import { assertNever, isReadonlyArray } from "./util";
+import { ReadonlyFlags } from "./flags";
+import { toUnicodeSet } from "./to-char-set";
+import { JS } from "refa";
 
-function isInvokeEvery(
-	element: Element | Alternative | readonly Alternative[],
-	fn: (e: Element | Alternative) => boolean
-): boolean {
+export type CharacterElement =
+	| CharacterSet
+	| ClassIntersection
+	| ClassSubtraction
+	| CharacterClassElement
+	| CharacterClass
+	| StringAlternative;
+
+function characterIsEmpty(element: CharacterElement, flags: ReadonlyFlags): boolean {
+	switch (element.type) {
+		case "Character":
+		case "CharacterSet":
+		case "CharacterClassRange":
+			return false;
+
+		case "CharacterClass":
+			return element.unicodeSets && !element.negate && element.elements.every(e => characterIsEmpty(e, flags));
+		case "ExpressionCharacterClass":
+			return !element.negate && characterIsEmpty(element.expression, flags);
+
+		case "ClassIntersection":
+		case "ClassSubtraction": {
+			// we actually need to evaluate the operation to implement this correctly
+			const set = toUnicodeSet(element, flags);
+			return (
+				set.isEmpty || (set.chars.isEmpty && set.accept.words.length === 1 && set.accept.words[0].length === 0)
+			);
+		}
+
+		case "ClassStringDisjunction":
+			return element.alternatives.every(e => characterIsEmpty(e, flags));
+		case "StringAlternative":
+			return element.elements.length === 0;
+
+		default:
+			throw assertNever(element);
+	}
+}
+function characterIsPotentiallyEmpty(element: CharacterElement): boolean {
+	switch (element.type) {
+		case "Character":
+		case "CharacterSet":
+		case "CharacterClassRange":
+			return false;
+
+		case "CharacterClass":
+			return element.unicodeSets && !element.negate && element.elements.some(characterIsPotentiallyEmpty);
+		case "ExpressionCharacterClass":
+			return !element.negate && characterIsPotentiallyEmpty(element.expression);
+
+		case "ClassIntersection":
+			return characterIsPotentiallyEmpty(element.left) || characterIsPotentiallyEmpty(element.right);
+		case "ClassSubtraction":
+			return characterIsPotentiallyEmpty(element.left) && !characterIsPotentiallyEmpty(element.right);
+
+		case "ClassStringDisjunction":
+			return element.alternatives.some(characterIsPotentiallyEmpty);
+		case "StringAlternative":
+			return element.elements.length === 0;
+
+		default:
+			throw assertNever(element);
+	}
+}
+
+function isInvokeEvery<T>(element: T | readonly T[], fn: (e: T) => boolean): boolean {
 	if (isReadonlyArray(element)) {
 		return element.every(fn);
 	} else {
 		return fn(element);
 	}
 }
-function isInvokeSome(
-	element: Element | Alternative | readonly Alternative[],
-	fn: (e: Element | Alternative) => boolean
-): boolean {
+function isInvokeSome<T>(element: T | readonly T[], fn: (e: T) => boolean): boolean {
 	if (isReadonlyArray(element)) {
 		return element.some(fn);
 	} else {
@@ -60,31 +132,40 @@ function isInvokeSome(
  * @see {@link isPotentiallyEmpty}
  * @see {@link getLengthRange}
  */
-export function isZeroLength(element: Element | Alternative | readonly Alternative[]): boolean {
-	return isInvokeEvery(element, isZeroLengthImpl);
+export function isZeroLength(
+	element: Element | CharacterElement | Alternative | readonly Alternative[],
+	flags: ReadonlyFlags
+): boolean {
+	return isInvokeEvery(element, e => isZeroLengthImpl(e, flags));
 }
-function isZeroLengthImpl(element: Element | Alternative): boolean {
+function isZeroLengthImpl(element: Element | CharacterElement | Alternative, flags: ReadonlyFlags): boolean {
 	switch (element.type) {
 		case "Alternative":
-			return element.elements.every(isZeroLengthImpl);
+			return element.elements.every(e => isZeroLengthImpl(e, flags));
 
 		case "Assertion":
 			return true;
 
 		case "Character":
-		case "CharacterClass":
 		case "CharacterSet":
-			return false;
+		case "CharacterClassRange":
+		case "CharacterClass":
+		case "ExpressionCharacterClass":
+		case "ClassIntersection":
+		case "ClassSubtraction":
+		case "ClassStringDisjunction":
+		case "StringAlternative":
+			return characterIsEmpty(element, flags);
 
 		case "Quantifier":
-			return element.max === 0 || isZeroLengthImpl(element.element);
+			return element.max === 0 || isZeroLengthImpl(element.element, flags);
 
 		case "Backreference":
-			return isEmptyBackreference(element);
+			return isEmptyBackreference(element, flags);
 
 		case "CapturingGroup":
 		case "Group":
-			return element.alternatives.length > 0 && element.alternatives.every(isZeroLengthImpl);
+			return element.alternatives.length > 0 && element.alternatives.every(e => isZeroLengthImpl(e, flags));
 
 		default:
 			throw assertNever(element);
@@ -106,10 +187,32 @@ function isZeroLengthImpl(element: Element | Alternative): boolean {
  * @see {@link isPotentiallyEmpty}
  * @see {@link getLengthRange}
  */
-export function isPotentiallyZeroLength(element: Element | Alternative | readonly Alternative[]): boolean {
-	return isInvokeSome(element, e => isPotentiallyZeroLengthImpl(e, e));
+export function isPotentiallyZeroLength(
+	element: Element | CharacterElement | Alternative | readonly Alternative[],
+	flags: ReadonlyFlags
+): boolean {
+	if (!isReadonlyArray(element)) {
+		switch (element.type) {
+			case "Character":
+			case "CharacterSet":
+			case "CharacterClassRange":
+			case "CharacterClass":
+			case "ExpressionCharacterClass":
+			case "ClassIntersection":
+			case "ClassSubtraction":
+			case "ClassStringDisjunction":
+			case "StringAlternative":
+				return characterIsPotentiallyEmpty(element);
+		}
+	}
+
+	return isInvokeSome(element, e => isPotentiallyZeroLengthImpl(e, e, flags));
 }
-function isPotentiallyZeroLengthImpl(e: Element | Alternative, root: Element | Alternative): boolean {
+function isPotentiallyZeroLengthImpl(
+	e: Element | Alternative,
+	root: Element | Alternative,
+	flags: ReadonlyFlags
+): boolean {
 	return impl(e);
 
 	function impl(element: Element | Alternative): boolean {
@@ -121,12 +224,13 @@ function isPotentiallyZeroLengthImpl(e: Element | Alternative, root: Element | A
 				return true;
 
 			case "Backreference":
-				return backreferenceIsPotentiallyEmpty(element, root);
+				return backreferenceIsPotentiallyEmpty(element, root, flags);
 
 			case "Character":
-			case "CharacterClass":
 			case "CharacterSet":
-				return false;
+			case "CharacterClass":
+			case "ExpressionCharacterClass":
+				return characterIsPotentiallyEmpty(element);
 
 			case "CapturingGroup":
 			case "Group":
@@ -163,31 +267,40 @@ function isPotentiallyZeroLengthImpl(e: Element | Alternative, root: Element | A
  * @see {@link isPotentiallyEmpty}
  * @see {@link getLengthRange}
  */
-export function isEmpty(element: Element | Alternative | readonly Alternative[]): boolean {
-	return isInvokeEvery(element, isEmptyImpl);
+export function isEmpty(
+	element: Element | CharacterElement | Alternative | readonly Alternative[],
+	flags: ReadonlyFlags
+): boolean {
+	return isInvokeEvery(element, e => isEmptyImpl(e, flags));
 }
-function isEmptyImpl(element: Element | Alternative): boolean {
+function isEmptyImpl(element: Element | CharacterElement | Alternative, flags: ReadonlyFlags): boolean {
 	switch (element.type) {
 		case "Alternative":
-			return element.elements.every(isEmptyImpl);
+			return element.elements.every(e => isEmptyImpl(e, flags));
 
 		case "Assertion":
 			return false;
 
 		case "Backreference":
-			return isEmptyBackreference(element);
+			return isEmptyBackreference(element, flags);
 
 		case "Character":
-		case "CharacterClass":
 		case "CharacterSet":
-			return false;
+		case "CharacterClassRange":
+		case "CharacterClass":
+		case "ExpressionCharacterClass":
+		case "ClassIntersection":
+		case "ClassSubtraction":
+		case "ClassStringDisjunction":
+		case "StringAlternative":
+			return characterIsEmpty(element, flags);
 
 		case "CapturingGroup":
 		case "Group":
-			return element.alternatives.length > 0 && element.alternatives.every(isEmptyImpl);
+			return element.alternatives.length > 0 && element.alternatives.every(e => isEmptyImpl(e, flags));
 
 		case "Quantifier":
-			return element.max === 0 || isEmptyImpl(element.element);
+			return element.max === 0 || isEmptyImpl(element.element, flags);
 
 		default:
 			throw assertNever(element);
@@ -216,10 +329,28 @@ function isEmptyImpl(element: Element | Alternative): boolean {
  * @see {@link isEmpty}
  * @see {@link getLengthRange}
  */
-export function isPotentiallyEmpty(element: Element | Alternative | readonly Alternative[]): boolean {
-	return isInvokeSome(element, isPotentiallyEmptyImpl);
+export function isPotentiallyEmpty(
+	element: Element | CharacterElement | Alternative | readonly Alternative[],
+	flags: ReadonlyFlags
+): boolean {
+	if (!isReadonlyArray(element)) {
+		switch (element.type) {
+			case "Character":
+			case "CharacterSet":
+			case "CharacterClassRange":
+			case "CharacterClass":
+			case "ExpressionCharacterClass":
+			case "ClassIntersection":
+			case "ClassSubtraction":
+			case "ClassStringDisjunction":
+			case "StringAlternative":
+				return characterIsPotentiallyEmpty(element);
+		}
+	}
+
+	return isInvokeSome(element, e => isPotentiallyEmptyImpl(e, flags));
 }
-function isPotentiallyEmptyImpl(root: Element | Alternative): boolean {
+function isPotentiallyEmptyImpl(root: Element | Alternative, flags: ReadonlyFlags): boolean {
 	return impl(root);
 
 	function impl(element: Element | Alternative): boolean {
@@ -231,12 +362,13 @@ function isPotentiallyEmptyImpl(root: Element | Alternative): boolean {
 				return false;
 
 			case "Backreference":
-				return backreferenceIsPotentiallyEmpty(element, root);
+				return backreferenceIsPotentiallyEmpty(element, root, flags);
 
 			case "Character":
-			case "CharacterClass":
 			case "CharacterSet":
-				return false;
+			case "CharacterClass":
+			case "ExpressionCharacterClass":
+				return characterIsPotentiallyEmpty(element);
 
 			case "CapturingGroup":
 			case "Group":
@@ -250,11 +382,15 @@ function isPotentiallyEmptyImpl(root: Element | Alternative): boolean {
 		}
 	}
 }
-function backreferenceIsPotentiallyEmpty(back: Backreference, root: Element | Alternative): boolean {
-	if (isEmptyBackreference(back)) {
+function backreferenceIsPotentiallyEmpty(
+	back: Backreference,
+	root: Element | Alternative,
+	flags: ReadonlyFlags
+): boolean {
+	if (isEmptyBackreference(back, flags)) {
 		return true;
 	} else if (hasSomeAncestor(back.resolved, a => a === root)) {
-		return !isStrictBackreference(back) || isPotentiallyZeroLengthImpl(back.resolved, root);
+		return !isStrictBackreference(back) || isPotentiallyZeroLengthImpl(back.resolved, root, flags);
 	} else {
 		return false;
 	}
@@ -266,16 +402,25 @@ function backreferenceIsPotentiallyEmpty(back: Backreference, root: Element | Al
  * @see {@link hasSomeAncestor}
  */
 export type Ancestor<T extends Node> = AncestorImpl<T>;
-type AncestorImpl<T extends Node> =
-	| (T extends CharacterSet ? T["parent"] | AlternativeAncestors : never)
-	| (T extends Character ? T["parent"] | AlternativeAncestors : never)
-	| (T extends CharacterClassRange ? T["parent"] | AlternativeAncestors : never)
-	| (T extends Exclude<Element, Character | CharacterSet> ? AlternativeAncestors : never)
-	| (T extends Alternative ? AlternativeAncestors : never)
-	| (T extends Pattern ? RegExpLiteral : never)
-	| (T extends Flags ? RegExpLiteral : never)
-	| (T extends RegExpLiteral ? never : never);
-type AlternativeAncestors = Alternative["parent"] | Quantifier | Alternative | RegExpLiteral;
+type AncestorImpl<T extends Node> = ExtendApproximation<Anc2<GetParent<T>>>;
+
+type ExtendApproximation<T extends Node> =
+	| T
+	| (T extends UnicodeSetsCharacterClass ? CharacterClassAnc : never)
+	| (T extends Alternative ? AlternativeAnc : never);
+type AlternativeAnc = TrueAnc<Alternative>;
+type CharacterClassAnc = TrueAnc<UnicodeSetsCharacterClass>;
+
+type TrueAnc<T extends Node> = Anc6<GetParent<T>>;
+type GetParent<T extends Node> =
+	| (T extends Pattern | Flags ? RegExpLiteral : never)
+	| (T extends Exclude<Node, Pattern | Flags | RegExpLiteral> ? T["parent"] : never);
+type Anc6<T extends Node> = T | Anc5<GetParent<T>>;
+type Anc5<T extends Node> = T | Anc4<GetParent<T>>;
+type Anc4<T extends Node> = T | Anc3<GetParent<T>>;
+type Anc3<T extends Node> = T | Anc2<GetParent<T>>;
+type Anc2<T extends Node> = T | Anc1<GetParent<T>>;
+type Anc1<T extends Node> = T | GetParent<T>;
 
 /**
  * Returns whether any of the ancestors of the given node fulfills the given condition.
@@ -323,13 +468,31 @@ function hasSomeAncestorFnImpl<T extends Node>(node: T, condition: (ancestor: An
  * @see {@link hasSomeDescendant}
  */
 export type Descendant<T extends Node> = T | DescendantsImpl<T>;
-type DescendantsImpl<T extends Node> =
+type DescendantsImpl<T extends Node> = Dec1<GetChildren<T>>;
+type Dec1<T extends Node> = T | Dec2<GetChildren<T>>;
+type Dec2<T extends Node> = T | GetChildren<T>;
+
+type GetChildren<T extends Node> =
+	| (T extends RegExpLiteral ? Flags | Pattern | Element : never)
 	| (T extends Alternative | CapturingGroup | Group | LookaroundAssertion | Quantifier | Pattern
-			? Element | CharacterClassElement
+			? Alternative | Element
 			: never)
-	| (T extends CharacterClass ? CharacterClassElement : never)
+	| (T extends Alternative ? Element : never)
+	| (T extends ClassRangesCharacterClass ? ClassRangesCharacterClassElement : never)
 	| (T extends CharacterClassRange ? Character : never)
-	| (T extends RegExpLiteral ? Flags | Pattern | Element | CharacterClassElement : never);
+	// unicode sets
+	| (T extends UnicodeSetsCharacterClass | ExpressionCharacterClass | ExpressionCharacterClass["expression"]
+			? UnicodeSetsDescendants
+			: never)
+	| (T extends ClassStringDisjunction ? StringAlternative : never)
+	| (T extends StringAlternative ? Character : never);
+type UnicodeSetsDescendants =
+	| ClassSetOperand
+	| UnicodeSetsCharacterClassElement
+	| UnicodeSetsCharacterClass
+	| ExpressionCharacterClass
+	| ExpressionCharacterClass["expression"];
+
 /**
  * Returns whether any of the descendants of the given node fulfill the given condition.
  *
@@ -354,10 +517,10 @@ export function hasSomeDescendant<T extends Node>(
 	descentConditionFn?: (descendant: Descendant<T>) => boolean
 ): boolean {
 	if (typeof condition === "function") {
-		return hasSomeDescendantImpl(node, condition, descentConditionFn);
+		return hasSomeDescendantImpl(node, condition as never, descentConditionFn as never);
 	} else {
 		if (descentConditionFn) {
-			return hasSomeDescendantImpl(node, d => d === condition, descentConditionFn);
+			return hasSomeDescendantImpl(node, d => d === condition, descentConditionFn as never);
 		} else {
 			// instead of checking the O(n) descendant nodes of `node`, we can instead check the O(log n) ancestor
 			// nodes of `condition`
@@ -365,10 +528,10 @@ export function hasSomeDescendant<T extends Node>(
 		}
 	}
 }
-function hasSomeDescendantImpl<T extends Node>(
-	node: T & Node,
-	conditionFn: (descendant: Descendant<T>) => boolean,
-	descentConditionFn?: (descendant: Descendant<T>) => boolean
+function hasSomeDescendantImpl(
+	node: Node,
+	conditionFn: (descendant: Descendant<Node>) => boolean,
+	descentConditionFn: (descendant: Descendant<Node>) => boolean | undefined
 ): boolean {
 	if (conditionFn(node)) {
 		return true;
@@ -380,6 +543,8 @@ function hasSomeDescendantImpl<T extends Node>(
 
 	switch (node.type) {
 		case "Alternative":
+		case "CharacterClass":
+		case "StringAlternative":
 			return node.elements.some(e => hasSomeDescendantImpl(e, conditionFn, descentConditionFn));
 		case "Assertion":
 			if (node.kind === "lookahead" || node.kind === "lookbehind") {
@@ -387,11 +552,18 @@ function hasSomeDescendantImpl<T extends Node>(
 			}
 			return false;
 		case "CapturingGroup":
+		case "ClassStringDisjunction":
 		case "Group":
 		case "Pattern":
 			return node.alternatives.some(a => hasSomeDescendantImpl(a, conditionFn, descentConditionFn));
-		case "CharacterClass":
-			return node.elements.some(e => hasSomeDescendantImpl(e, conditionFn, descentConditionFn));
+		case "ClassIntersection":
+		case "ClassSubtraction":
+			return (
+				hasSomeDescendantImpl(node.left, conditionFn, descentConditionFn) ||
+				hasSomeDescendantImpl(node.right, conditionFn, descentConditionFn)
+			);
+		case "ExpressionCharacterClass":
+			return hasSomeDescendantImpl(node.expression, conditionFn, descentConditionFn);
 		case "CharacterClassRange":
 			return (
 				hasSomeDescendantImpl(node.min, conditionFn, descentConditionFn) ||
@@ -404,8 +576,14 @@ function hasSomeDescendantImpl<T extends Node>(
 				hasSomeDescendantImpl(node.pattern, conditionFn, descentConditionFn) ||
 				hasSomeDescendantImpl(node.flags, conditionFn, descentConditionFn)
 			);
+		case "Backreference":
+		case "Character":
+		case "CharacterSet":
+		case "Flags":
+			return false;
+		default:
+			return assertNever(node);
 	}
-	return false;
 }
 
 /**
@@ -459,6 +637,10 @@ export function getPattern(node: Node): Pattern {
 				| CharacterClass
 				| Alternative
 				| CharacterClassRange
+				| ExpressionCharacterClass
+				| ExpressionCharacterClass["expression"]
+				| ClassStringDisjunction
+				| StringAlternative
 				| Pattern = node.parent;
 			while (p.type !== "Pattern") {
 				p = p.parent;
@@ -565,7 +747,7 @@ export function getMatchingDirectionFromAssertionKind(
  *    - The backreference might be *inside* the capturing group. E.g. `/(a\1)/`.
  *    - The backreference might be before the capturing group. E.g. `/\1(a)/`, `/(?:\1(a))+/`, `/(?<=(a)\1)b/`
  */
-export function isEmptyBackreference(backreference: Backreference): boolean {
+export function isEmptyBackreference(backreference: Backreference, flags: ReadonlyFlags): boolean {
 	const group = backreference.resolved;
 
 	const closestAncestor = getClosestAncestor(backreference, group);
@@ -629,7 +811,7 @@ export function isEmptyBackreference(backreference: Backreference): boolean {
 		}
 	}
 
-	return !findBackreference(group) || isZeroLength(group);
+	return !findBackreference(group) || isZeroLength(group, flags);
 }
 
 /**
@@ -793,19 +975,25 @@ const ONE_LENGTH_RANGE: LengthRange = { min: 1, max: 1 };
  * @see {@link isEmpty}
  * @see {@link isPotentiallyEmpty}
  */
-export function getLengthRange(element: Element | Alternative | readonly Alternative[]): LengthRange {
+export function getLengthRange(
+	element: Element | CharacterElement | Alternative | readonly Alternative[],
+	flags: ReadonlyFlags
+): LengthRange {
 	if (isReadonlyArray(element)) {
-		return getLengthRangeAlternativesImpl(element);
+		return getLengthRangeAlternativesImpl(element, flags);
 	} else {
-		return getLengthRangeElementImpl(element);
+		return getLengthRangeElementImpl(element, flags);
 	}
 }
-function getLengthRangeAlternativesImpl(alternatives: readonly Alternative[]): LengthRange {
+function getLengthRangeAlternativesImpl(
+	alternatives: readonly (Element | CharacterElement | Alternative)[],
+	flags: ReadonlyFlags
+): LengthRange {
 	let min = Infinity;
 	let max = 0;
 
 	for (const a of alternatives) {
-		const eRange = getLengthRangeElementImpl(a);
+		const eRange = getLengthRangeElementImpl(a, flags);
 		min = Math.min(min, eRange.min);
 		max = Math.max(max, eRange.max);
 	}
@@ -816,21 +1004,69 @@ function getLengthRangeAlternativesImpl(alternatives: readonly Alternative[]): L
 		return { min, max };
 	}
 }
-function getLengthRangeElementImpl(element: Element | Alternative): LengthRange {
+function unicodeSetToLengthRange(set: JS.UnicodeSet): LengthRange {
+	let min = Infinity;
+	let max = -Infinity;
+	if (!set.chars.isEmpty) {
+		min = max = 1;
+	}
+	if (set.accept.isEmpty) {
+		min = Math.min(min, set.accept.words[0].length);
+		max = Math.max(max, set.accept.words[set.accept.words.length - 1].length);
+	}
+	if (min > max) {
+		// we define that the empty unicode set has a length of 1
+		return ONE_LENGTH_RANGE;
+	}
+	return { min, max };
+}
+function getLengthRangeElementImpl(
+	element: Element | CharacterElement | Alternative,
+	flags: ReadonlyFlags
+): LengthRange {
 	switch (element.type) {
 		case "Assertion":
 			return ZERO_LENGTH_RANGE;
 
 		case "Character":
-		case "CharacterClass":
-		case "CharacterSet":
+		case "CharacterClassRange":
 			return ONE_LENGTH_RANGE;
+
+		case "CharacterSet":
+			if (element.kind === "property" && element.strings) {
+				// we have to evaluate it
+				return unicodeSetToLengthRange(toUnicodeSet(element, flags));
+			} else {
+				return ONE_LENGTH_RANGE;
+			}
+
+		case "CharacterClass": {
+			if (!element.unicodeSets || element.negate || element.elements.length === 0) {
+				return ONE_LENGTH_RANGE;
+			}
+			return getLengthRangeAlternativesImpl(element.elements, flags);
+		}
+		case "ExpressionCharacterClass": {
+			if (element.negate) {
+				return ONE_LENGTH_RANGE;
+			}
+			return getLengthRangeElementImpl(element.expression, flags);
+		}
+
+		case "ClassIntersection":
+		case "ClassSubtraction": {
+			// we have to evaluate it
+			return unicodeSetToLengthRange(toUnicodeSet(element, flags));
+		}
+
+		case "StringAlternative":
+			return { min: element.elements.length, max: element.elements.length };
 
 		case "Quantifier": {
 			if (element.max === 0) {
 				return ZERO_LENGTH_RANGE;
 			}
-			const elementRange = getLengthRangeElementImpl(element.element);
+			const elementRange = getLengthRangeElementImpl(element.element, flags);
 			if (elementRange.max === 0) {
 				return ZERO_LENGTH_RANGE;
 			} else {
@@ -843,7 +1079,7 @@ function getLengthRangeElementImpl(element: Element | Alternative): LengthRange 
 			let max = 0;
 
 			for (const e of element.elements) {
-				const eRange = getLengthRangeElementImpl(e);
+				const eRange = getLengthRangeElementImpl(e, flags);
 				min += eRange.min;
 				max += eRange.max;
 			}
@@ -853,13 +1089,14 @@ function getLengthRangeElementImpl(element: Element | Alternative): LengthRange 
 
 		case "CapturingGroup":
 		case "Group":
-			return getLengthRangeAlternativesImpl(element.alternatives);
+		case "ClassStringDisjunction":
+			return getLengthRangeAlternativesImpl(element.alternatives, flags);
 
 		case "Backreference": {
-			if (isEmptyBackreference(element)) {
+			if (isEmptyBackreference(element, flags)) {
 				return ZERO_LENGTH_RANGE;
 			} else {
-				const resolvedRange = getLengthRangeElementImpl(element.resolved);
+				const resolvedRange = getLengthRangeElementImpl(element.resolved, flags);
 				if (resolvedRange.min > 0 && !isStrictBackreference(element)) {
 					return { min: 0, max: resolvedRange.max };
 				} else {
@@ -887,45 +1124,82 @@ function getLengthRangeElementImpl(element: Element | Alternative): LengthRange 
  *
  * @see {@link getLengthRange}
  */
-export function isLengthRangeMinZero(element: Element | Alternative | readonly Alternative[]): boolean {
+export function isLengthRangeMinZero(
+	element: Element | CharacterElement | Alternative | readonly Alternative[],
+	flags: ReadonlyFlags
+): boolean {
 	if (isReadonlyArray(element)) {
-		return isLengthRangeMinZeroAlternativesImpl(element);
+		return isLengthRangeMinZeroAlternativesImpl(element, flags);
 	} else {
-		return isLengthRangeMinZeroElementImpl(element);
+		return isLengthRangeMinZeroElementImpl(element, flags);
 	}
 }
-function isLengthRangeMinZeroAlternativesImpl(alternatives: readonly Alternative[]): boolean {
+function isLengthRangeMinZeroAlternativesImpl(
+	alternatives: readonly (CharacterElement | Alternative | StringAlternative)[],
+	flags: ReadonlyFlags
+): boolean {
 	if (alternatives.length === 0) {
 		throw new RangeError("Expected the alternatives array to have at least one alternative.");
 	}
 
-	return alternatives.some(isLengthRangeMinZeroElementImpl);
+	return alternatives.some(e => isLengthRangeMinZeroElementImpl(e, flags));
 }
-function isLengthRangeMinZeroElementImpl(element: Element | Alternative): boolean {
+function isLengthRangeMinZeroElementImpl(
+	element: Element | CharacterElement | Alternative,
+	flags: ReadonlyFlags
+): boolean {
 	switch (element.type) {
 		case "Assertion":
 			return true;
 
 		case "Character":
-		case "CharacterClass":
-		case "CharacterSet":
+		case "CharacterClassRange":
 			return false;
 
+		case "CharacterSet":
+			if (element.kind === "property" && element.strings) {
+				// we have to evaluate it
+				return toUnicodeSet(element, flags).hasEmptyWord;
+			} else {
+				return false;
+			}
+
+		case "CharacterClass":
+			if (!element.unicodeSets || element.negate || element.elements.length === 0) {
+				return false;
+			}
+			return isLengthRangeMinZeroAlternativesImpl(element.elements, flags);
+		case "ExpressionCharacterClass":
+			if (element.negate) {
+				return false;
+			}
+			return isLengthRangeMinZeroElementImpl(element.expression, flags);
+
+		case "ClassIntersection":
+		case "ClassSubtraction": {
+			// we have to evaluate it
+			return toUnicodeSet(element, flags).hasEmptyWord;
+		}
+
 		case "Quantifier":
-			return element.min === 0 || isLengthRangeMinZeroElementImpl(element.element);
+			return element.min === 0 || isLengthRangeMinZeroElementImpl(element.element, flags);
 
 		case "Alternative":
-			return element.elements.every(isLengthRangeMinZeroElementImpl);
+			return element.elements.every(e => isLengthRangeMinZeroElementImpl(e, flags));
+
+		case "StringAlternative":
+			return element.elements.length === 0;
 
 		case "CapturingGroup":
 		case "Group":
-			return isLengthRangeMinZeroAlternativesImpl(element.alternatives);
+		case "ClassStringDisjunction":
+			return isLengthRangeMinZeroAlternativesImpl(element.alternatives, flags);
 
 		case "Backreference": {
 			return (
-				isEmptyBackreference(element) ||
+				isEmptyBackreference(element, flags) ||
 				!isStrictBackreference(element) ||
-				isLengthRangeMinZeroElementImpl(element.resolved)
+				isLengthRangeMinZeroElementImpl(element.resolved, flags)
 			);
 		}
 
