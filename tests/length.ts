@@ -7,26 +7,30 @@ import { Predicate, Model, testModel } from "./helper/model";
 import { selectNamedGroups } from "./helper/select";
 
 describe("length", function () {
-	const isEmpty = new Predicate<PredicateTestCaseInfo>("isEmpty(e)", ({ selected }) => RAA.isEmpty(selected));
-	const isPotentiallyEmpty = new Predicate<PredicateTestCaseInfo>("isPotentiallyEmpty(e)", ({ selected }) =>
-		RAA.isPotentiallyEmpty(selected)
+	const isEmpty = new Predicate<PredicateTestCaseInfo>("isEmpty(e)", ({ selected, flags }) =>
+		RAA.isEmpty(selected, flags)
 	);
-	const isZeroLength = new Predicate<PredicateTestCaseInfo>("isZeroLength(e)", ({ selected }) =>
-		RAA.isZeroLength(selected)
+	const isPotentiallyEmpty = new Predicate<PredicateTestCaseInfo>("isPotentiallyEmpty(e)", ({ selected, flags }) =>
+		RAA.isPotentiallyEmpty(selected, flags)
 	);
-	const isPotentiallyZeroLength = new Predicate<PredicateTestCaseInfo>("isPotentiallyZeroLength(e)", ({ selected }) =>
-		RAA.isPotentiallyZeroLength(selected)
+	const isZeroLength = new Predicate<PredicateTestCaseInfo>("isZeroLength(e)", ({ selected, flags }) =>
+		RAA.isZeroLength(selected, flags)
+	);
+	const isPotentiallyZeroLength = new Predicate<PredicateTestCaseInfo>(
+		"isPotentiallyZeroLength(e)",
+		({ selected, flags }) => RAA.isPotentiallyZeroLength(selected, flags)
 	);
 	const isLengthMinZero = new Predicate<PredicateTestCaseInfo>(
 		"getLengthRange(e).min == 0",
-		({ selected }) => RAA.getLengthRange(selected).min === 0
+		({ selected, flags }) => RAA.getLengthRange(selected, flags).min === 0
 	);
 	const isLengthMaxZero = new Predicate<PredicateTestCaseInfo>(
 		"getLengthRange(e).max == 0",
-		({ selected }) => RAA.getLengthRange(selected).max === 0
+		({ selected, flags }) => RAA.getLengthRange(selected, flags).max === 0
 	);
-	const isLengthRangeMinZero = new Predicate<PredicateTestCaseInfo>("isLengthRangeMinZero(e)", ({ selected }) =>
-		RAA.isLengthRangeMinZero(selected)
+	const isLengthRangeMinZero = new Predicate<PredicateTestCaseInfo>(
+		"isLengthRangeMinZero(e)",
+		({ selected, flags }) => RAA.isLengthRangeMinZero(selected, flags)
 	);
 
 	const model = new Model<PredicateTestCaseInfo>();
@@ -61,6 +65,10 @@ describe("length", function () {
 			{ regexp: /\1(a)/, raw: String.raw`\1` },
 			{ regexp: /\1|(a)/, raw: String.raw`\1` },
 			{ regexp: /(?<=(a)\1)/, raw: String.raw`\1` },
+
+			{ regexp: String.raw`/[\q{}]/v`, whole: true },
+			{ regexp: String.raw`/[\q{foo|bar|}&&\q{x|}]/v`, whole: true },
+			{ regexp: String.raw`/[\q{foo|bar|}--\q{foo|bar}]/v`, whole: true },
 		])
 	);
 	model.add(
@@ -73,6 +81,9 @@ describe("length", function () {
 
 			{ regexp: /(?:\b)?/, whole: true },
 			{ regexp: /(?:\b)*/, whole: true },
+
+			{ regexp: String.raw`/[\q{foo|bar|}]/v`, whole: true },
+			{ regexp: String.raw`/[\q{foo|bar|}--a]/v`, whole: true },
 		])
 	);
 
@@ -91,17 +102,28 @@ describe("length", function () {
 			{ regexp: /(a?)\1/, whole: true },
 			{ regexp: /(a)?\1/, whole: true },
 			{ regexp: /(?:(a)|)\1/, whole: true },
+
+			{ regexp: String.raw`/[\q{foo|bar|}]/v`, whole: true },
+			{ regexp: String.raw`/[\q{foo|bar|}&&\q{x|}]/v`, whole: true },
+			{ regexp: String.raw`/[\q{foo|bar|}--a]/v`, whole: true },
 		])
 	);
 	model.add(
 		isPotentiallyEmpty.not(),
 		casesToInfos([
 			{ regexp: /\b/, whole: true },
+			{ regexp: /[]/, whole: true },
 			{ regexp: /(?:\b)+/, whole: true },
 			{ regexp: /(?:\b){4}/, whole: true },
 
 			{ regexp: /(?:(a)|b)\1/, whole: true },
 			{ regexp: /(?:(a)|)\1/, raw: String.raw`\1` },
+
+			{ regexp: String.raw`/[\q{foo|bar|}--\q{x|}]/v`, whole: true },
+			{ regexp: String.raw`/[\q{foo|bar|}&&\q{x}]/v`, whole: true },
+			{ regexp: String.raw`/[\q{foo|bar|}&&\q{foo}]/v`, whole: true },
+			{ regexp: String.raw`/[]/v`, whole: true },
+			{ regexp: String.raw`/[^\w&&\w]/v`, whole: true },
 		])
 	);
 
@@ -118,6 +140,9 @@ describe("length", function () {
 		casesToInfos([
 			{ regexp: /foo|\b/, whole: true },
 			{ regexp: /(a)\1|\b/, whole: true },
+
+			{ regexp: String.raw`/[]/v`, whole: true },
+			{ regexp: String.raw`/[^\w&&\w]/v`, whole: true },
 		])
 	);
 
@@ -150,12 +175,12 @@ describe("length", function () {
 	});
 
 	interface PredicateTestCase {
-		regexp: RegExp;
+		regexp: RegExp | string;
 		raw?: string;
 		whole?: boolean;
 	}
 	interface PredicateTestCaseInfo {
-		regexp: RegExp;
+		regexp: RegExp | string;
 		selected: Element | Alternative | Alternative[];
 		pattern: Pattern;
 		flags: Flags;
@@ -222,11 +247,11 @@ describe("length", function () {
 
 describe(RAA.getLengthRange.name, function () {
 	it("should throw on empty array", function () {
-		assert.throws(() => RAA.getLengthRange([]));
+		assert.throws(() => RAA.getLengthRange([], {}));
 	});
 
 	interface TestCase {
-		regexp: RegExp;
+		regexp: RegExp | string;
 		expected: RAA.LengthRange;
 		selectNamed?: boolean | RegExp;
 	}
@@ -251,6 +276,13 @@ describe(RAA.getLengthRange.name, function () {
 		{ regexp: /(?:b{2,4}){5,8}/, expected: { min: 10, max: 32 } },
 		{ regexp: /(?:b{2,3}c?){5,8}/, expected: { min: 10, max: 32 } },
 		{ regexp: /(?:b+){5,8}/, expected: { min: 5, max: Infinity } },
+
+		{ regexp: String.raw`/[]/v`, expected: { min: 1, max: 1 } },
+		{ regexp: String.raw`/[^\w]/v`, expected: { min: 1, max: 1 } },
+		{ regexp: String.raw`/[\q{foo|bar|x}]/v`, expected: { min: 1, max: 3 } },
+		{ regexp: String.raw`/[\q{foo|bar|x|}]/v`, expected: { min: 0, max: 3 } },
+		{ regexp: String.raw`/[^a&&a]/v`, expected: { min: 1, max: 1 } },
+		{ regexp: String.raw`/\p{Basic_Emoji}/v`, expected: { min: 1, max: 2 } },
 
 		// Backreferences
 		{ regexp: /(a)\1/, expected: { min: 2, max: 2 } },
@@ -277,7 +309,7 @@ describe(RAA.getLengthRange.name, function () {
 
 	function test(cases: TestCase[]): void {
 		for (const { regexp, selectNamed, expected } of cases) {
-			const { pattern } = new RegExpParser().parseLiteral(regexp.toString());
+			const { pattern, flags } = new RegExpParser().parseLiteral(regexp.toString());
 			let elements;
 			if (selectNamed) {
 				elements = selectNamedGroups(pattern, selectNamed === true ? undefined : selectNamed);
@@ -291,7 +323,8 @@ describe(RAA.getLengthRange.name, function () {
 						? `${regexp}`
 						: `${regexp}: \`${Array.isArray(e) ? e.join("|") : e.raw}\``,
 					function () {
-						assert.deepEqual(RAA.getLengthRange(e), expected);
+						assert.deepEqual(RAA.getLengthRange(e, flags), expected);
+						assert.equal(RAA.isLengthRangeMinZero(e, flags), expected.min === 0);
 					}
 				);
 			}
@@ -301,6 +334,6 @@ describe(RAA.getLengthRange.name, function () {
 
 describe(RAA.isLengthRangeMinZero.name, function () {
 	it("should throw on empty array", function () {
-		assert.throws(() => RAA.isLengthRangeMinZero([]));
+		assert.throws(() => RAA.isLengthRangeMinZero([], {}));
 	});
 });

@@ -190,6 +190,21 @@ Object {
 }
 `;
 
+exports[`canReorder /(abc)(?:foo|bar|\\1)/ 1`] = `
+Object {
+  "(?:foo|bar|\\\\1)": Object {
+    "foo|bar|\\\\1": Object {
+      "dir:ltr     ignoreCG:false": true,
+      "dir:ltr     ignoreCG:true ": true,
+      "dir:rtl     ignoreCG:false": true,
+      "dir:rtl     ignoreCG:true ": true,
+      "dir:unknown ignoreCG:false": true,
+      "dir:unknown ignoreCG:true ": true,
+    },
+  },
+}
+`;
+
 exports[`canReorder /(int|integer)\\b/ 1`] = `
 Object {
   "(int|integer)": Object {
@@ -620,6 +635,21 @@ Object {
 }
 `;
 
+exports[`canReorder /abc|\\p{Basic_Emoji}/v 1`] = `
+Object {
+  "abc|\\\\p{Basic_Emoji}": Object {
+    "abc|\\\\p{Basic_Emoji}": Object {
+      "dir:ltr     ignoreCG:false": true,
+      "dir:ltr     ignoreCG:true ": true,
+      "dir:rtl     ignoreCG:false": true,
+      "dir:rtl     ignoreCG:true ": true,
+      "dir:unknown ignoreCG:false": true,
+      "dir:unknown ignoreCG:true ": true,
+    },
+  },
+}
+`;
+
 exports[`canReorder /abc|a/ 1`] = `
 Object {
   "abc|a": Object {
@@ -714,6 +744,21 @@ exports[`canReorder /device_ios_(?:ipad|ipad_retina|iphone|iphone5|iphone6|iphon
 Object {
   "(?:ipad|ipad_retina|iphone|iphone5|iphone6|iphone6plus|iphone_retina|unknown)": Object {
     "ipad|ipad_retina|iphone|iphone5|iphone6|iphone6plus|iphone_retina|unknown": Object {
+      "dir:ltr     ignoreCG:false": true,
+      "dir:ltr     ignoreCG:true ": true,
+      "dir:rtl     ignoreCG:false": true,
+      "dir:rtl     ignoreCG:true ": true,
+      "dir:unknown ignoreCG:false": true,
+      "dir:unknown ignoreCG:true ": true,
+    },
+  },
+}
+`;
+
+exports[`canReorder /foo|[\\q{bar}]/v 1`] = `
+Object {
+  "foo|[\\\\q{bar}]": Object {
+    "foo|[\\\\q{bar}]": Object {
       "dir:ltr     ignoreCG:false": true,
       "dir:ltr     ignoreCG:true ": true,
       "dir:rtl     ignoreCG:false": true,

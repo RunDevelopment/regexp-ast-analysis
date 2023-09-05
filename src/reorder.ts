@@ -1,11 +1,9 @@
 import { CharSet } from "refa";
-import { Alternative, Element, Pattern } from "@eslint-community/regexpp/ast";
+import { Alternative, Element } from "@eslint-community/regexpp/ast";
 import {
 	containsCapturingGroup,
 	getLengthRange,
 	getMatchingDirection,
-	hasSomeDescendant,
-	isEmptyBackreference,
 	MatchingDirection,
 	OptionalMatchingDirection,
 } from "./basic";
@@ -14,8 +12,9 @@ import { Chars } from "./chars";
 import { getDeterminismEqClasses } from "./determinism";
 import { ReadonlyFlags } from "./flags";
 import { getFirstCharAfter } from "./next-char";
-import { toCharSet } from "./to-char-set";
+import { toUnicodeSet } from "./to-char-set";
 import { asReadonlySet, assertSameParent } from "./util";
+import { getConsumedChars } from "./consumed-chars";
 
 /**
  * Options to control the behavior of {@link canReorder}.
@@ -148,7 +147,7 @@ export function canReorderDirectional(
 			return true;
 		}
 
-		return canReorderBasedOnLength(eq) || canReorderBasedOnConsumedChars(eq, direction, flags);
+		return canReorderBasedOnLength(eq, flags) || canReorderBasedOnConsumedChars(eq, direction, flags);
 	});
 }
 
@@ -223,8 +222,8 @@ function canReorderCapturingGroups(
  * No matter which alternative the regex engine picks, we will always end up in
  * the same place after.
  */
-function canReorderBasedOnLength(slice: readonly Alternative[]): boolean {
-	const lengthRange = getLengthRange(slice);
+function canReorderBasedOnLength(slice: readonly Alternative[], flags: ReadonlyFlags): boolean {
+	const lengthRange = getLengthRange(slice, flags);
 	return Boolean(lengthRange && lengthRange.min === lengthRange.max);
 }
 
@@ -257,7 +256,7 @@ function canReorderBasedOnConsumedChars(
 		elements.push(...alternative);
 	}
 
-	const consumedChars = Chars.empty(flags).union(...elements.map(e => getConsumedChars(e, flags)));
+	const consumedChars = Chars.empty(flags).union(...elements.map(e => getConsumedChars(e, flags).chars));
 
 	// we first check all suffix characters because we get them for free when factoring out.
 	const suffix = direction === "ltr" ? factoredOut.right : factoredOut.left;
@@ -326,14 +325,20 @@ function getLongestPureCharPrefix(
 					case "Character":
 					case "CharacterClass":
 					case "CharacterSet":
+					case "ExpressionCharacterClass": {
+						const set = toUnicodeSet(element, flags);
+						if (!set.accept.isEmpty) {
+							return prefix;
+						}
 						if (char === null) {
-							char = toCharSet(element, flags);
+							char = set.chars;
 						} else {
-							if (!char.equals(toCharSet(element, flags))) {
+							if (!char.equals(set.chars)) {
 								return prefix;
 							}
 						}
 						break;
+					}
 
 					default:
 						return prefix;
@@ -380,31 +385,4 @@ function getAlternativesSlice(set: ReadonlySet<Alternative>): Alternative[] {
 	}
 
 	return parentAlternatives.slice(min, max + 1);
-}
-
-/**
- * Returns the union of all characters that can possibly be consumed by the
- * given element.
- */
-function getConsumedChars(element: Element | Pattern | Alternative, flags: ReadonlyFlags): CharSet {
-	const sets: CharSet[] = [];
-
-	// we misuse hasSomeDescendant to iterate all relevant elements
-	hasSomeDescendant(
-		element,
-		d => {
-			if (d.type === "Character" || d.type === "CharacterClass" || d.type === "CharacterSet") {
-				sets.push(toCharSet(d, flags));
-			} else if (d.type === "Backreference" && !isEmptyBackreference(d)) {
-				sets.push(getConsumedChars(d.resolved, flags));
-			}
-
-			// always continue to the next element
-			return false;
-		},
-		// don't go into assertions
-		d => d.type !== "Assertion" && d.type !== "CharacterClass"
-	);
-
-	return Chars.empty(flags).union(...sets);
 }

@@ -1,19 +1,34 @@
 /* eslint-disable @typescript-eslint/no-namespace */
-import { CharSet, JS } from "refa";
+import { Char, CharSet, JS } from "refa";
 import { ReadonlyFlags } from "./flags";
 import { MaxChar } from "./max-char";
+
+function isUnicode(flags: ReadonlyFlags): boolean {
+	return flags.unicode || !!flags.unicodeSets;
+}
 
 /**
  * A set of functions to get predefined character sets.
  */
 export namespace Chars {
+	/**
+	 * Returns the maximum character for the given flags.
+	 */
+	export function maxChar(flags: ReadonlyFlags): Char {
+		if (isUnicode(flags)) {
+			return MaxChar.UNICODE;
+		} else {
+			return MaxChar.UTF16;
+		}
+	}
+
 	const EMPTY_UTF16_CHARSET = CharSet.empty(MaxChar.UTF16);
 	const EMPTY_UNICODE_CHARSET = CharSet.empty(MaxChar.UNICODE);
 	/**
 	 * Returns the empty character set for the given flags.
 	 */
 	export function empty(flags: ReadonlyFlags): CharSet {
-		if (flags.unicode) {
+		if (isUnicode(flags)) {
 			return EMPTY_UNICODE_CHARSET;
 		} else {
 			return EMPTY_UTF16_CHARSET;
@@ -26,7 +41,7 @@ export namespace Chars {
 	 * Returns the full character set for the given flags.
 	 */
 	export function all(flags: ReadonlyFlags): CharSet {
-		if (flags.unicode) {
+		if (isUnicode(flags)) {
 			return ALL_UNICODE_CHARSET;
 		} else {
 			return ALL_UTF16_CHARSET;
@@ -42,7 +57,7 @@ export namespace Chars {
 	 * all character that the regex `/^.$/` rejects.
 	 */
 	export function lineTerminator(flags: ReadonlyFlags): CharSet {
-		if (flags.unicode) {
+		if (isUnicode(flags)) {
 			return LINE_TERMINATOR_UNICODE_CHARSET;
 		} else {
 			return LINE_TERMINATOR_UTF16_CHARSET;
@@ -69,7 +84,7 @@ export namespace Chars {
 	 * case-insensitive Unicode-mode.
 	 */
 	export function word(flags: ReadonlyFlags): CharSet {
-		if (flags.unicode) {
+		if (isUnicode(flags)) {
 			if (flags.ignoreCase) {
 				return WORD_UNICODE_IGNORE_CASE_CHARSET;
 			} else {
@@ -86,7 +101,7 @@ export namespace Chars {
 	 * Returns a character set that is equivalent to `\d` with the given flags.
 	 */
 	export function digit(flags: ReadonlyFlags): CharSet {
-		if (flags.unicode) {
+		if (isUnicode(flags)) {
 			return DIGIT_UNICODE_CHARSET;
 		} else {
 			return DIGIT_UTF16_CHARSET;
@@ -99,7 +114,7 @@ export namespace Chars {
 	 * Returns a character set that is equivalent to `\s` with the given flags.
 	 */
 	export function space(flags: ReadonlyFlags): CharSet {
-		if (flags.unicode) {
+		if (isUnicode(flags)) {
 			return SPACE_UNICODE_CHARSET;
 		} else {
 			return SPACE_UTF16_CHARSET;
