@@ -1,5 +1,22 @@
 # Changelog
 
+## 0.7.0 (2023-09-05)
+
+### Breaking
+
+- Upgraded dependencies to `@eslint-community/regexpp` v4.8.0 and `refa` v0.12.0.
+- `is{Potentially,}{Empty,ZeroLength}`, `isEmptyBackreference`, `getLengthRange`, and `isLengthRangeMinZero` now require a flags argument.
+- Changed the semantics of `matchesAllCharacters`.
+
+### Added
+
+- Added support for the `v` flag.
+	- `toUnicodeSet` is the new `toCharSet`.
+	- `hasStrings` will return whether a character element contains strings.
+- `getConsumedChars` will return all characters consumed by an element.
+- `Chars.maxChar(flags)` will return the maximum character (either `0xFFFF` or `0x10FFFF`) depending on the given flags.
+
+
 ## 0.6.0 (2023-03-30)
 
 ### Breaking
