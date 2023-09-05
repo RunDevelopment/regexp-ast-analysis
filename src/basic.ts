@@ -415,9 +415,7 @@ type AlternativeAnc = TrueAnc<Alternative>;
 type CharacterClassAnc = TrueAnc<UnicodeSetsCharacterClass>;
 
 type TrueAnc<T extends Node> = Anc6<GetParent<T>>;
-type GetParent<T extends Node> =
-	| (T extends Pattern | Flags ? RegExpLiteral : never)
-	| (T extends Exclude<Node, Pattern | Flags | RegExpLiteral> ? T["parent"] : never);
+type GetParent<T extends Node> = NonNullable<T["parent"]>;
 type Anc6<T extends Node> = T | Anc5<GetParent<T>>;
 type Anc5<T extends Node> = T | Anc4<GetParent<T>>;
 type Anc4<T extends Node> = T | Anc3<GetParent<T>>;
