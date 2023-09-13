@@ -4,7 +4,7 @@
 
 ### Fixed
 
--Some bug fixes for `UnicodeSet`.
+- Some bug fixes for `UnicodeSet`.
 
 
 ## 0.7.0 (2023-09-05)
