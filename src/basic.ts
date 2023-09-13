@@ -62,8 +62,8 @@ function characterIsEmpty(element: CharacterElement, flags: ReadonlyFlags): bool
 		case "ClassIntersection":
 		case "ClassSubtraction": {
 			// we actually need to evaluate the operation to implement this correctly
-			const set = toUnicodeSet(element, flags);
-			return set.chars.isEmpty && set.accept.words.length === 1 && set.accept.hasEmptyWord;
+			const lengthRange = toUnicodeSet(element, flags).getLengthRange();
+			return lengthRange !== undefined && lengthRange.min === 0 && lengthRange.max === 0;
 		}
 
 		case "ClassStringDisjunction":
@@ -1006,20 +1006,12 @@ function getLengthRangeAlternativesImpl(
 	}
 }
 function unicodeSetToLengthRange(set: JS.UnicodeSet): LengthRange {
-	let min = Infinity;
-	let max = -Infinity;
-	if (!set.chars.isEmpty) {
-		min = max = 1;
-	}
-	if (!set.accept.isEmpty) {
-		min = Math.min(min, set.accept.words[0].length);
-		max = Math.max(max, set.accept.words[set.accept.words.length - 1].length);
-	}
-	if (min > max) {
+	const range = set.getLengthRange();
+	if (!range) {
 		// we define that the empty unicode set has a length of 1
 		return ONE_LENGTH_RANGE;
 	}
-	return { min, max };
+	return range;
 }
 function getLengthRangeElementImpl(
 	element: Element | CharacterElement | Alternative,
