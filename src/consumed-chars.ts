@@ -1,5 +1,5 @@
 import { Alternative, Element, Pattern } from "@eslint-community/regexpp/ast";
-import { Char, CharSet, JS } from "refa";
+import { CharSet } from "refa";
 import { ReadonlyFlags } from "./flags";
 import { hasSomeDescendant, isEmptyBackreference } from "./basic";
 import { Chars } from "./chars";
@@ -38,16 +38,13 @@ export function getConsumedChars(element: Element | Pattern | Alternative, flags
 
 				sets.push(c.chars);
 				if (!c.accept.isEmpty) {
-					const chars = new Set<Char>();
-					for (const word of c.accept.words) {
+					const chars = new Set<CharSet>();
+					for (const word of c.accept.wordSets) {
 						for (const char of word) {
 							chars.add(char);
 						}
 					}
-					if (!JS.isFlags(flags)) {
-						throw new Error("Invalid flags.");
-					}
-					sets.push(JS.createCharSet(chars, flags));
+					sets.push(Chars.empty(flags).union(...chars));
 				}
 
 				exact = exact && !c.isEmpty;

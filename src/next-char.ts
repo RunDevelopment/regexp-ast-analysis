@@ -1,4 +1,4 @@
-import { CharSet, JS } from "refa";
+import { CharSet } from "refa";
 import { Alternative, Assertion, Element, WordBoundaryAssertion } from "@eslint-community/regexpp/ast";
 import {
 	getMatchingDirectionFromAssertionKind,
@@ -15,7 +15,6 @@ import { ReadonlyFlags } from "./flags";
 import { assertNever, CharUnion, intersectInexact, isReadonlyArray, unionInexact } from "./util";
 import { Chars } from "./chars";
 import { CacheInstance } from "./cache";
-import { Char } from "refa";
 
 /**
  * The first character after some point.
@@ -656,26 +655,23 @@ function getFirstConsumedCharUncachedImpl(
 			if (set.accept.isEmpty) {
 				return { char: set.chars, empty: false, exact: true };
 			} else {
-				const firstChars = new Set<Char>();
+				const firstChars = new Set<CharSet>();
 				if (direction === "ltr") {
-					for (const word of set.accept.words) {
-						if (word.length > 0) {
-							firstChars.add(word[0]);
+					for (const wordSet of set.accept.wordSets) {
+						if (wordSet.length > 0) {
+							firstChars.add(wordSet[0]);
 						}
 					}
 				} else {
-					for (const word of set.accept.words) {
-						if (word.length > 0) {
-							firstChars.add(word[word.length - 1]);
+					for (const wordSet of set.accept.wordSets) {
+						if (wordSet.length > 0) {
+							firstChars.add(wordSet[wordSet.length - 1]);
 						}
 					}
 				}
-				if (!JS.isFlags(flags)) {
-					throw new Error("Invalid flags");
-				}
 
 				const consumed: FirstConsumedChar = {
-					char: set.chars.union(JS.createCharSet(firstChars, flags)),
+					char: set.chars.union(...firstChars),
 					empty: false,
 					exact: true,
 				};
